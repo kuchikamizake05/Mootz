@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Mootz Event details and organizer check-in",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "Authenticated events and restricted organizer management. Access is granted by an operator outside HTTP. Organizer identity comes from the verified token. Creation is idempotent per organizer/clientRequestId. Revocation disables management. Collection mapping and contract administration remain operator-only."
   },
   "security": [
@@ -27,7 +27,8 @@
           "description",
           "startsAt",
           "endsAt",
-          "locationLabel"
+          "locationLabel",
+          "location"
         ],
         "properties": {
           "id": {
@@ -53,6 +54,34 @@
               "string",
               "null"
             ]
+          },
+          "location": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "latitude",
+                  "longitude"
+                ],
+                "properties": {
+                  "latitude": {
+                    "type": "number",
+                    "minimum": -90,
+                    "maximum": 90
+                  },
+                  "longitude": {
+                    "type": "number",
+                    "minimum": -180,
+                    "maximum": 180
+                  }
+                }
+              }
+            ],
+            "description": "Organizer-selected public venue coordinates, never participant or Meet verification location. Null for events without a map pin."
           }
         }
       },
@@ -95,6 +124,34 @@
               "null"
             ],
             "maxLength": 200
+          },
+          "location": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "latitude",
+                  "longitude"
+                ],
+                "properties": {
+                  "latitude": {
+                    "type": "number",
+                    "minimum": -90,
+                    "maximum": 90
+                  },
+                  "longitude": {
+                    "type": "number",
+                    "minimum": -180,
+                    "maximum": 180
+                  }
+                }
+              }
+            ],
+            "description": "Organizer-selected public venue coordinates, never participant or Meet verification location. Null for events without a map pin."
           }
         }
       },
@@ -109,7 +166,8 @@
           "endsAt",
           "locationLabel",
           "collectionStatus",
-          "checkInCount"
+          "checkInCount",
+          "location"
         ],
         "properties": {
           "id": {
@@ -147,6 +205,34 @@
           "checkInCount": {
             "type": "integer",
             "minimum": 0
+          },
+          "location": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "latitude",
+                  "longitude"
+                ],
+                "properties": {
+                  "latitude": {
+                    "type": "number",
+                    "minimum": -90,
+                    "maximum": 90
+                  },
+                  "longitude": {
+                    "type": "number",
+                    "minimum": -180,
+                    "maximum": 180
+                  }
+                }
+              }
+            ],
+            "description": "Organizer-selected public venue coordinates, never participant or Meet verification location. Null for events without a map pin."
           }
         }
       }
@@ -199,7 +285,8 @@
                           "description",
                           "startsAt",
                           "endsAt",
-                          "locationLabel"
+                          "locationLabel",
+                          "location"
                         ],
                         "properties": {
                           "id": {
@@ -225,6 +312,34 @@
                               "string",
                               "null"
                             ]
+                          },
+                          "location": {
+                            "anyOf": [
+                              {
+                                "type": "null"
+                              },
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "required": [
+                                  "latitude",
+                                  "longitude"
+                                ],
+                                "properties": {
+                                  "latitude": {
+                                    "type": "number",
+                                    "minimum": -90,
+                                    "maximum": 90
+                                  },
+                                  "longitude": {
+                                    "type": "number",
+                                    "minimum": -180,
+                                    "maximum": 180
+                                  }
+                                }
+                              }
+                            ],
+                            "description": "Organizer-selected public venue coordinates, never participant or Meet verification location. Null for events without a map pin."
                           }
                         }
                       }
@@ -334,7 +449,8 @@
                     "description",
                     "startsAt",
                     "endsAt",
-                    "locationLabel"
+                    "locationLabel",
+                    "location"
                   ],
                   "properties": {
                     "id": {
@@ -360,6 +476,34 @@
                         "string",
                         "null"
                       ]
+                    },
+                    "location": {
+                      "anyOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "latitude",
+                            "longitude"
+                          ],
+                          "properties": {
+                            "latitude": {
+                              "type": "number",
+                              "minimum": -90,
+                              "maximum": 90
+                            },
+                            "longitude": {
+                              "type": "number",
+                              "minimum": -180,
+                              "maximum": 180
+                            }
+                          }
+                        }
+                      ],
+                      "description": "Organizer-selected public venue coordinates, never participant or Meet verification location. Null for events without a map pin."
                     }
                   }
                 }

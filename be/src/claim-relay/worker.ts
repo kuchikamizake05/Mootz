@@ -8,11 +8,11 @@ function hydrate(row:Row):ClaimJob {
  return {id:row.id,authorizationId:row.authorization_id,accountId:row.account_id,eventId:row.event_id,chainId:Number(row.chain_id),verifyingContract:row.verifying_contract,claim:{collectionId:BigInt(row.claim.collectionId!),recipient:row.claim.recipient as Address,issuer:row.claim.issuer as Address,nonce:row.claim.nonce as Hex,deadline:BigInt(row.claim.deadline!)},signature:row.signature,attempts:row.attempts,rawTransaction:row.raw_transaction,transactionHash:row.transaction_hash,relayerAddress:row.relayer_address};
 }
 async function valid(job:ClaimJob){
- try{return job.chainId===10143&&address(job.verifyingContract)&&address(job.claim.recipient)&&address(job.claim.issuer)&&job.claim.collectionId>0n&&job.claim.collectionId<2n**256n&&job.claim.deadline>0n&&job.claim.deadline<2n**256n&&/^0x[0-9a-fA-F]{64}$/.test(job.claim.nonce)&&(await recoverClaim(collectionDomain(job.chainId,job.verifyingContract),job.claim,job.signature)).toLowerCase()===job.claim.issuer.toLowerCase();}catch{return false;}
+ try{return [143,10143].includes(job.chainId)&&address(job.verifyingContract)&&address(job.claim.recipient)&&address(job.claim.issuer)&&job.claim.collectionId>0n&&job.claim.collectionId<2n**256n&&job.claim.deadline>0n&&job.claim.deadline<2n**256n&&/^0x[0-9a-fA-F]{64}$/.test(job.claim.nonce)&&(await recoverClaim(collectionDomain(job.chainId,job.verifyingContract),job.claim,job.signature)).toLowerCase()===job.claim.issuer.toLowerCase();}catch{return false;}
 }
 function validState(job:ClaimJob,state:ClaimState){return state.eventId.toLowerCase()===uuidBytes32(job.eventId)&&state.cap>0n&&state.totalSupply>=0n&&state.totalSupply<=state.cap&&(state.balance===0n||state.balance===1n)&&state.claimed===(state.balance===1n)&&(!state.nonceUsed||state.claimed);}
 async function complete(client:PoolClient,id:string,status:'included'|'failed'|'already_owned',reason:string|null){await client.query('UPDATE claim_outbox SET status=$2,completed_at=clock_timestamp(),leased_until=NULL,last_error=$3 WHERE id=$1',[id,status,reason]);}
-export async function processClaimOutbox(pool:Pool,transport:ClaimTransport,options:{batchSize?:number;now?:()=>Date;leaseSeconds?:number}={}){
+export async function processClaimOutbox(pool:Pool,transport:ClaimTransport,options:{batchSize?:number;now?:()=>Date;leaseSeconds?:number;chainId?:143|10143}={}){
  const summary={locked:false,processed:0,included:0,failed:0,alreadyOwned:0,retried:0};
  const batch=options.batchSize??20,lease=options.leaseSeconds??60;
  if(!Number.isInteger(batch)||batch<1||batch>100||!Number.isInteger(lease)||lease<1||lease>600)throw Error('Invalid worker bounds');
@@ -20,11 +20,11 @@ export async function processClaimOutbox(pool:Pool,transport:ClaimTransport,opti
  try{
   locked=(await client.query<{locked:boolean}>('SELECT pg_try_advisory_lock(729610143) AS locked')).rows[0]!.locked;if(!locked)return summary;summary.locked=true;
   const rows=await client.query<Row>(`WITH picked AS (
-   SELECT o.id FROM claim_outbox o WHERE o.completed_at IS NULL AND o.next_attempt_at<=clock_timestamp() AND (o.leased_until IS NULL OR o.leased_until<clock_timestamp()) AND (o.raw_transaction IS NOT NULL OR (
-    NOT EXISTS(SELECT 1 FROM claim_outbox active WHERE active.completed_at IS NULL AND active.raw_transaction IS NOT NULL) AND
-    NOT EXISTS(SELECT 1 FROM meet_outbox active WHERE active.completed_at IS NULL AND active.raw_transaction IS NOT NULL)))
+   SELECT o.id FROM claim_outbox o WHERE o.chain_id=$3 AND o.completed_at IS NULL AND o.next_attempt_at<=clock_timestamp() AND (o.leased_until IS NULL OR o.leased_until<clock_timestamp()) AND (o.raw_transaction IS NOT NULL OR (
+    NOT EXISTS(SELECT 1 FROM claim_outbox active WHERE active.chain_id=$3 AND active.completed_at IS NULL AND active.raw_transaction IS NOT NULL) AND
+    NOT EXISTS(SELECT 1 FROM meet_outbox active JOIN meets active_meet ON active_meet.id=active.meet_id WHERE active_meet.chain_id=$3 AND active.completed_at IS NULL AND active.raw_transaction IS NOT NULL)))
    ORDER BY (o.raw_transaction IS NOT NULL) DESC,o.next_attempt_at,o.id LIMIT $1 FOR UPDATE SKIP LOCKED
-  ) UPDATE claim_outbox o SET leased_until=clock_timestamp()+make_interval(secs=>$2),attempts=o.attempts+1 FROM picked WHERE o.id=picked.id RETURNING o.*`,[batch,lease]);
+  ) UPDATE claim_outbox o SET leased_until=clock_timestamp()+make_interval(secs=>$2),attempts=o.attempts+1 FROM picked WHERE o.id=picked.id RETURNING o.*`,[batch,lease,options.chainId??10143]);
   rows.rows.sort((a,b)=>Number(b.raw_transaction!==null)-Number(a.raw_transaction!==null)||a.id.localeCompare(b.id));
   leasedIds.push(...rows.rows.map(row=>row.id));
   for(const row of rows.rows){

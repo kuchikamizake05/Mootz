@@ -1,3 +1,4 @@
+import { env } from "@/lib/env";
 import { ApiError } from "@/lib/api/client";
 import { demoViewer } from "@/features/moments/demo";
 import { DEMO_EVENT_ID, type ApiEvent, type CheckIn, type ClaimJob, type CollectionState, type EquippedCollection } from "./model";
@@ -21,6 +22,7 @@ export function demoEvent(): ApiEvent {
     startsAt: new Date(now - HOUR).toISOString(),
     endsAt: new Date(now + 3 * HOUR).toISOString(),
     locationLabel: "GIK, Yogyakarta",
+    location: null,
   };
 }
 
@@ -47,7 +49,7 @@ export function demoCollection(): CollectionState {
     collection: {
       id: DEMO_COLLECTION_REF,
       eventId: ev.id,
-      chainId: 10143,
+      chainId: env.chainId,
       contractAddress: "0x0000000000000000000000000000000000000000",
       collectionId: "1",
       displayName: "Demo Workshop A frame",

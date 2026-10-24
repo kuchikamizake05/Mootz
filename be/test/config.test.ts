@@ -59,3 +59,8 @@ describe('configuration boundary', () => {
     expect(loadConfig({ ...valid, SUPABASE_URL: 'https://example.supabase.co', SUPABASE_SERVICE_ROLE_KEY: 'legacy-server-key' })).toHaveProperty('storage.secretKey', 'legacy-server-key');
   });
 });
+
+it('configures mainnet signing domains without rewriting the testnet fallback', () => {
+ const env = { ...valid, WALLET_CHAIN_ID: '143', MEET_RPC_URL: 'https://rpc.monad.xyz', MEET_REGISTRY_ADDRESS: '0x'+'11'.repeat(20), EVENT_COLLECTION_RPC_URL: 'https://rpc.monad.xyz', EVENT_COLLECTION_ADDRESS: '0x'+'22'.repeat(20) };
+ expect(loadConfig(env)).toMatchObject({ walletChainId: 143, meet: { chainId: 143 }, collection: { chainId: 143 } });
+});

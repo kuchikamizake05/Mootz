@@ -9,8 +9,8 @@ export interface Config {
   walletDomain: string;
   walletChainId: number;
   storage: { url: string; secretKey: string; bucket: string } | undefined;
-  meet: { rpcUrl: string; registryAddress: `0x${string}`; chainId: 10143 } | undefined;
-  collection: { rpcUrl: string; contractAddress: `0x${string}`; chainId: 10143; issuerPrivateKey?: `0x${string}` } | undefined;
+  meet: { rpcUrl: string; registryAddress: `0x${string}`; chainId: 143 | 10143 } | undefined;
+  collection: { rpcUrl: string; contractAddress: `0x${string}`; chainId: 143 | 10143; issuerPrivateKey?: `0x${string}` } | undefined;
 }
 
 export function loadConfig(env: NodeJS.ProcessEnv): Config {
@@ -59,8 +59,8 @@ export function loadConfig(env: NodeJS.ProcessEnv): Config {
   let meet:Config['meet'];
   if(rpcUrl&&registryAddress){
     try{const url=new URL(rpcUrl);if(url.username||url.password||url.hash||!(url.protocol==='https:'||(url.protocol==='http:'&&['localhost','127.0.0.1','[::1]'].includes(url.hostname))))throw Error();}catch{throw new Error('Invalid Meet RPC URL');}
-    if(!/^0x[0-9a-fA-F]{40}$/.test(registryAddress)||/^0x0{40}$/i.test(registryAddress)||walletChainId!==10143)throw new Error('Invalid Meet registry or chain');
-    meet={rpcUrl,registryAddress:registryAddress as `0x${string}`,chainId:10143};
+    if(!/^0x[0-9a-fA-F]{40}$/.test(registryAddress)||/^0x0{40}$/i.test(registryAddress)||![143,10143].includes(walletChainId))throw new Error('Invalid Meet registry or chain');
+    meet={rpcUrl,registryAddress:registryAddress as `0x${string}`,chainId:walletChainId as 143 | 10143};
   }
   const collectionRpc = env.EVENT_COLLECTION_RPC_URL?.trim();
   const collectionAddress = env.EVENT_COLLECTION_ADDRESS?.trim();
@@ -71,13 +71,13 @@ export function loadConfig(env: NodeJS.ProcessEnv): Config {
     try {
       const url = new URL(collectionRpc);
       if (url.username || url.password || url.hash || !(url.protocol === 'https:' || (url.protocol === 'http:' && ['localhost','127.0.0.1','[::1]'].includes(url.hostname)))) throw Error();
-      if (!/^0x[0-9a-fA-F]{40}$/.test(collectionAddress) || /^0x0{40}$/i.test(collectionAddress) || walletChainId !== 10143) throw Error();
+      if (!/^0x[0-9a-fA-F]{40}$/.test(collectionAddress) || /^0x0{40}$/i.test(collectionAddress) || ![143,10143].includes(walletChainId)) throw Error();
       if (issuerPrivateKey) {
         if (!/^0x[0-9a-fA-F]{64}$/.test(issuerPrivateKey)) throw Error();
         privateKeyToAccount(issuerPrivateKey as `0x${string}`);
       }
     } catch { throw new Error('Invalid Event collection configuration'); }
-    collection = { rpcUrl: collectionRpc, contractAddress: collectionAddress as `0x${string}`, chainId: 10143, ...(issuerPrivateKey ? { issuerPrivateKey: issuerPrivateKey as `0x${string}` } : {}) };
+    collection = { rpcUrl: collectionRpc, contractAddress: collectionAddress as `0x${string}`, chainId: walletChainId as 143 | 10143, ...(issuerPrivateKey ? { issuerPrivateKey: issuerPrivateKey as `0x${string}` } : {}) };
   }
   return { port, host: env.HOST ?? '127.0.0.1', databaseUrl: databaseUrl!, origins, logLevel: logLevel as Config['logLevel'], privy, walletDomain, walletChainId, storage,meet,collection };
 }

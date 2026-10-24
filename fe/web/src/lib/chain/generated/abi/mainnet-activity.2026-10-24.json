@@ -1,0 +1,49 @@
+{
+  "chainId": 143,
+  "network": "Monad mainnet",
+  "sender": "0x1B6A8259fB8aB197ee27F45788f14D77B35301f9",
+  "purpose": "User-requested onchain activity: state-neutral ERC-165 interface checks",
+  "method": "supportsInterface(bytes4)",
+  "interfaceId": "0x01ffc9a7",
+  "value": "0",
+  "transactions": {
+    "MeetRegistry": {
+      "hash": "0xcafa49d8c3741c5be344701270c07cf20dd1a31747d7b37bd81dda85307cb887",
+      "to": "0x6fcdc6f98ab1ead21ae44f1e57f1ffeb5d3a49ff",
+      "method": "supportsInterface(0x01ffc9a7)",
+      "explorer": "https://monadscan.com/tx/0xcafa49d8c3741c5be344701270c07cf20dd1a31747d7b37bd81dda85307cb887",
+      "gasLimit": "24024",
+      "status": "success",
+      "blockNumber": "116145117",
+      "blockHash": "0xb17b22e0914a4803f399767b613d44eaf7f4b8197ce22cb73db923cbace3a016",
+      "timestamp": "2026-10-24T09:15:38.000Z",
+      "gasUsed": "24024",
+      "effectiveGasPrice": "102000000000",
+      "feeMon": "0.002450448",
+      "independentRpcVerified": true
+    },
+    "EventCollection": {
+      "hash": "0x702a5b68ca47f5e9cffffbf8847deb047520886e43f903c0bc10c3c55517fa91",
+      "to": "0x3d368ee46756102b0e0567f846f5ad9fcdff8a01",
+      "method": "supportsInterface(0x01ffc9a7)",
+      "explorer": "https://monadscan.com/tx/0x702a5b68ca47f5e9cffffbf8847deb047520886e43f903c0bc10c3c55517fa91",
+      "gasLimit": "24310",
+      "status": "success",
+      "blockNumber": "116145123",
+      "blockHash": "0xbb564d47c6ff4fdd60cc9fb4e4379252129c8071033a0fd9c3707d0d572e505f",
+      "timestamp": "2026-10-24T09:15:39.000Z",
+      "gasUsed": "24310",
+      "effectiveGasPrice": "102000000000",
+      "feeMon": "0.00247962",
+      "independentRpcVerified": true
+    }
+  },
+  "limitations": [
+    "Paid state-neutral contract calls only; no Meet was recorded or collectible minted; application end-to-end flow not tested."
+  ],
+  "verifiedAt": "2026-10-24T09:15:40.756Z",
+  "verificationRpc": [
+    "https://rpc.monad.xyz",
+    "https://rpc-mainnet.monadinfra.com"
+  ]
+}

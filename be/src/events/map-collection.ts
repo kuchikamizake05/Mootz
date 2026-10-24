@@ -6,7 +6,7 @@ const abi = parseAbi([
   'event CollectionCreated(uint256 indexed collectionId, bytes32 indexed eventId, uint256 cap, string metadataURI)',
   'function collections(uint256) view returns (bytes32 eventId, uint256 cap, string metadataURI)',
 ]);
-type Config = { rpcUrl: string; contractAddress: Address; chainId: 10143 };
+type Config = { rpcUrl: string; contractAddress: Address; chainId: 143 | 10143 };
 type Client = Pick<PublicClient, 'getChainId' | 'getTransactionReceipt' | 'getBlock' | 'readContract'>;
 type Input = { eventId: string; collectionId: string; transactionHash: Hex; displayName: string; artworkUrl: string; claimStartsAt: string; claimEndsAt: string };
 
@@ -29,7 +29,7 @@ function parseInput(raw: unknown): Input {
 export async function mapCollection(pool: Pool, raw: unknown, config: Config, client?: Client): Promise<void> {
   const input = parseInput(raw);
   const rpc = client ?? createPublicClient({ transport: http(config.rpcUrl, { timeout: 5000, retryCount: 1 }) });
-  if (config.chainId !== 10143 || await rpc.getChainId() !== config.chainId) throw Error('Wrong chain');
+  if (![143,10143].includes(config.chainId) || await rpc.getChainId() !== config.chainId) throw Error('Wrong chain');
   const receipt = await rpc.getTransactionReceipt({ hash: input.transactionHash });
   if (receipt.status !== 'success' || receipt.transactionHash.toLowerCase() !== input.transactionHash) throw Error('Creation transaction did not succeed');
   const [finalized, canonical] = await Promise.all([

@@ -8,7 +8,7 @@ x-api-environment: &api-environment
   PRIVY_APP_ID: ${PRIVY_APP_ID:?Set public Privy app ID}
   PRIVY_VERIFICATION_KEY: ${PRIVY_VERIFICATION_KEY:?Set public verification key}
   WALLET_PROOF_DOMAIN: ${API_DOMAIN:?Set API hostname without scheme}
-  WALLET_CHAIN_ID: 10143
+  WALLET_CHAIN_ID: ${WALLET_CHAIN_ID:-143}
   SUPABASE_URL: ${SUPABASE_URL:?Set Supabase HTTPS origin}
   SUPABASE_SECRET_KEY: ${SUPABASE_SECRET_KEY:?Set private server storage key}
   SUPABASE_STORAGE_BUCKET: ${SUPABASE_STORAGE_BUCKET:-mootz-private-media}

@@ -4,10 +4,11 @@ import { createRegistryAccess } from '../src/chain/registry.ts';
 import { hashOffer, meetDomain } from '../src/protocol/index.ts';
 const registry = '0x1111111111111111111111111111111111111111' as Address;
 const wallet = '0x2222222222222222222222222222222222222222' as Address;
-const config = { rpcUrl: 'https://rpc.invalid/private', registryAddress: registry, chainId: 10143 as const };
+describe.each([143, 10143] as const)('Monad chain %i', (chainId) => {
+const config = { rpcUrl: 'https://rpc.invalid/private', registryAddress: registry, chainId: chainId };
 function client() {
   return {
-    getChainId: vi.fn(async () => 10143),
+    getChainId: vi.fn(async (): Promise<number> => chainId),
     getCode: vi.fn(async (): Promise<string | undefined> => '0x6000'),
     readContract: vi.fn(async ({ functionName, args }: { functionName: string; args?: unknown[] }): Promise<unknown> => {
       if (functionName === 'QR_LIFETIME') return 60n;
@@ -20,7 +21,7 @@ const cast = (c: ReturnType<typeof client>) => c as unknown as Pick<PublicClient
 describe('readonly registry access', () => {
   it('checks deployment and signing domain then accepts empty EOA bytecode', async () => {
     const c = client(); const access = await createRegistryAccess(config, cast(c));
-    expect(access.domain).toEqual({ chainId: 10143, verifyingContract: registry });
+    expect(access.domain).toEqual({ chainId: chainId, verifyingContract: registry });
     c.getCode.mockResolvedValue(undefined);
     await expect(access.assertWallet(wallet)).resolves.toBeUndefined();
     c.getCode.mockResolvedValue('0x');
@@ -45,4 +46,6 @@ describe('readonly registry access', () => {
     const c = client(); const access = await createRegistryAccess(config, cast(c)); c.getCode.mockRejectedValue(new Error(config.rpcUrl));
     await expect(access.assertWallet(wallet)).rejects.toMatchObject({ message: 'Meet registry unavailable', statusCode: 503 });
   });
+});
+
 });

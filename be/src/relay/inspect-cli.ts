@@ -10,10 +10,12 @@ async function main() {
   if (!rpcUrl || !privateKey || !databaseUrl || !/^0x[0-9a-fA-F]{64}$/.test(privateKey)) throw new Error('Required private configuration is unavailable');
   const parsedRpc = new URL(rpcUrl);
   if (parsedRpc.username || parsedRpc.password || parsedRpc.hash || !(parsedRpc.protocol === 'https:' || (parsedRpc.protocol === 'http:' && ['localhost', '127.0.0.1', '[::1]'].includes(parsedRpc.hostname)))) throw new Error('Invalid RPC configuration');
+  const chainId = Number(process.env.WALLET_CHAIN_ID ?? 10143);
+  if (![143,10143].includes(chainId)) throw new Error('Unsupported Monad chain');
   const account = privateKeyToAccount(privateKey as Hex);
-  const chain = defineChain({ id: 10143, name: 'Configured Mootz testnet', nativeCurrency: { name: 'MON', symbol: 'MON', decimals: 18 }, rpcUrls: { default: { http: [rpcUrl] } } });
+  const chain = defineChain({ id: chainId, name: 'Configured Mootz Monad', nativeCurrency: { name: 'MON', symbol: 'MON', decimals: 18 }, rpcUrls: { default: { http: [rpcUrl] } } });
   const client = createPublicClient({ chain, transport: http(rpcUrl, { timeout: 5000, retryCount: 1 }) });
-  if (await client.getChainId() !== 10143) throw new Error('Configured RPC chain is unavailable');
+  if (await client.getChainId() !== chainId) throw new Error('Configured RPC chain is unavailable');
   const database = createDatabase(databaseUrl);
   try {
     const result = await inspectRelayState(database.pool, {
@@ -31,7 +33,7 @@ async function main() {
         try { return (await client.getTransactionReceipt({ hash })).status === 'success' ? 'success' : 'reverted'; }
         catch (error) { return error instanceof Error && error.name === 'TransactionReceiptNotFoundError' ? 'pending' : 'unavailable'; }
       },
-    }, account.address as Address);
+    }, account.address as Address, { chainId: chainId as 143 | 10143 });
     process.stdout.write(`${JSON.stringify(result)}\n`);
   } finally { await database.close(); }
 }

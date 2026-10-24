@@ -31,6 +31,9 @@ additive schema migration and existing event data in place.
 1. Sign in as an approved organizer. Profile shows **Manage events**.
 2. Open `/organizer/events` and choose **Create event**.
 3. Enter title, optional description/venue and start/end in the device timezone.
+   Select the public venue pin on the map, or enter latitude/longitude. The pin
+   appears on Map under All/Events; tapping it opens event details. Opening an
+   event centers its map on the venue. Friends keeps its existing content filter.
    The client sends UTC. The backend requires end > start and, for new events,
    end > server time. Currently-running events are allowed.
 4. Select **Manage check-ins** on an owned event. Ask the attendee to open
@@ -57,7 +60,14 @@ See `be/specs/events.openapi.json`. Regenerate consumer types with
 | `POST /v1/events/:id/check-ins` | Approved organizer who owns the event; existing participant account UUID |
 
 Create requires `clientRequestId` (UUID), `title`, `startsAt`, `endsAt`; optional
-`description` and nullable `locationLabel`. Timestamps require timezone offsets.
+`description`, nullable `locationLabel`, and nullable `location` with numeric
+`latitude` (-90 to 90) and `longitude` (-180 to 180). The web form requires a
+venue pin; older clients may omit it and existing events return `location: null`.
+Coordinates are organizer-selected public venue data, never participant or Meet
+verification coordinates. Changing coordinates while reusing a request key is a
+conflict. Apply `021_event_location.sql` before deploying the API, then the web
+client. No existing event is assigned an inferred location.
+Timestamps require timezone offsets.
 It returns 201 on creation, 200 for the same normalized request, and 409 for
 conflicting reuse of that organizer's key. Organizer identity is never accepted
 in the body. Mutations lock the grant row so revocation cannot race creation

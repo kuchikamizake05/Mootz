@@ -24,7 +24,7 @@ function hydrate(row:Row):RelayJob {
 }
 async function valid(job:RelayJob):Promise<boolean>{
  try {
-  if(job.offer.action!==RECORD_MEET || job.acceptance.action!==RECORD_MEET || job.chainId!==10143 || job.posterWallet.toLowerCase()===job.scannerWallet.toLowerCase() || job.offer.meetId!==uuidBytes32(job.id) || job.offer.expiresAt-job.offer.issuedAt!==60n || job.acceptedAt<job.offer.issuedAt || job.acceptedAt>=job.offer.expiresAt)return false;
+  if(job.offer.action!==RECORD_MEET || job.acceptance.action!==RECORD_MEET || ![143,10143].includes(job.chainId) || job.posterWallet.toLowerCase()===job.scannerWallet.toLowerCase() || job.offer.meetId!==uuidBytes32(job.id) || job.offer.expiresAt-job.offer.issuedAt!==60n || job.acceptedAt<job.offer.issuedAt || job.acceptedAt>=job.offer.expiresAt)return false;
   const domain=meetDomain(job.chainId,job.verifyingContract);
   return hashOffer(domain,job.offer)===job.acceptance.offerDigest && (await recoverOffer(domain,job.offer,job.posterSignature)).toLowerCase()===job.posterWallet.toLowerCase() && (await recoverAccept(domain,job.acceptance,job.scannerSignature)).toLowerCase()===job.scannerWallet.toLowerCase() && job.offer.poster.toLowerCase()===job.posterWallet.toLowerCase() && job.acceptance.scanner.toLowerCase()===job.scannerWallet.toLowerCase();
  }catch{return false;}
@@ -37,7 +37,7 @@ async function complete(client:PoolClient,job:Pick<RelayJob,'id'|'transactionHas
   await client.query('COMMIT');
  }catch(error){await client.query('ROLLBACK');throw error;}
 }
-export async function processMeetOutbox(pool:Pool,transport:MeetTransport,options:{batchSize?:number;now?:()=>Date;leaseSeconds?:number}={}){
+export async function processMeetOutbox(pool:Pool,transport:MeetTransport,options:{batchSize?:number;now?:()=>Date;leaseSeconds?:number;chainId?:143|10143}={}){
  const summary={locked:false,processed:0,recorded:0,notSaved:0,retried:0};
  const batch=options.batchSize??20,lease=options.leaseSeconds??60;
  if(!Number.isInteger(batch)||batch<1||batch>100||!Number.isInteger(lease)||lease<1||lease>600)throw new Error('Invalid worker bounds');
@@ -46,10 +46,10 @@ export async function processMeetOutbox(pool:Pool,transport:MeetTransport,option
   locked=(await client.query<{locked:boolean}>('SELECT pg_try_advisory_lock(729610143) AS locked')).rows[0]!.locked;
   if(!locked)return summary;summary.locked=true;
   const rows=await client.query<Row>(`WITH picked AS (
-   SELECT o.meet_id FROM meet_outbox o WHERE o.completed_at IS NULL AND o.next_attempt_at<=now() AND (o.leased_until IS NULL OR o.leased_until<now()) AND (o.raw_transaction IS NOT NULL OR (NOT EXISTS (SELECT 1 FROM meet_outbox active WHERE active.completed_at IS NULL AND active.raw_transaction IS NOT NULL) AND NOT EXISTS (SELECT 1 FROM claim_outbox active WHERE active.completed_at IS NULL AND active.raw_transaction IS NOT NULL))) ORDER BY (o.raw_transaction IS NOT NULL) DESC,o.next_attempt_at,o.meet_id LIMIT $1 FOR UPDATE SKIP LOCKED
+   SELECT o.meet_id FROM meet_outbox o JOIN meets target ON target.id=o.meet_id WHERE target.chain_id=$3 AND o.completed_at IS NULL AND o.next_attempt_at<=now() AND (o.leased_until IS NULL OR o.leased_until<now()) AND (o.raw_transaction IS NOT NULL OR (NOT EXISTS (SELECT 1 FROM meet_outbox active JOIN meets active_meet ON active_meet.id=active.meet_id WHERE active_meet.chain_id=$3 AND active.completed_at IS NULL AND active.raw_transaction IS NOT NULL) AND NOT EXISTS (SELECT 1 FROM claim_outbox active WHERE active.chain_id=$3 AND active.completed_at IS NULL AND active.raw_transaction IS NOT NULL))) ORDER BY (o.raw_transaction IS NOT NULL) DESC,o.next_attempt_at,o.meet_id LIMIT $1 FOR UPDATE SKIP LOCKED
   ), leased AS (
    UPDATE meet_outbox o SET leased_until=now()+make_interval(secs=>$2),attempts=attempts+1 FROM picked WHERE o.meet_id=picked.meet_id RETURNING o.*
-  ) SELECT m.*,leased.attempts,leased.raw_transaction,leased.transaction_hash FROM leased JOIN meets m ON m.id=leased.meet_id`,[batch,lease]);
+  ) SELECT m.*,leased.attempts,leased.raw_transaction,leased.transaction_hash FROM leased JOIN meets m ON m.id=leased.meet_id`,[batch,lease,options.chainId??10143]);
   leasedIds.push(...rows.rows.map(row=>row.id));
   for(const row of rows.rows){
    summary.processed++;let job:RelayJob;

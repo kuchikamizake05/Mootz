@@ -5,7 +5,7 @@ import { claimTypes, collectionDomain, hashClaim, type Claim } from '../protocol
 import type { CollectionGateway } from '../collections/types.js';
 
 type CollectionClient = Pick<PublicClient, 'getChainId' | 'getBlockNumber' | 'getCode' | 'readContract'>;
-type CollectionConfig = { rpcUrl: string; contractAddress: Address; chainId: 10143; issuerPrivateKey?: Hex };
+type CollectionConfig = { rpcUrl: string; contractAddress: Address; chainId: 143 | 10143; issuerPrivateKey?: Hex };
 const issuerRole = keccak256(stringToHex('ISSUER_ROLE'));
 const nonzeroBytes32 = (value: unknown): value is Hex => typeof value === 'string' && /^0x[0-9a-f]{64}$/i.test(value) && !/^0x0{64}$/i.test(value);
 function unavailable() {
@@ -16,11 +16,11 @@ export async function createCollectionGateway(config: CollectionConfig, client?:
   try {
     const domain = collectionDomain(config.chainId, config.contractAddress);
     const abi = JSON.parse(await readFile(new URL('../../abi/EventCollection.json', import.meta.url), 'utf8')) as Abi;
-    const chain = defineChain({ id: 10143, name: 'Monad Testnet', nativeCurrency: { name: 'Monad', symbol: 'MON', decimals: 18 }, rpcUrls: { default: { http: [config.rpcUrl] } } });
+    const chain = defineChain({ id: config.chainId, name: config.chainId === 143 ? 'Monad' : 'Monad Testnet', nativeCurrency: { name: 'Monad', symbol: 'MON', decimals: 18 }, rpcUrls: { default: { http: [config.rpcUrl] } } });
     const rpc = client ?? createPublicClient({ chain, transport: http(config.rpcUrl, { timeout: 5000, retryCount: 1 }) });
     const account = config.issuerPrivateKey === undefined ? null : privateKeyToAccount(config.issuerPrivateKey);
     async function snapshot() {
-      if (config.chainId !== 10143 || await rpc.getChainId() !== 10143) throw unavailable();
+      if (![143,10143].includes(config.chainId) || await rpc.getChainId() !== config.chainId) throw unavailable();
       const blockNumber = await rpc.getBlockNumber();
       const code = await rpc.getCode({ address: config.contractAddress, blockNumber });
       if (!code || code === '0x') throw unavailable();

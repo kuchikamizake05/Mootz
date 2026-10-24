@@ -55,3 +55,7 @@ pembayaran dan dashboard penerbit lengkap tetap di luar scope.
 ## Belum diputuskan atau diverifikasi
 
 Jenis wallet, retensi lokasi verifikasi, finality, metadata hosting, admin/upgrade/pause, deployment provider, retensi/hapus akun, telemetry, lisensi kode, dan moderasi pengguna nyata. Tidak ada partnership, audit, benchmark, validasi retensi, atau manfaat acara nyata yang diklaim.
+
+## Mainnet — 24 Oktober 2026
+
+Pengguna meminta migrasi aplikasi ke Monad mainnet (143). Deployment contract yang sudah ada dipakai kembali; konfigurasi backend/frontend dan worker mengikuti chain terpilih. Data/signature testnet dipertahankan. Deployment Vercel ditangani teman pengguna. Detail dan batas verifikasi: [migrasi mainnet](mainnet-migration.md).

@@ -13,7 +13,7 @@ async function main(){
  if(process.env.RELAYER_ENABLED!=='true')throw new Error('Relayer disabled');
  const config=loadConfig(process.env);const privateKey=process.env.RELAYER_PRIVATE_KEY;
  if(!config.meet||!privateKey||!/^0x[0-9a-fA-F]{64}$/.test(privateKey))throw new Error('Relayer configuration required');
- const chain=defineChain({id:10143,name:'Configured Mootz testnet',nativeCurrency:{name:'MON',symbol:'MON',decimals:18},rpcUrls:{default:{http:[config.meet.rpcUrl]}}});
+ const chain=defineChain({id:config.meet.chainId,name:'Configured Mootz Monad',nativeCurrency:{name:'MON',symbol:'MON',decimals:18},rpcUrls:{default:{http:[config.meet.rpcUrl]}}});
  const transport=http(config.meet.rpcUrl,{timeout:5000,retryCount:1});
  const publicClient=createPublicClient({chain,transport});
  await createRegistryAccess(config.meet,publicClient);
@@ -24,7 +24,7 @@ async function main(){
  const database=createDatabase(config.databaseUrl);
  try{
   await purgeExpiredOfferLocations(database.pool);
-  const result=await processMeetOutbox(database.pool,createViemMeetTransport({publicClient,walletClient,account,abi,chainId:10143,verifyingContract:config.meet.registryAddress,feePolicy}));
+  const result=await processMeetOutbox(database.pool,createViemMeetTransport({publicClient,walletClient,account,abi,chainId:config.meet.chainId,verifyingContract:config.meet.registryAddress,feePolicy}),{chainId:config.meet.chainId});
   process.stdout.write(JSON.stringify(result)+'\n');
  }finally{await database.close();}
 }

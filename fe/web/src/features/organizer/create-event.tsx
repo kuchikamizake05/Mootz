@@ -7,6 +7,7 @@ import { PageShell } from "@/features/profile/page-shell";
 import { ApiError } from "@/lib/api/client";
 import { OrganizerAccess } from "./access";
 import { useCreateEvent, type CreateEvent } from "./event-queries";
+import { EventLocationPicker } from "./event-location-picker";
 import { eventInput } from "./event-input";
 
 export const eventFieldClass = "min-h-12 w-full rounded-2xl border border-mootz-hairline bg-mootz-surface px-3 py-2 text-base text-mootz-ink disabled:bg-mootz-canvas";
@@ -23,7 +24,7 @@ function CreateEventForm() {
     if (!input) {
       const form = new FormData(event.currentTarget);
       try {
-        input = eventInput({ title: String(form.get("title") ?? ""), description: String(form.get("description") ?? ""), startsAt: String(form.get("startsAt") ?? ""), endsAt: String(form.get("endsAt") ?? ""), locationLabel: String(form.get("locationLabel") ?? "") }, requestId, Date.now());
+        input = eventInput({ title: String(form.get("title") ?? ""), description: String(form.get("description") ?? ""), startsAt: String(form.get("startsAt") ?? ""), endsAt: String(form.get("endsAt") ?? ""), locationLabel: String(form.get("locationLabel") ?? ""), latitude: String(form.get("latitude") ?? ""), longitude: String(form.get("longitude") ?? "") }, requestId, Date.now());
       } catch (error) { setError(error instanceof Error ? error.message : "Check the event details."); return; }
     }
     setError(""); setSubmitted(input);
@@ -43,6 +44,7 @@ function CreateEventForm() {
         <label className="flex flex-col gap-1 text-sm font-bold">Event name<input className={eventFieldClass} name="title" required maxLength={200} autoComplete="off" /></label>
         <label className="flex flex-col gap-1 text-sm font-bold">Description<textarea className={eventFieldClass} name="description" maxLength={10000} rows={4} /></label>
         <label className="flex flex-col gap-1 text-sm font-bold">Venue<input className={eventFieldClass} name="locationLabel" maxLength={200} placeholder="Venue name (optional)" /></label>
+        <EventLocationPicker disabled={create.isPending || submitted !== null} />
         <label className="flex flex-col gap-1 text-sm font-bold">Starts<input className={eventFieldClass} name="startsAt" type="datetime-local" required aria-describedby="event-time-help" /></label>
         <label className="flex flex-col gap-1 text-sm font-bold">Ends<input className={eventFieldClass} name="endsAt" type="datetime-local" required aria-describedby="event-time-help" /></label>
       </fieldset>

@@ -3,7 +3,7 @@
 import { useState, type ReactNode } from 'react';
 import { PrivyProvider } from '@privy-io/react-auth';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { monadTestnet } from 'viem/chains';
+import { mootzChain } from '@/lib/chain/network';
 import { ApiError } from '@/lib/api/client';
 import { env } from '@/lib/env';
 
@@ -31,8 +31,8 @@ export function Providers({ children }: { children: ReactNode }) {
       config={{
         loginMethods: ['email', 'google', 'wallet'],
         appearance: { accentColor: '#6D28D9', logo: '/brand/mootz-logo-v1.svg', landingHeader: 'Sign in to Mootz' },
-        defaultChain: monadTestnet,
-        supportedChains: [monadTestnet],
+        defaultChain: mootzChain,
+        supportedChains: [mootzChain],
         // Wallet creation stays explicit; binding is a separate signed challenge (docs/privy-setup.md).
         embeddedWallets: { ethereum: { createOnLogin: 'off' } },
       }}

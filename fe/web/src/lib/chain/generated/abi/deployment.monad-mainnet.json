@@ -1,0 +1,104 @@
+{
+  "status": "DEPLOYED_VERIFIED",
+  "network": "Monad mainnet",
+  "chainId": 143,
+  "protocolStatus": "candidate-int-01-not-approved",
+  "deployer": "0x1B6A8259fB8aB197ee27F45788f14D77B35301f9",
+  "roles": {
+    "admin": "0x1B6A8259fB8aB197ee27F45788f14D77B35301f9",
+    "relayer": "0x1B6A8259fB8aB197ee27F45788f14D77B35301f9",
+    "issuer": "0x1B6A8259fB8aB197ee27F45788f14D77B35301f9"
+  },
+  "rpcVerifiedAt": "2026-10-24T08:36:18.472Z",
+  "contracts": {
+    "MeetRegistry": {
+      "deploymentTx": "0x33ac331a92d1bbaf0732a1f01e0cee4958314a62f1673384fd79468fa103652a",
+      "gasLimit": "1611300",
+      "maxFeePerGas": "122000000000",
+      "constructorArgs": "0000000000000000000000001b6a8259fb8ab197ee27f45788f14d77b35301f90000000000000000000000001b6a8259fb8ab197ee27f45788f14d77b35301f9",
+      "address": "0x6fcdc6f98ab1ead21ae44f1e57f1ffeb5d3a49ff",
+      "blockNumber": "116137305",
+      "bytecodeHash": "0x8cb8fa234a22eee820d906f7121bb84b02085344aa76c0a13d30c6cb281df5ef",
+      "gasUsed": "1611300",
+      "effectiveGasPrice": "102000000000",
+      "verification": {
+        "api": "https://agents.devnads.com/v1/verify",
+        "checkedAt": "2026-10-24T08:37:03.002Z",
+        "httpStatus": 200,
+        "result": {
+          "success": true,
+          "verified": 2,
+          "total": 2,
+          "results": {
+            "monadvision": {
+              "status": "success",
+              "message": "Verified with partial match",
+              "url": "https://monadvision.com/address/0x6fcdc6f98ab1ead21ae44f1e57f1ffeb5d3a49ff"
+            },
+            "monadscan": {
+              "status": "success",
+              "message": "Pass - Verified",
+              "guid": "lfxjqrwtiqlcqc8puudbttvssbtjqzafnpnsb768g5akctt3z5",
+              "url": "https://monadscan.com/address/0x6fcdc6f98ab1ead21ae44f1e57f1ffeb5d3a49ff"
+            }
+          }
+        }
+      }
+    },
+    "EventCollection": {
+      "deploymentTx": "0xcca01e63c96c1a3c8fbe55efde784ba430b16154fecc1150a064c75eb84541dd",
+      "gasLimit": "2387720",
+      "maxFeePerGas": "122000000000",
+      "constructorArgs": "0000000000000000000000001b6a8259fb8ab197ee27f45788f14d77b35301f90000000000000000000000001b6a8259fb8ab197ee27f45788f14d77b35301f9",
+      "address": "0x3d368ee46756102b0e0567f846f5ad9fcdff8a01",
+      "blockNumber": "116137308",
+      "bytecodeHash": "0x1e880f93de637e76552098ed51cfe744d3e2471b405fbd12d30caa23a7ae1969",
+      "gasUsed": "2387720",
+      "effectiveGasPrice": "102000000000",
+      "verification": {
+        "api": "https://agents.devnads.com/v1/verify",
+        "checkedAt": "2026-10-24T08:37:09.329Z",
+        "httpStatus": 200,
+        "result": {
+          "success": true,
+          "verified": 2,
+          "total": 2,
+          "results": {
+            "monadvision": {
+              "status": "success",
+              "message": "Verified with partial match",
+              "url": "https://monadvision.com/address/0x3d368ee46756102b0e0567f846f5ad9fcdff8a01"
+            },
+            "monadscan": {
+              "status": "success",
+              "message": "Pass - Verified",
+              "guid": "gl1d7ikxifyl4jpvq2qfdmpvvptaey8qjjjpfkgw8fpq9u2qxh",
+              "url": "https://monadscan.com/address/0x3d368ee46756102b0e0567f846f5ad9fcdff8a01"
+            }
+          }
+        }
+      }
+    }
+  },
+  "explorerVerification": {
+    "monadscan": "VERIFIED",
+    "monadvision": "PARTIAL_MATCH"
+  },
+  "readbackVerifiedAt": "2026-10-24T08:36:21.158Z",
+  "commit": "02cf5e621a8439f35570675ac08837bd4fedc90f",
+  "independentReadback": {
+    "rpc": "https://rpc-mainnet.monadinfra.com",
+    "checkedAt": "2026-10-24T08:37:22.371Z",
+    "status": "PASS"
+  },
+  "totalDeploymentCostMon": "0.40790004",
+  "smokeReceipts": {
+    "meet": null,
+    "claim": null
+  },
+  "limitations": [
+    "Admin, relayer and issuer share the mainnet deployer wallet",
+    "INT-01 consumer approval remains pending",
+    "Public two-wallet Meet/claim end-to-end smoke has not been run"
+  ]
+}

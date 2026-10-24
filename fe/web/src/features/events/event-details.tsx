@@ -39,14 +39,14 @@ export function EventDetails({ id }: { id: string }) {
 
   return (
     <AppShell>
-      <div className="absolute inset-0 lg:right-[416px]"><MapView /></div>
+      <div className="absolute inset-0 lg:right-[416px]"><MapView event={e} /></div>
       <section aria-label="Event details" className="absolute inset-x-0 bottom-0 z-40 flex max-h-[calc(100dvh-190px)] flex-col gap-2 overflow-y-auto rounded-t-[32px] bg-white px-4 pb-5 pt-3 shadow-float lg:inset-x-auto lg:bottom-4 lg:right-4 lg:top-[104px] lg:w-[384px] lg:max-h-none lg:rounded-[32px]">
       <header className="flex min-h-11 items-center gap-2"><BackLink href="/map"> </BackLink><p className="text-[13px] font-extrabold uppercase tracking-wide text-mootz-muted">Event</p></header>
       <h1 className="font-display text-[32px] font-extrabold leading-none text-mootz-ink">{e.title}</h1>
       <div className="flex flex-col gap-3 py-2 font-semibold text-mootz-muted">
         <InfoRow icon={CalendarDays} label="When">{formatWindow(e.startsAt, e.endsAt)}</InfoRow>
         {phase !== "upcoming" && <StatusChip tone={phase === "live" ? "success" : "muted"}>{phase === "live" ? "Happening now" : "Ended"}</StatusChip>}
-        {e.locationLabel && <InfoRow icon={MapPin} label="Where">{e.locationLabel} · Venue label only</InfoRow>}
+        {e.locationLabel && <InfoRow icon={MapPin} label="Where">{e.locationLabel}{!e.location && " · Venue label only"}</InfoRow>}
       </div>
       {e.description && <p className="whitespace-pre-line text-[15px] text-mootz-ink">{e.description}</p>}
 

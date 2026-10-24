@@ -1,13 +1,7 @@
+import { mootzChain } from "@/lib/chain/network";
 import { ApiError } from "@/lib/api/client";
 
-export type ApiEvent = {
-  id: string;
-  title: string;
-  description: string;
-  startsAt: string;
-  endsAt: string;
-  locationLabel: string | null;
-};
+export type ApiEvent = import("@/lib/api/generated/events").components["schemas"]["Event"];
 
 export type EventPage = { items: ApiEvent[]; nextCursor: string | null };
 export type CheckIn = { checkedIn: boolean; checkedInAt: string | null };
@@ -72,8 +66,8 @@ export type EquippedCollection = {
 };
 
 export const DEMO_EVENT_ID = "00000000-0000-4000-8000-0000000000e1";
-export const EXPLORER_TX = "https://testnet.monadexplorer.com/tx/";
-export const NETWORK_NAME = "Monad Testnet";
+export const EXPLORER_TX = `${mootzChain.blockExplorers.default.url}/tx/`;
+export const NETWORK_NAME = mootzChain.name;
 export const ISSUER_NOTE = "Issued by the organizer; not independent proof of attendance or uniqueness.";
 
 export const isTerminal = (job: ClaimJob | undefined) => job?.status === "included" || job?.status === "failed" || job?.status === "already_owned";
@@ -88,7 +82,7 @@ export function txUrl(job: ClaimJob | undefined): string | null {
   return job.transactionHash && /^0x[0-9a-fA-F]{64}$/.test(job.transactionHash) ? EXPLORER_TX + job.transactionHash : null;
 }
 
-export const networkLabel = (chainId: number) => (chainId === 10143 ? NETWORK_NAME : `Chain ${chainId}`);
+export const networkLabel = (chainId: number) => (chainId === 143 ? "Monad" : chainId === 10143 ? "Monad Testnet" : `Chain ${chainId}`);
 
 const tz = "Asia/Jakarta";
 const dateFmt = new Intl.DateTimeFormat("en-GB", { timeZone: tz, day: "numeric", month: "short", year: "numeric" });

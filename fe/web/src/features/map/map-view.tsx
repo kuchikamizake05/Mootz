@@ -6,12 +6,14 @@ import { useRouter } from "next/navigation";
 import { Map as MapLibreMap, setWorkerUrl } from "maplibre-gl";
 import { Layers, LoaderCircle, LocateFixed, LocateOff, Map as MapIcon, MapPinOff, Users, X } from "lucide-react";
 import { Button, ButtonLink, IconButton } from "@/components/ui/button";
-import { AvatarMomentMarker, MeetDotMarker, PhotoMomentMarker, YourLocationDot } from "@/components/ui/map-markers";
+import { AvatarMomentMarker, EventVenueMarker, MeetDotMarker, PhotoMomentMarker, YourLocationDot } from "@/components/ui/map-markers";
 import { MomentSheet, Sheet } from "@/components/ui/moment";
 import { StateMessage } from "@/components/ui/status";
 import { useMapDots } from "@/features/dots/queries";
 import { useMoment, useMoments } from "@/features/moments/queries";
 import { canStartMeet, type MomentCard } from "@/features/moments/model";
+import { useEvents } from "@/features/events/queries";
+import type { ApiEvent } from "@/features/events/model";
 import { EventChip } from "@/features/events/event-chip";
 import { useViewState } from "@/features/shell/view-state";
 import { cn } from "@/lib/cn";
@@ -30,11 +32,13 @@ type Locate = { state: "idle" | "pending" } | { state: "error"; denied: boolean 
 
 const card = "pointer-events-auto rounded-3xl bg-mootz-surface p-4 shadow-float";
 
-export function MapView() {
+export function MapView({ event }: { event?: ApiEvent } = {}) {
   const router = useRouter();
   const { filter, momentId, href } = useViewState();
   const moments = useMoments("map", filter);
   const dots = useMapDots();
+  const events = useEvents();
+  const venues = (event ? [event] : filter === "friends" ? [] : events.data ?? []).filter(e => e.location);
   const selectedQuery = useMoment(momentId);
 
   const [map, setMap] = useState<MapLibreMap | null>(null);
@@ -121,6 +125,10 @@ export function MapView() {
     map.easeTo({ center: [selLng, selLat], offset: wide ? [-192, 0] : [0, -140], duration: 500 });
   }, [map, momentId, selLat, selLng]);
 
+  useEffect(() => {
+    if (map && event?.location) map.easeTo({ center: [event.location.longitude, event.location.latitude], zoom: 15, duration: 400 });
+  }, [map, event?.location]);
+
   const findMe = () => {
     if (locate.state === "pending") return;
     setLocate({ state: "pending" });
@@ -159,6 +167,11 @@ export function MapView() {
       <div ref={containerRef} className="size-full [&_.maplibregl-ctrl-top-left]:z-30 [&_.maplibregl-ctrl-top-left]:mt-[calc(92px+var(--friend-panel-height,48px))] [&_.maplibregl-ctrl-top-left_.maplibregl-ctrl]:ml-4" />
       <FriendLocationLayer map={map} />
 
+      {map && venues.map(e => (
+        <MapMarker key={e.id} map={map} latitude={e.location!.latitude} longitude={e.location!.longitude} zIndex={1}>
+          <EventVenueMarker name={e.title} place={e.locationLabel ?? "Event venue"} onClick={() => router.push(`/events/${e.id}`)} />
+        </MapMarker>
+      ))}
       {/* Dot areas sit under moment markers (zIndex 0); a Dot area is never anyone's live position. */}
       {map &&
         dots.map((d) => (
@@ -230,6 +243,7 @@ export function MapView() {
       )}
 
       <div className="pointer-events-none absolute inset-x-4 top-[132px] z-20 mx-auto flex max-w-sm flex-col gap-2">
+        {events.isError && filter !== "friends" && !event && <div className={card} role="alert"><p>Event venues couldn’t load.</p><Button variant="soft" onClick={() => void events.refetch()}>Retry events</Button></div>}
         {satelliteFailed && (
           <div className={card} role="alert">
             <StateMessage

@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { useConnectWallet, useCreateWallet, useWallets, type ConnectedWallet } from "@privy-io/react-auth";
 import { useQueryClient } from "@tanstack/react-query";
 import { createWalletClient, custom, type Address, type Hex, type TypedDataDefinition } from "viem";
-import { monadTestnet } from "viem/chains";
+import { mootzChain } from "@/lib/chain/network";
 import { jsonBody } from "@/lib/api/client";
 import { useApi, useProfile, type Profile } from "@/lib/api/use-api";
 import { canonicalSignature } from "@/features/meet/protocol";
@@ -19,8 +19,8 @@ export type MeetWalletStatus = "loading" | "none" | "disconnected" | "ready";
 
 async function walletClient(wallet: ConnectedWallet) {
   // Some wallets refuse typed data whose domain chain isn't the active chain.
-  await wallet.switchChain(monadTestnet.id).catch(() => {});
-  return createWalletClient({ account: wallet.address as Address, chain: monadTestnet, transport: custom(await wallet.getEthereumProvider()) });
+  await wallet.switchChain(mootzChain.id).catch(() => {});
+  return createWalletClient({ account: wallet.address as Address, chain: mootzChain, transport: custom(await wallet.getEthereumProvider()) });
 }
 
 export function useMeetWallet() {

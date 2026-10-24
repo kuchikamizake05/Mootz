@@ -89,3 +89,10 @@ describe('viem chain read adapter', () => {
     await expect(f.adapter.getReceipt(txHash)).rejects.not.toThrow('token-123');
   });
 });
+
+it('mainnet read adapter refuses a testnet RPC', async () => {
+ const f=fixture();const adapter=createViemChainReadAdapter(f.client as unknown as PublicClient,[contract],143);
+ await expect(adapter.getHead()).rejects.toThrow('Chain sync provider unavailable');
+ f.client.getChainId.mockResolvedValue(143);
+ await expect(adapter.getHead()).resolves.toBe(42n);
+});

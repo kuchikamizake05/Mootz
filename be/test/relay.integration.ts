@@ -93,3 +93,10 @@ it.each(['missing_hash','wrong_hash'] as const)('keeps a persisted transaction u
  const id=await fixture();await pool.query('UPDATE meet_outbox SET raw_transaction=$2,transaction_hash=$3 WHERE meet_id=$1',[id,raw,kind==='missing_hash'?null:`0x${'0'.repeat(64)}`]);
  const t=transport();t.receipt=vi.fn(async()=> 'reverted' as const);await processMeetOutbox(pool,t,{now:()=>now});expect((await state(id)).completed_at).toBeNull();expect((await state(id)).chain_status).toBe('pending');expect(t.receipt).not.toHaveBeenCalled();expect(t.readRecord).not.toHaveBeenCalled();
 });
+
+it('mainnet worker leaves existing testnet jobs untouched',async()=>{
+ const id=await fixture();const t=transport();
+ expect((await processMeetOutbox(pool,t,{chainId:143,now:()=>now})).processed).toBe(0);
+ expect(t.prepare).not.toHaveBeenCalled();
+ expect((await pool.query('SELECT attempts FROM meet_outbox WHERE meet_id=$1',[id])).rows[0]!.attempts).toBe(0);
+});

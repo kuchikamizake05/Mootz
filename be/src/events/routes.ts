@@ -1,6 +1,6 @@
 import type { FastifyInstance,FastifyRequest } from 'fastify';
 import type { Pool, PoolClient } from 'pg';
-interface EventRow {id:string;organizer_id:string;title:string;description:string;starts_at:Date;ends_at:Date;location_label:string|null}
+interface EventRow {id:string;organizer_id:string;title:string;description:string;starts_at:Date;ends_at:Date;location_label:string|null;latitude:number|null;longitude:number|null}
 const uuid={type:'string',format:'uuid'};
 const uuidPattern=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const fail=(statusCode:number):never=>{throw Object.assign(new Error('Event request rejected'),{statusCode});};
@@ -24,18 +24,20 @@ export function registerEventRoutes(app:FastifyInstance,options:{pool:Pool;verif
   const result=await pool.query<{id:string}>('SELECT id FROM accounts WHERE provider_subject=$1',[subject]);return result.rows[0]?.id??fail(403);
  }
  const params={type:'object',additionalProperties:false,required:['id'],properties:{id:uuid}};
- const present=(row:EventRow)=>({id:row.id,title:row.title,description:row.description,startsAt:row.starts_at.toISOString(),endsAt:row.ends_at.toISOString(),locationLabel:row.location_label});
+ const present=(row:EventRow)=>({id:row.id,title:row.title,description:row.description,startsAt:row.starts_at.toISOString(),endsAt:row.ends_at.toISOString(),locationLabel:row.location_label,location:row.latitude===null?null:{latitude:row.latitude,longitude:row.longitude}});
  app.get('/v1/me/organizer',async request=>{
   const actor=await account(request);
   return {enabled:!!(await pool.query('SELECT 1 FROM event_organizers WHERE account_id=$1',[actor])).rowCount};
  });
- type EventInput={clientRequestId:string;title:string;description?:string;startsAt:string;endsAt:string;locationLabel?:string|null};
+ type EventInput={clientRequestId:string;title:string;description?:string;startsAt:string;endsAt:string;locationLabel?:string|null;location?:{latitude:number;longitude:number}|null};
  app.post<{Body:EventInput}>('/v1/events',{schema:{body:{type:'object',additionalProperties:false,required:['clientRequestId','title','startsAt','endsAt'],properties:{
   clientRequestId:uuid,title:{type:'string',minLength:1,maxLength:200},description:{type:'string',maxLength:10000},
-  startsAt:{type:'string',format:'date-time',maxLength:40},endsAt:{type:'string',format:'date-time',maxLength:40},locationLabel:{anyOf:[{type:'string',maxLength:200},{type:'null'}]}
+  startsAt:{type:'string',format:'date-time',maxLength:40},endsAt:{type:'string',format:'date-time',maxLength:40},locationLabel:{anyOf:[{type:'string',maxLength:200},{type:'null'}]},
+  location:{anyOf:[{type:'null'},{type:'object',additionalProperties:false,required:['latitude','longitude'],properties:{latitude:{type:'number',minimum:-90,maximum:90},longitude:{type:'number',minimum:-180,maximum:180}}}]}
  }}}},async(request,reply)=>{
   const actor=await account(request);const input=request.body;
   const title=input.title.trim();const description=(input.description??'').trim();const location=input.locationLabel?.trim()||null;
+  const latitude=input.location?.latitude??null;const longitude=input.location?.longitude??null;
   const starts=new Date(input.startsAt);const ends=new Date(input.endsAt);
   if(!title||!Number.isFinite(starts.getTime())||!Number.isFinite(ends.getTime())||ends<=starts)return fail(400);
   const client=await pool.connect();
@@ -45,12 +47,12 @@ export function registerEventRoutes(app:FastifyInstance,options:{pool:Pool;verif
    let row=existing;let created=false;
    if(!row) {
     if(ends<=now())return fail(400);
-    row=(await client.query<EventRow>(`INSERT INTO events(organizer_id,client_request_id,title,description,starts_at,ends_at,location_label)
-     VALUES($1,$2,$3,$4,$5,$6,$7) ON CONFLICT(organizer_id,client_request_id) DO NOTHING RETURNING *`,[actor,input.clientRequestId,title,description,starts,ends,location])).rows[0];
+    row=(await client.query<EventRow>(`INSERT INTO events(organizer_id,client_request_id,title,description,starts_at,ends_at,location_label,latitude,longitude)
+     VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) ON CONFLICT(organizer_id,client_request_id) DO NOTHING RETURNING *`,[actor,input.clientRequestId,title,description,starts,ends,location,latitude,longitude])).rows[0];
     created=!!row;
     row??=(await client.query<EventRow>('SELECT * FROM events WHERE organizer_id=$1 AND client_request_id=$2',[actor,input.clientRequestId])).rows[0];
    }
-   if(!row||row.title!==title||row.description!==description||row.location_label!==location||row.starts_at.getTime()!==starts.getTime()||row.ends_at.getTime()!==ends.getTime())return fail(409);
+   if(!row||row.title!==title||row.description!==description||row.location_label!==location||row.latitude!==latitude||row.longitude!==longitude||row.starts_at.getTime()!==starts.getTime()||row.ends_at.getTime()!==ends.getTime())return fail(409);
    await client.query('COMMIT');return reply.code(created?201:200).send(present(row));
   } catch(error){await client.query('ROLLBACK');throw error;}finally{client.release();}
  });

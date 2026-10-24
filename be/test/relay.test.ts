@@ -75,3 +75,15 @@ it('accepts an RPC-estimated base-plus-tip budget above 100 gwei within the cap'
  const c=clients();c.walletClient.prepareTransactionRequest.mockImplementation(async(args:object)=>({...args,chainId:10143,nonce:0,gas:500000n,maxFeePerGas:150000000000n,maxPriorityFeePerGas:3000000000n}));
  const prepared=await c.t.prepare(fixtureJob);await expect(c.t.validateSigned({...fixtureJob,rawTransaction:prepared.rawTransaction,transactionHash:prepared.hash})).resolves.toBeUndefined();
 });
+
+it('mainnet transport accepts chain 143 bytes and rejects testnet job replay', async () => {
+ const c=clients();c.publicClient.getChainId.mockResolvedValue(143);
+ const t=createViemMeetTransport({publicClient:c.publicClient as unknown as PublicClient,walletClient:c.walletClient as unknown as WalletClient,account:relayer,abi,chainId:143,verifyingContract:fixtureJob.verifyingContract});
+ const job={...await signedJob({chainId:143}),chainId:143};
+ await expect(t.validateSigned(job)).resolves.toBeUndefined();
+ await expect(t.validateSigned(await signedJob())).rejects.toThrow('INVALID_SIGNED_TRANSACTION');
+ await expect(t.readRecord(fixtureJob)).rejects.toThrow('REGISTRY_CONFIGURATION');
+ await expect(t.readRecord(job)).resolves.toBeNull();
+ c.publicClient.getChainId.mockResolvedValue(10143);
+ await expect(t.readRecord(job)).rejects.toThrow('WRONG_CHAIN');
+});

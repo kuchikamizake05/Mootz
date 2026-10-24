@@ -11,7 +11,7 @@ export function createViemClaimTransport(options:{publicClient:PublicClient;wall
  const domain=collectionDomain(chainId,verifyingContract);
  const data=(job:ClaimJob)=>encodeFunctionData({abi,functionName:'claim',args:[job.claim,canonicalSignature(job.signature)]});
  async function snapshot(job:ClaimJob){
-  if(chainId!==10143||job.chainId!==chainId||!same(job.verifyingContract,verifyingContract)||await client.getChainId()!==chainId)throw failure();
+  if(![143,10143].includes(chainId)||job.chainId!==chainId||!same(job.verifyingContract,verifyingContract)||await client.getChainId()!==chainId)throw failure();
   const blockNumber=await client.getBlockNumber();
   const code=await client.getCode({address:verifyingContract,blockNumber});if(!code||code==='0x')throw failure();
   if(await client.readContract({address:verifyingContract,abi,functionName:'hashClaim',args:[job.claim],blockNumber})!==hashClaim(domain,job.claim))throw failure();
@@ -38,7 +38,7 @@ export function createViemClaimTransport(options:{publicClient:PublicClient;wall
    await transport.validateSigned({...job,rawTransaction,transactionHash:hash,relayerAddress:account.address});return {rawTransaction,hash,sender:account.address};
   }catch{throw failure();}},
   async validateSigned(job){try{
-   if(same(account.address,job.claim.issuer)||chainId!==10143||job.chainId!==chainId||!same(job.verifyingContract,verifyingContract)||!job.rawTransaction||!job.transactionHash||!job.relayerAddress||!same(job.relayerAddress,account.address)||keccak256(job.rawTransaction)!==job.transactionHash)throw failure();
+   if(same(account.address,job.claim.issuer)||![143,10143].includes(chainId)||job.chainId!==chainId||!same(job.verifyingContract,verifyingContract)||!job.rawTransaction||!job.transactionHash||!job.relayerAddress||!same(job.relayerAddress,account.address)||keccak256(job.rawTransaction)!==job.transactionHash)throw failure();
    const tx=parseTransaction(job.rawTransaction);if(tx.type!=='eip1559'||tx.chainId!==chainId||!tx.to||!same(tx.to,verifyingContract)||(tx.value??0n)!==0n||tx.data!==data(job)||!same(await recoverTransactionAddress({serializedTransaction:job.rawTransaction as TransactionSerialized}),account.address))throw failure();bounds(tx);
   }catch{throw failure();}},
   async broadcast(serializedTransaction){try{return await client.sendRawTransaction({serializedTransaction});}catch{throw failure();}},

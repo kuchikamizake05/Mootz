@@ -100,3 +100,18 @@ it('marks only an exact canonical successful Meet receipt finalized and preserve
  const after=(await pool.query('SELECT observed_status,finalized_at FROM chain_receipt_observations WHERE source=\'meet\' AND job_id=$1',[meet])).rows[0]!;
  expect(after.observed_status).toBe('success');expect(after.finalized_at).toEqual(before.finalized_at);
 });
+
+it('keeps mainnet and testnet cursors and logs separate at the same address',async()=>{
+ const testAddress='0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' as Address;
+ const log={...meetLog(crypto.randomUUID(),11n),address:testAddress};
+ const rpc=adapter({getFinalizedBlock:async()=>({number:12n,hash:blockHash(12)}),getLogs:async()=>[log]});
+ const config=[{address:testAddress,startBlock:10n,streams:['MeetRecorded'] as const}];
+ try {
+  for(const chainId of [143,10143] as const)expect((await runChainIndexer(pool,rpc,config,{chainId})).events).toBe(1);
+  expect((await pool.query('SELECT chain_id FROM chain_sync_events WHERE contract_address=$1 ORDER BY chain_id',[testAddress])).rows.map(r=>r.chain_id)).toEqual(['143','10143']);
+  expect((await pool.query('SELECT chain_id FROM chain_sync_cursors WHERE contract_address=$1 ORDER BY chain_id',[testAddress])).rows.map(r=>r.chain_id)).toEqual(['143','10143']);
+ } finally {
+  await pool.query('DELETE FROM chain_sync_events WHERE contract_address=$1',[testAddress]);
+  await pool.query('DELETE FROM chain_sync_cursors WHERE contract_address=$1',[testAddress]);
+ }
+});

@@ -3,7 +3,7 @@ import { createPublicClient, defineChain, http, type Abi, type Address, type Pub
 import { hashOffer, meetDomain, RECORD_MEET, type MeetOffer } from '../protocol/index.js';
 
 type RegistryClient = Pick<PublicClient, 'getChainId' | 'getCode' | 'readContract'>;
-type RegistryConfig = { rpcUrl: string; registryAddress: Address; chainId: 10143 };
+type RegistryConfig = { rpcUrl: string; registryAddress: Address; chainId: 143 | 10143 };
 function unavailable() {
   return Object.assign(new Error('Meet registry unavailable'), { statusCode: 503 });
 }
@@ -13,9 +13,9 @@ export async function createRegistryAccess(config: RegistryConfig, client?: Regi
   let publicClient: RegistryClient;
   try {
     const abi = JSON.parse(await readFile(new URL('../../abi/MeetRegistry.json', import.meta.url), 'utf8')) as Abi;
-    const chain = defineChain({ id: 10143, name: 'Monad Testnet', nativeCurrency: { name: 'Monad', symbol: 'MON', decimals: 18 }, rpcUrls: { default: { http: [config.rpcUrl] } } });
+    const chain = defineChain({ id: config.chainId, name: config.chainId === 143 ? 'Monad' : 'Monad Testnet', nativeCurrency: { name: 'Monad', symbol: 'MON', decimals: 18 }, rpcUrls: { default: { http: [config.rpcUrl] } } });
     publicClient = client ?? createPublicClient({ chain, transport: http(config.rpcUrl, { timeout: 5000, retryCount: 1 }) });
-    if (config.chainId !== 10143 || await publicClient.getChainId() !== 10143) throw unavailable();
+    if (![143,10143].includes(config.chainId) || await publicClient.getChainId() !== config.chainId) throw unavailable();
     const code = await publicClient.getCode({ address: config.registryAddress });
     if (!code || code === '0x') throw unavailable();
     const read = (functionName: string, args?: readonly unknown[]) => publicClient.readContract({ address: config.registryAddress, abi, functionName, ...(args ? { args } : {}) });

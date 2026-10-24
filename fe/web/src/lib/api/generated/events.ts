@@ -37,6 +37,11 @@ export interface paths {
                                 /** Format: date-time */
                                 endsAt: string;
                                 locationLabel: string | null;
+                                /** @description Organizer-selected public venue coordinates, never participant or Meet verification location. Null for events without a map pin. */
+                                location: null | {
+                                    latitude: number;
+                                    longitude: number;
+                                };
                             }[];
                             nextCursor: string | null;
                         };
@@ -186,6 +191,11 @@ export interface paths {
                             /** Format: date-time */
                             endsAt: string;
                             locationLabel: string | null;
+                            /** @description Organizer-selected public venue coordinates, never participant or Meet verification location. Null for events without a map pin. */
+                            location: null | {
+                                latitude: number;
+                                longitude: number;
+                            };
                         };
                     };
                 };
@@ -527,6 +537,11 @@ export interface components {
             /** Format: date-time */
             endsAt: string;
             locationLabel: string | null;
+            /** @description Organizer-selected public venue coordinates, never participant or Meet verification location. Null for events without a map pin. */
+            location: null | {
+                latitude: number;
+                longitude: number;
+            };
         };
         CreateEvent: {
             /** Format: uuid */
@@ -538,6 +553,11 @@ export interface components {
             /** Format: date-time */
             endsAt: string;
             locationLabel?: string | null;
+            /** @description Organizer-selected public venue coordinates, never participant or Meet verification location. Null for events without a map pin. */
+            location?: null | {
+                latitude: number;
+                longitude: number;
+            };
         };
         OrganizerEvent: {
             /** Format: uuid */
@@ -555,6 +575,11 @@ export interface components {
              */
             collectionStatus: "not_configured" | "configured";
             checkInCount: number;
+            /** @description Organizer-selected public venue coordinates, never participant or Meet verification location. Null for events without a map pin. */
+            location: null | {
+                latitude: number;
+                longitude: number;
+            };
         };
     };
     responses: never;

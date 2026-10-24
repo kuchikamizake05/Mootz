@@ -15,13 +15,13 @@ let clock = new Date('2026-10-24T02:00:00Z');
 const app = createApp({ origins: ['https://mootz.fun'], database: { probe: async () => {}, close: async () => {} }, logger: false,
   events: { pool, now: () => clock, verifyToken: async token => { if (!subjects.includes(token)) throw Error(); return { subject: token }; } } });
 const headers = (i = 0) => ({ authorization: `Bearer ${subjects[i]}` });
-const body = (extra = {}) => ({ clientRequestId: crypto.randomUUID(), title: ' Workshop ', description: 'Together', startsAt: '2026-10-24T08:00:00+07:00', endsAt: '2026-10-24T10:00:00+07:00', locationLabel: ' Jogja ', ...extra });
+const body = (extra = {}) => ({ clientRequestId: crypto.randomUUID(), title: ' Workshop ', description: 'Together', startsAt: '2026-10-24T08:00:00+07:00', endsAt: '2026-10-24T10:00:00+07:00', locationLabel: ' Jogja ', location: { latitude: -7.77, longitude: 110.37 }, ...extra });
 const create = (payload = body(), i = 0) => app.inject({ method: 'POST', url: '/v1/events', headers: headers(i), payload });
 let eventId: string;
 beforeAll(async () => {
   await admin.query(`CREATE SCHEMA ${schema}`);
   // Event tests need real SQL/locks but no PostGIS or unrelated media fixtures.
-  for (const file of ['001_identity.sql', '005_event_checkins.sql', '010_event_claims.sql', '020_event_organizers.sql']) {
+  for (const file of ['001_identity.sql', '005_event_checkins.sql', '010_event_claims.sql', '020_event_organizers.sql', '021_event_location.sql']) {
     await pool.query(await readFile(new URL(`../migrations/${file}`, import.meta.url), 'utf8'));
   }
   for (const subject of subjects) ids.push((await pool.query<{ id: string }>('INSERT INTO accounts(provider_subject) VALUES($1) RETURNING id', [subject])).rows[0]!.id);
@@ -45,14 +45,24 @@ it('creates once under concurrent retries, normalizes time, and rejects conflict
   expect(responses.filter(r => r.statusCode === 201)).toHaveLength(1);
   expect(responses.every(r => [200, 201].includes(r.statusCode))).toBe(true);
   expect(new Set(responses.map(r => r.json().id)).size).toBe(1); eventId = responses[0]!.json().id;
-  expect(responses[0]!.json()).toMatchObject({ title: 'Workshop', startsAt: '2026-10-24T01:00:00.000Z', endsAt: '2026-10-24T03:00:00.000Z', locationLabel: 'Jogja' });
+  expect(responses[0]!.json()).toMatchObject({ title: 'Workshop', startsAt: '2026-10-24T01:00:00.000Z', endsAt: '2026-10-24T03:00:00.000Z', locationLabel: 'Jogja', location: input.location });
+  for (const url of ['/v1/events/' + eventId, '/v1/events', '/v1/me/events']) {
+    const result = (await app.inject({ url, headers: headers() })).json();
+    expect((result.items ? result.items.find((e: { id: string }) => e.id === eventId) : result).location).toEqual(input.location);
+  }
+  expect((await create({ ...input, location: { latitude: -7.78, longitude: 110.37 } })).statusCode).toBe(409);
   expect(responses[0]!.body).not.toMatch(/organizer|provider|clientRequestId/);
   expect((await create({ ...input, title: 'Changed' })).statusCode).toBe(409);
   clock = new Date('2026-10-25T02:00:00Z'); expect((await create(input)).statusCode).toBe(200);
   clock = new Date('2026-10-24T02:00:00Z');
 });
-it.each([{ title: ' ' }, { endsAt: '2026-10-23T00:00:00Z' }, { endsAt: '2026-10-24T01:00:00Z' }, { startsAt: '2026-02-30T01:00:00Z' }, { startsAt: '2026-10-24T01:00:00' }, { title: 'x'.repeat(201) }, { locationLabel: 'x'.repeat(201) }, { clientRequestId: 'invalid' }])('rejects invalid event input %j', async extra => {
+it.each([{ location: { latitude: 91, longitude: 0 } }, { location: { latitude: 0, longitude: -181 } }, { location: { latitude: 0 } }, { location: { latitude: 0, longitude: 0, secret: true } }, { title: ' ' }, { endsAt: '2026-10-23T00:00:00Z' }, { endsAt: '2026-10-24T01:00:00Z' }, { startsAt: '2026-02-30T01:00:00Z' }, { startsAt: '2026-10-24T01:00:00' }, { title: 'x'.repeat(201) }, { locationLabel: 'x'.repeat(201) }, { clientRequestId: 'invalid' }])('rejects invalid event input %j', async extra => {
   expect((await create(body(extra))).statusCode).toBe(400);
+});
+it('retains legacy events without a map pin', async () => {
+  const response = await create(body({ location: null }));
+  expect(response.statusCode).toBe(201); expect(response.json().location).toBeNull();
+  await pool.query('DELETE FROM events WHERE id=$1', [response.json().id]);
 });
 it('isolates organizer event lists, check-ins and pagination', async () => {
   await setOrganizer(pool, ids[1]!, true);

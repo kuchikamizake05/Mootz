@@ -38,18 +38,18 @@ export async function inspectRelayState(
   pool: Pool,
   reader: RelayInspectionReader,
   relayerAddress: Address,
-  options: { now?: Date; limit?: number } = {},
+  options: { now?: Date; limit?: number; chainId?: 143 | 10143 } = {},
 ) {
   const now = options.now ?? new Date();
   const limit = options.limit ?? 20;
   if (!Number.isInteger(limit) || limit < 1 || limit > 100) throw new Error('Invalid inspection bounds');
   const [meet, claims, account] = await Promise.all([
     pool.query<RelayRow>(`SELECT 'meet'::text AS queue,o.meet_id AS id,m.accepted_at AS created_at,m.accepted_at+interval '300 seconds' AS expires_at,o.attempts,o.last_error,o.completed_at,o.raw_transaction,o.transaction_hash
-      FROM meet_outbox o JOIN meets m ON m.id=o.meet_id WHERE o.completed_at IS NULL
-      ORDER BY (o.raw_transaction IS NOT NULL) DESC,o.next_attempt_at,o.meet_id LIMIT $1`, [limit + 1]),
+      FROM meet_outbox o JOIN meets m ON m.id=o.meet_id WHERE o.completed_at IS NULL AND m.chain_id=$2
+      ORDER BY (o.raw_transaction IS NOT NULL) DESC,o.next_attempt_at,o.meet_id LIMIT $1`, [limit + 1, options.chainId ?? 10143]),
     pool.query<RelayRow>(`SELECT 'claim'::text AS queue,o.id,o.created_at,to_timestamp((o.claim->>'deadline')::bigint) AS expires_at,o.attempts,o.last_error,o.completed_at,o.raw_transaction,o.transaction_hash,o.relayer_address
-      FROM claim_outbox o WHERE o.completed_at IS NULL
-      ORDER BY (o.raw_transaction IS NOT NULL) DESC,o.next_attempt_at,o.id LIMIT $1`, [limit + 1]),
+      FROM claim_outbox o WHERE o.completed_at IS NULL AND o.chain_id=$2
+      ORDER BY (o.raw_transaction IS NOT NULL) DESC,o.next_attempt_at,o.id LIMIT $1`, [limit + 1, options.chainId ?? 10143]),
     reader.accountState(relayerAddress),
   ]);
   const jobs = [...meet.rows, ...claims.rows]

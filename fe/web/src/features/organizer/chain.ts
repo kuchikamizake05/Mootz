@@ -1,5 +1,5 @@
 import { createPublicClient, createWalletClient, custom, http, recoverMessageAddress, isAddressEqual, type Address, type EIP1193Provider } from "viem";
-import { monadTestnet } from "viem/chains";
+import { mootzChain } from "@/lib/chain/network";
 import eventCollectionAbiJson from "@/lib/chain/generated/abi/EventCollection.json";
 import meetRegistryAbiJson from "@/lib/chain/generated/abi/MeetRegistry.json";
 import { env } from "@/lib/env";
@@ -16,7 +16,7 @@ export function getInjectedProvider(): EIP1193Provider | null {
 export const contractsDeployed = env.eventCollectionAddress !== null && env.meetRegistryAddress !== null;
 
 export async function requestAccount(provider: EIP1193Provider): Promise<Address> {
-  const wallet = createWalletClient({ chain: monadTestnet, transport: custom(provider) });
+  const wallet = createWalletClient({ chain: mootzChain, transport: custom(provider) });
   const [address] = await wallet.requestAddresses();
   if (!address) throw new Error("No account returned by wallet");
   return address;
@@ -24,7 +24,7 @@ export async function requestAccount(provider: EIP1193Provider): Promise<Address
 
 /** Signs a fresh challenge and verifies locally that the signer is the claimed address. */
 export async function proveControl(provider: EIP1193Provider, address: Address): Promise<boolean> {
-  const wallet = createWalletClient({ account: address, chain: monadTestnet, transport: custom(provider) });
+  const wallet = createWalletClient({ account: address, chain: mootzChain, transport: custom(provider) });
   const message = buildChallenge(address, newNonce(), new Date());
   const signature = await wallet.signMessage({ message });
   const recovered = await recoverMessageAddress({ message, signature });
@@ -36,7 +36,7 @@ export async function readRecognition(address: Address, collectionId: bigint): P
   const collection = env.eventCollectionAddress;
   const registry = env.meetRegistryAddress;
   if (!collection || !registry) throw new Error("Contracts are not deployed");
-  const client = createPublicClient({ chain: monadTestnet, transport: http() });
+  const client = createPublicClient({ chain: mootzChain, transport: http() });
   const [eventId] = await client.readContract({
     address: collection,
     abi: eventCollectionAbi,

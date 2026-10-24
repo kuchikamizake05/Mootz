@@ -7,14 +7,15 @@ const contract = '0x1111111111111111111111111111111111111111' as Address;
 const recipient = '0x2222222222222222222222222222222222222222' as Address;
 const key = `0x${'01'.repeat(32)}` as Hex;
 const issuer = privateKeyToAccount(key).address;
-const config = { rpcUrl: 'https://rpc.invalid/private', contractAddress: contract, chainId: 10143 as const };
+describe.each([143, 10143] as const)('Monad chain %i', (chainId) => {
+const config = { rpcUrl: 'https://rpc.invalid/private', contractAddress: contract, chainId: chainId };
 function fixture() {
   return {
-    getChainId: vi.fn(async () => 10143),
+    getChainId: vi.fn(async (): Promise<number> => chainId),
     getBlockNumber: vi.fn(async () => 120n),
     getCode: vi.fn(async ({ address }: { address: Address }): Promise<Hex> => address === contract ? '0x6000' : '0x'),
     readContract: vi.fn(async ({ functionName, args }: { functionName: string; args?: readonly unknown[] }): Promise<unknown> => {
-      if (functionName === 'hashClaim') return hashClaim(collectionDomain(10143, contract), args![0] as Claim);
+      if (functionName === 'hashClaim') return hashClaim(collectionDomain(chainId, contract), args![0] as Claim);
       if (functionName === 'collections') return [`0x${'11'.repeat(32)}`, 20n, 'ipfs://public'];
       if (functionName === 'totalSupply') return 2n;
       if (functionName === 'balanceOf') return 0n;
@@ -37,7 +38,7 @@ describe('EventCollection gateway', () => {
   });
   it('signs canonical vouchers locally and rejects revoked issuer authority', async () => {
     const c = fixture(); const gateway = await createCollectionGateway({ ...config, issuerPrivateKey: key }, cast(c));
-    expect(await recoverClaim(collectionDomain(10143, contract), claim, await gateway.signClaim!(claim))).toBe(issuer);
+    expect(await recoverClaim(collectionDomain(chainId, contract), claim, await gateway.signClaim!(claim))).toBe(issuer);
     expect((await gateway.read(1n, recipient)).issuerAuthorized).toBe(true);
     c.readContract.mockResolvedValue(false);
     await expect(gateway.signClaim!(claim)).rejects.toMatchObject({ code: 'CHAIN_UNAVAILABLE', statusCode: 503 });
@@ -82,4 +83,6 @@ describe('EventCollection gateway', () => {
     c.readContract.mockImplementation(async p => p.functionName === 'claimed' ? true : original(p));
     await expect(gateway.read(1n, recipient)).rejects.toMatchObject({ code: 'CHAIN_UNAVAILABLE' });
   });
+});
+
 });

@@ -6,8 +6,8 @@ const eventAbi = {
   CollectionCreated: parseAbiItem('event CollectionCreated(uint256 indexed collectionId,bytes32 indexed eventId,uint256 cap,string metadataURI)'),
   CollectionClaimed: parseAbiItem('event CollectionClaimed(uint256 indexed collectionId,address indexed recipient,address indexed issuer)')
 };
-export function createViemChainReadAdapter(client: PublicClient, addresses: readonly Address[]): ChainReadAdapter {
-  const ensureChain=async()=>{try{if(await client.getChainId()!==10143)throw fail();}catch{throw fail();}};
+export function createViemChainReadAdapter(client: PublicClient, addresses: readonly Address[], chainId = 10143): ChainReadAdapter {
+  const ensureChain=async()=>{try{if(await client.getChainId()!==chainId || ![143,10143].includes(chainId))throw fail();}catch{throw fail();}};
   return {
     async getHead() { try { await ensureChain(); return await client.getBlockNumber(); } catch { throw fail(); } },
     async getFinalizedBlock() { await ensureChain();try { const b=await client.getBlock({blockTag:'finalized'}); return typeof b.number==='bigint'&&b.number>=0n&&/^0x[0-9a-f]{64}$/i.test(b.hash??'')?{number:b.number,hash:b.hash!}:null; } catch { return null; } },

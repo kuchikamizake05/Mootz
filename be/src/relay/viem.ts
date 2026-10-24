@@ -6,7 +6,7 @@ const same=(a:string,b:string)=>a.toLowerCase()===b.toLowerCase();
 export function createViemMeetTransport(options:{publicClient:PublicClient;walletClient:WalletClient;account:Account;abi:Abi;chainId:number;verifyingContract:Address;feePolicy?:FeePolicy}):MeetTransport {
  const {publicClient:client,walletClient,account,abi,chainId,verifyingContract}=options;
  const feePolicy=options.feePolicy??DEFAULT_FEE_POLICY;
- function deployment(job:RelayJob){if(chainId!==10143||job.chainId!==chainId||!same(job.verifyingContract,verifyingContract))throw new Error('REGISTRY_CONFIGURATION');}
+ function deployment(job:RelayJob){if(![143,10143].includes(chainId)||job.chainId!==chainId||!same(job.verifyingContract,verifyingContract))throw new Error('REGISTRY_CONFIGURATION');}
  const data=(job:RelayJob)=>encodeFunctionData({abi,functionName:'recordMeet',args:[job.offer,job.acceptance,job.posterSignature,job.scannerSignature,job.acceptedAt]});
  function bounds(tx:{gas?:bigint|undefined;maxFeePerGas?:bigint|undefined;maxPriorityFeePerGas?:bigint|undefined}){
   if(tx.gas===undefined||tx.gas<=0n||tx.gas>maxGas||!isWithinFeePolicy(tx,feePolicy))throw new Error('INVALID_SIGNED_TRANSACTION');

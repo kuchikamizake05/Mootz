@@ -20,7 +20,9 @@ function decode(name:IndexedEventName,log:ChainLog):Record<string,unknown>{
 }
 
 /** Store finalized-range logs and advance one durable cursor in the same transaction. */
-export async function runChainIndexer(pool:Pool,adapter:ChainReadAdapter,contracts:readonly IndexContract[],options:{initialChunk?:number;minChunk?:number;maxChunk?:number;maxRanges?:number}={}) {
+export async function runChainIndexer(pool:Pool,adapter:ChainReadAdapter,contracts:readonly IndexContract[],options:{initialChunk?:number;minChunk?:number;maxChunk?:number;maxRanges?:number;chainId?:143|10143}={}) {
+ const chainId=options.chainId??10143;
+ if(![143,10143].includes(chainId))throw new Error('Unsupported Monad chain');
  const initial=options.initialChunk??2000,min=options.minChunk??1,max=options.maxChunk??10000;
  const maxRanges=options.maxRanges??20;
  if(!Number.isInteger(initial)||!Number.isInteger(min)||!Number.isInteger(max)||!Number.isInteger(maxRanges)||maxRanges<1||min<1||initial<min||max<initial)throw new Error('Invalid chain index bounds');
@@ -33,8 +35,8 @@ export async function runChainIndexer(pool:Pool,adapter:ChainReadAdapter,contrac
   if(!contract.streams.length||contract.startBlock<0n)throw new Error('Invalid index contract');
   for(const stream of contract.streams){
    const key=contract.address.toLowerCase();
-   await pool.query(`INSERT INTO chain_sync_cursors(chain_id,contract_address,stream,next_block) VALUES(10143,$1,$2,$3) ON CONFLICT DO NOTHING`,[key,stream,contract.startBlock.toString()]);
-   const c=await pool.query<{next_block:string}>('SELECT next_block FROM chain_sync_cursors WHERE chain_id=10143 AND contract_address=$1 AND stream=$2',[key,stream]);
+   await pool.query(`INSERT INTO chain_sync_cursors(chain_id,contract_address,stream,next_block) VALUES($4,$1,$2,$3) ON CONFLICT DO NOTHING`,[key,stream,contract.startBlock.toString(),chainId]);
+   const c=await pool.query<{next_block:string}>('SELECT next_block FROM chain_sync_cursors WHERE chain_id=$3 AND contract_address=$1 AND stream=$2',[key,stream,chainId]);
    let from=BigInt(c.rows[0]!.next_block),chunk=initial,streamRanges=0;
    while(from<=finalized.number&&streamRanges<maxRanges){
     const to=from+BigInt(chunk)-1n>finalized.number?finalized.number:from+BigInt(chunk)-1n;
@@ -49,8 +51,8 @@ export async function runChainIndexer(pool:Pool,adapter:ChainReadAdapter,contrac
     }
     try{await lock.query('BEGIN');
      for(const {log,payload} of good)await lock.query(`INSERT INTO chain_sync_events(chain_id,contract_address,transaction_hash,log_index,block_number,block_hash,event_name,payload,finalized_at,finalized_block_number,finalized_block_hash)
-      VALUES(10143,$1,$2,$3,$4,$5,$6,$7::jsonb,clock_timestamp(),$8,$9) ON CONFLICT(chain_id,contract_address,transaction_hash,log_index) DO NOTHING`,[key,log.transactionHash.toLowerCase(),log.logIndex,log.blockNumber.toString(),log.blockHash.toLowerCase(),stream,asJson(payload),finalized.number.toString(),finalized.hash.toLowerCase()]);
-     await lock.query('UPDATE chain_sync_cursors SET next_block=$3,updated_at=clock_timestamp() WHERE chain_id=10143 AND contract_address=$1 AND stream=$2 AND next_block=$4',[key,stream,(to+1n).toString(),from.toString()]);
+      VALUES($10,$1,$2,$3,$4,$5,$6,$7::jsonb,clock_timestamp(),$8,$9) ON CONFLICT(chain_id,contract_address,transaction_hash,log_index) DO NOTHING`,[key,log.transactionHash.toLowerCase(),log.logIndex,log.blockNumber.toString(),log.blockHash.toLowerCase(),stream,asJson(payload),finalized.number.toString(),finalized.hash.toLowerCase(),chainId]);
+     await lock.query('UPDATE chain_sync_cursors SET next_block=$3,updated_at=clock_timestamp() WHERE chain_id=$5 AND contract_address=$1 AND stream=$2 AND next_block=$4',[key,stream,(to+1n).toString(),from.toString(),chainId]);
      await lock.query('COMMIT');
     }catch(error){await lock.query('ROLLBACK');throw error;}
     ranges++;streamRanges++;events+=good.length;from=to+1n;
@@ -91,7 +93,7 @@ async function signedTransactionMatches(job:ReceiptJob,receipt:ChainReceipt):Pro
    const claim=expected.claim as Record<string,string>;
    data=encodeFunctionData({abi:claimWriteAbi,functionName:'claim',args:[{collectionId:BigInt(claim.collectionId!),recipient:claim.recipient as Address,issuer:claim.issuer as Address,nonce:claim.nonce as Hex,deadline:BigInt(claim.deadline!)},expected.signature as Hex]});
   }
-  if(tx.type!=='eip1559'||tx.chainId!==10143||!eq(tx.to,to)||(tx.value??0n)!==0n||!eq(tx.data,data))return false;
+  if(tx.type!=='eip1559'||tx.chainId!==Number(job.chain_id)||!eq(tx.to,to)||(tx.value??0n)!==0n||!eq(tx.data,data))return false;
   const recovered=await recoverTransactionAddress({serializedTransaction:job.raw_transaction as TransactionSerialized});
   return eq(recovered,receipt.from)&&(!job.relayer_address||eq(recovered,job.relayer_address));
  }catch{return false;}
@@ -103,19 +105,21 @@ async function touchObservation(pool:Pool,job:ReceiptJob){
 }
 
 /** Reconcile every provisional/completed receipt without changing jobs or their public status. */
-export async function runFinalityReconciler(pool:Pool,adapter:ChainReadAdapter,options:{batchSize?:number;contracts:readonly Address[]}) {
+export async function runFinalityReconciler(pool:Pool,adapter:ChainReadAdapter,options:{batchSize?:number;contracts:readonly Address[];chainId?:143|10143}) {
+ const chainId=options.chainId??10143;
+ if(![143,10143].includes(chainId))throw new Error('Unsupported Monad chain');
  const limit=options.batchSize??200;if(!Number.isInteger(limit)||limit<1||limit>1000)throw new Error('Invalid reconciliation batch size');
  if(!options.contracts.length)throw new Error('No configured chain contracts');
  const finalized=await adapter.getFinalizedBlock();
  const jobs=await pool.query<ReceiptJob>(`SELECT 'meet'::text AS source,m.id,m.chain_id::text,m.verifying_contract,o.transaction_hash,o.raw_transaction,NULL::text AS relayer_address,
    jsonb_build_object('offer',m.offer,'acceptance',m.acceptance,'accepted_at',m.accepted_at,'poster_wallet',m.poster_wallet,'scanner_wallet',m.scanner_wallet,'poster_signature',m.poster_signature,'scanner_signature',m.scanner_signature) AS expected,coalesce(r.checked_at,'-infinity'::timestamptz) AS checked_at
    FROM meets m JOIN meet_outbox o ON o.meet_id=m.id LEFT JOIN chain_receipt_observations r ON r.source='meet' AND r.job_id=m.id AND r.chain_id=m.chain_id AND lower(r.contract_address)=lower(m.verifying_contract) AND lower(r.transaction_hash)=lower(o.transaction_hash)
-   WHERE o.transaction_hash IS NOT NULL AND m.chain_id=10143 AND lower(m.verifying_contract)=ANY($2::text[]) AND r.finalized_at IS NULL
+   WHERE o.transaction_hash IS NOT NULL AND m.chain_id=$3 AND lower(m.verifying_contract)=ANY($2::text[]) AND r.finalized_at IS NULL
    UNION ALL
    SELECT 'claim'::text,c.id,c.chain_id::text,c.verifying_contract,c.transaction_hash,c.raw_transaction,c.relayer_address,jsonb_build_object('claim',c.claim,'signature',c.signature) AS expected,coalesce(r.checked_at,'-infinity'::timestamptz) AS checked_at
    FROM claim_outbox c LEFT JOIN chain_receipt_observations r ON r.source='claim' AND r.job_id=c.id AND r.chain_id=c.chain_id AND lower(r.contract_address)=lower(c.verifying_contract) AND lower(r.transaction_hash)=lower(c.transaction_hash)
-   WHERE c.transaction_hash IS NOT NULL AND c.chain_id=10143 AND lower(c.verifying_contract)=ANY($2::text[]) AND r.finalized_at IS NULL
-   ORDER BY checked_at,source,id LIMIT $1`,[limit,options.contracts.map(a=>a.toLowerCase())]);
+   WHERE c.transaction_hash IS NOT NULL AND c.chain_id=$3 AND lower(c.verifying_contract)=ANY($2::text[]) AND r.finalized_at IS NULL
+   ORDER BY checked_at,source,id LIMIT $1`,[limit,options.contracts.map(a=>a.toLowerCase()),chainId]);
  let checked=0,finalizedSuccess=0,finalizedOther=0;
  for(const job of jobs.rows){checked++;
   let observed:'pending'|'success'|'reverted'|'mismatched'='pending';let receiptBlock:bigint|null=null,receiptHash:Hex|null=null,canonicalHash:Hex|null=null;

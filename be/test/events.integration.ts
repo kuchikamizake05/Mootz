@@ -16,7 +16,7 @@ afterAll(async()=>{await app.close();await pool.query('DELETE FROM event_checkin
 it('requires auth and returns event metadata without organizer identity',async()=>{
  expect((await app.inject({url:'/v1/events'})).statusCode).toBe(401);
  expect((await app.inject({url:'/v1/events',headers:{authorization:'Bearer invalid'}})).statusCode).toBe(401);
- const detail=await app.inject({url:`/v1/events/${events[0]}`,headers:headers(1)});expect(detail.statusCode).toBe(200);expect(detail.json()).toEqual({id:events[0],title:'Event 0',description:'Details',startsAt:'2026-10-23T04:00:00.000Z',endsAt:'2026-10-23T06:00:00.000Z',locationLabel:'Demo venue'});expect(detail.body).not.toMatch(/organizer|provider|event-test/);
+ const detail=await app.inject({url:`/v1/events/${events[0]}`,headers:headers(1)});expect(detail.statusCode).toBe(200);expect(detail.json()).toEqual({id:events[0],title:'Event 0',description:'Details',startsAt:'2026-10-23T04:00:00.000Z',endsAt:'2026-10-23T06:00:00.000Z',locationLabel:'Demo venue',location:null});expect(detail.body).not.toMatch(/organizer|provider|event-test/);
  expect((await app.inject({url:`/v1/events/${crypto.randomUUID()}`,headers:headers()})).statusCode).toBe(404);
 });
 it('lists chronologically with bounded stable keyset pagination',async()=>{
