@@ -48,7 +48,7 @@ export function SupportingMap({ moment, onOpen }: { moment: MomentCard | undefin
     <aside aria-label="Where this moment was posted" className="flex flex-col gap-3">
       {moment && (
         <div className="rounded-2xl bg-mootz-surface px-4 py-3 shadow-soft">
-          <p className="font-black text-mootz-ink">{moment.author.name}&apos;s moment</p>
+          <p className="font-black text-mootz-ink">{moment.own ? "Your moment" : `${moment.author.name}’s moment`}</p>
           <p className="text-sm text-mootz-muted">
             {moment.place ? `${moment.place} · ` : ""}
             {moment.postedLabel}
