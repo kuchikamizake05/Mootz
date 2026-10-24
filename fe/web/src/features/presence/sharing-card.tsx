@@ -21,7 +21,7 @@ export function LocationSharingCard() {
         {env.demoFixtures ? "Preview only · no location is collected." : query.isError ? "Could not load location sharing." : query.isPending ? "Loading location sharing…" : presenceCopy[status]}
       </p>
       <p className="mt-1 text-xs text-mootz-muted">Positions expire within 60 seconds without an update. Turning this off removes your shared position.</p>
-      {query.isError && <Button variant="secondary" onClick={() => void query.refetch()}>Retry</Button>}
+      {query.isError && <Button variant="secondary" className="mt-4" onClick={() => void query.refetch()}>Retry</Button>}
       {mutation.isError && <p role="alert" className="mt-2 text-sm text-mootz-ink">Could not save this change. Please retry; sharing has not been confirmed off.</p>}
     </section>
   );

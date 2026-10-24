@@ -139,6 +139,7 @@ export function FriendsView() {
 
   const busy = (id: string) => act.isPending && act.variables?.accountId === id;
   const g = groupFriends(friends.data ?? []);
+  const empty = !friends.isPending && !friends.error && !friends.data?.length;
 
   let body;
   if (friends.isPending) {
@@ -151,7 +152,12 @@ export function FriendsView() {
     );
   } else if (!friends.data?.length) {
     body = (
-      <StateMessage icon={Users} title="No friends yet" actions={<Button icon={UserPlus} onClick={() => setAdding(true)}>Add friend</Button>}>
+      <StateMessage
+        icon={Users}
+        title="No friends yet"
+        className="mx-auto w-full max-w-sm flex-1 items-center! justify-center px-4 py-12 text-center"
+        actions={<Button icon={UserPlus} size="lg" onClick={() => setAdding(true)}>Add friend</Button>}
+      >
         Friends can see each other&apos;s moments. Send a request with their @username.
       </StateMessage>
     );
@@ -229,9 +235,11 @@ export function FriendsView() {
         <AddFriend />
       ) : (
         <>
-          <Button icon={UserPlus} size="lg" block onClick={() => setAdding(true)}>
-            Add friend
-          </Button>
+          {!empty && (
+            <Button icon={UserPlus} size="lg" block onClick={() => setAdding(true)}>
+              Add friend
+            </Button>
+          )}
           <div aria-live="polite" className="sr-only">
             {act.isSuccess ? "Friend list updated" : ""}
           </div>

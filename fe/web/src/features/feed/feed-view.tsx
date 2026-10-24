@@ -4,7 +4,6 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Images, LoaderCircle, WifiOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { PostMomentButton } from "@/components/ui/controls";
 import { FeedPost } from "@/components/ui/moment";
 import { StateMessage } from "@/components/ui/status";
 import { canStartMeet } from "@/features/moments/model";
@@ -14,7 +13,7 @@ import { SupportingMap } from "@/features/map/supporting-map";
 import { useViewState } from "@/features/shell/view-state";
 import { ReactView } from "@/features/social/react-view";
 import { CommentsView } from "@/features/social/comments-view";
-import { rememberBrowseOrigin } from "@/features/shell/browse-origin";
+import { cn } from "@/lib/cn";
 
 const desktopQuery = "(min-width: 1024px)";
 const scrollPositions = new Map<string, number>();
@@ -48,6 +47,7 @@ export function FeedView() {
   const isDesktop = useIsDesktop();
   const [activeId, setActiveId] = useState<string | null>(null);
   const active = items.find((m) => m.id === activeId) ?? items[0];
+  const empty = !isPending && !error && items.length === 0;
 
   useEffect(() => {
     if (!momentId || (panel !== "react" && panel !== "comments")) return;
@@ -129,8 +129,7 @@ export function FeedView() {
       <StateMessage
         icon={Images}
         title="No moments yet."
-        actions={<PostMomentButton size={64} onClick={() => { rememberBrowseOrigin(); router.push("/capture"); }} />}
-        className="px-4 pt-6"
+        className="mx-auto w-full max-w-sm items-center! px-6 py-8 text-center"
       >
         <p>Share both sides of your day.</p>
         <p>Posting is optional; the Feed stays unlocked.</p>
@@ -157,8 +156,8 @@ export function FeedView() {
   }
 
   return (
-    <div ref={scroller} className="absolute inset-0 overflow-y-auto pb-32 pt-[72px] lg:pt-[104px]">
-      <div inert={!!momentId && (panel === "react" || panel === "comments")} className="mx-auto w-full max-w-[560px] lg:grid lg:max-w-[1440px] lg:grid-cols-[minmax(0,560px)_minmax(0,688px)] lg:gap-8 lg:px-16">
+    <div ref={scroller} className="absolute inset-0 flex flex-col overflow-y-auto pb-32 pt-[72px] lg:pt-[104px]">
+      <div inert={!!momentId && (panel === "react" || panel === "comments")} className={cn("mx-auto w-full max-w-[560px]", empty ? "flex flex-1 items-center justify-center" : "lg:grid lg:max-w-[1440px] lg:grid-cols-[minmax(0,560px)_minmax(0,688px)] lg:gap-8 lg:px-16")}>
         <div>
           {body}
           <div ref={sentinel} aria-hidden className="h-1" />
