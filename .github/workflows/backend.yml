@@ -31,7 +31,6 @@ jobs:
       - run: npm run check:protocol
       - run: npm run lint
       - run: npm run typecheck
-      - run: npm run test:coverage
       - name: Disposable integration database
         run: |
           password=$(openssl rand -hex 24)
@@ -43,7 +42,7 @@ jobs:
             sleep 2
           done
           exit 1
-      - run: npm run test:db
+      - run: npm run test:coverage
       - run: npm run test:deploy
       - run: npm run build
       - name: Deployment script checks
