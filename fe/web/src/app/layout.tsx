@@ -16,8 +16,23 @@ const nunitoSans = Nunito_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://mootz-red.vercel.app"),
+  applicationName: "Mootz",
   title: { default: "Mootz", template: "%s · Mootz" },
   description: "Share your day. Meet in person. Keep a record together.",
+  openGraph: {
+    type: "website",
+    siteName: "Mootz",
+    title: "Mootz — Share your day. Meet in person.",
+    description: "A social Map + Feed with shared memories on Monad.",
+    images: [{ url: "/brand/mootz-social.png", width: 1200, height: 630, alt: "Mootz — Share your day. Meet in person." }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Mootz — Share your day. Meet in person.",
+    description: "A social Map + Feed with shared memories on Monad.",
+    images: ["/brand/mootz-social.png"],
+  },
 };
 
 export const viewport: Viewport = {
