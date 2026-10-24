@@ -32,7 +32,8 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set database password}
     volumes: ["postgres:/var/lib/postgresql/data"]
     healthcheck:
-      test: [CMD-SHELL, "pg_isready -U mootz -d mootz"]
+      # Initialization's temporary server only accepts Unix sockets; wait for TCP.
+      test: [CMD-SHELL, "pg_isready -h 127.0.0.1 -U mootz -d mootz"]
       interval: 5s
       timeout: 5s
       retries: 20
