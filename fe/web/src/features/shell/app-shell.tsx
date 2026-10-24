@@ -32,7 +32,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="relative flex h-dvh flex-col overflow-hidden bg-mootz-surface">
-      <header inert={overlayOpen || filterOpen} className={cn("pointer-events-none absolute inset-x-0 top-0 z-30 flex h-[76px] items-start justify-between gap-2 px-4 pt-[max(12px,env(safe-area-inset-top))] lg:h-[88px] lg:items-center lg:border-b lg:border-mootz-hairline lg:bg-mootz-surface lg:px-8 lg:pt-0", active === "feed" && "bg-mootz-surface")}>
+      <header inert={overlayOpen || filterOpen} className={cn("pointer-events-none absolute inset-x-0 top-0 z-30 flex h-[76px] items-start justify-between gap-2 px-4 pt-[max(12px,env(safe-area-inset-top))] lg:h-[88px] lg:items-center lg:px-8 lg:pt-0", active === "feed" && "bg-mootz-surface lg:border-b lg:border-mootz-hairline")}>
         <Link href={href("/map", { moment: null })} className="pointer-events-auto" aria-label="Mootz home">
           {/* eslint-disable-next-line @next/next/no-img-element -- static brand SVG */}
           <img src="/brand/mootz-symbol-v1.svg" alt="" width={46} height={36} className="mt-0.5 h-9 w-[46px] object-contain lg:hidden" />

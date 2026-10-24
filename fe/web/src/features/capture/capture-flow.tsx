@@ -164,11 +164,11 @@ export function CaptureFlow() {
 
   const close = () => router.push(getBrowseOrigin());
   const title = TITLE[step];
-  const wide = step === "review" || step === "upload-review";
+  const wide = step === "review" || step === "upload-review" || step === "posted";
 
   return (
     <main className="min-h-dvh bg-mootz-surface lg:grid lg:place-items-center lg:p-8">
-      <div className={cn("mx-auto flex min-h-dvh w-full max-w-[430px] flex-col gap-3 px-4 pb-6 pt-4 lg:min-h-0 lg:max-w-[760px] lg:rounded-[32px] lg:bg-mootz-surface lg:p-8 lg:shadow-float", wide && "lg:max-w-[760px]")}>
+      <div className={cn("mx-auto flex min-h-dvh w-full max-w-[430px] flex-col gap-4 px-5 pb-[max(24px,env(safe-area-inset-bottom))] pt-[max(16px,env(safe-area-inset-top))] lg:min-h-[640px] lg:max-w-[480px] lg:rounded-[32px] lg:bg-mootz-surface lg:p-8 lg:shadow-float", wide && "lg:max-w-[760px]!")}>
         <header className="flex min-h-11 items-center justify-between gap-2">
           <div className="flex min-w-0 items-center gap-2">
             {(step === "selfie" || step === "review" || step === "upload-review") && <BackButton onClick={() => setStep(step === "selfie" ? "rear" : mode === "capture" ? "selfie" : "upload-pick")} />}
@@ -294,7 +294,7 @@ function Viewfinder({
       <StateMessage
         icon={CameraOff}
         title="Camera access is off."
-        className="mt-6"
+        className="mx-auto w-full max-w-sm flex-1 items-center! justify-center py-12 text-center"
         actions={<Button icon={ImagePlus} onClick={onFallback}>Upload photos instead</Button>}
       >
         {copy}
@@ -316,8 +316,8 @@ function Viewfinder({
   };
 
   return (
-    <div className="flex flex-1 flex-col gap-3">
-      <div className={cn("relative overflow-hidden rounded-[28px] bg-mootz-ink", facing === "environment" ? "h-[438px]" : "h-[400px]")}>
+    <div className="flex flex-1 flex-col gap-4">
+      <div className="relative h-[clamp(200px,50dvh,480px)] shrink-0 overflow-hidden rounded-[28px] bg-mootz-ink">
         <video
           ref={videoRef}
           aria-label={label}
@@ -328,8 +328,9 @@ function Viewfinder({
         />
         {status === "starting" && (
           <p role="status" className="absolute inset-0 grid place-items-center text-sm font-bold text-white">
-            <span className="flex items-center gap-2">
-              <LoaderCircle aria-hidden size={18} className="animate-spin" /> Starting camera…
+            <span className="flex flex-col items-center gap-4 px-6 text-center">
+              <LoaderCircle aria-hidden size={32} className="animate-spin" />
+              <span>Starting camera…</span>
             </span>
           </p>
         )}
@@ -339,23 +340,23 @@ function Viewfinder({
           </div>
         )}
       </div>
-      <p className="text-lg font-bold text-mootz-ink" aria-live="polite">
+      <p className="text-center text-sm font-bold text-mootz-ink" aria-live="polite">
         {error ? "Couldn't save that photo. Try again." : hint}
       </p>
-      <div className="flex flex-col-reverse items-center gap-3">
+      <div className="flex flex-col items-center gap-4">
+        <Button size="lg" icon={Camera} aria-label={shutter} className="size-[76px] shrink-0 rounded-full p-0 [&>svg]:size-[30px]" disabled={status !== "ready" || busy} onClick={snap}>
+          <span className="sr-only">{shutter}</span>
+        </Button>
         {onRetakeBack && (
-          <Button variant="secondary" block onClick={onRetakeBack}>
+          <Button variant="secondary" onClick={onRetakeBack}>
             Retake back
           </Button>
         )}
-        <Button size="lg" icon={Camera} aria-label={shutter} className={facing === "environment" ? "size-[76px] rounded-full p-0 [&>svg]:size-[30px]" : "w-full"} disabled={status !== "ready" || busy} onClick={snap}>
-          {facing === "user" && shutter}
-        </Button>
       </div>
-      <button type="button" onClick={onFallback} className="raised min-h-12 rounded-2xl bg-white px-3 text-[15px] font-extrabold text-mootz-deep">
+      <Button variant="secondary" block icon={ImagePlus} onClick={onFallback}>
         Upload photos instead
-      </button>
-      <p className="text-sm font-bold leading-[1.4] text-mootz-muted">{facing === "environment" ? "Post any time. A completed camera pair can extend your daily streak and start an optional Meet." : "If this stage fails, keep the back capture. Never publish an incomplete pair."}</p>
+      </Button>
+      <p className="text-center text-xs leading-relaxed text-mootz-muted">{facing === "environment" ? "Post any time. A completed camera pair can extend your daily streak and start an optional Meet." : "Your back photo stays saved while you take your selfie."}</p>
     </div>
   );
 }
@@ -377,7 +378,7 @@ function UploadPick({
 }) {
   const ready = !!back && !!front;
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-4">
       <p className="text-sm text-mootz-muted">Choose one back photo and one selfie. Uploaded moments don&apos;t count toward your streak or Meet.</p>
       <div className="grid grid-cols-2 gap-3">
         <Picker label="Back photo" shot={back} onFile={(f) => onPick("back", f)} />
@@ -441,10 +442,10 @@ function Review({
   onPost: () => void;
 }) {
   return (
-    <div className="flex flex-col gap-3 lg:grid lg:grid-cols-2 lg:gap-6">
-      <PairedPhoto backSrc={back.url} frontSrc={front.url} authorName="you" className="h-[260px] w-full lg:aspect-[3/4]" />
-      <div className="flex flex-col gap-3">
-        <div className="flex gap-2">
+    <div className="flex flex-col gap-5 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6">
+      <PairedPhoto backSrc={back.url} frontSrc={front.url} authorName="you" className="aspect-[4/5] w-full lg:aspect-[3/4]" />
+      <div className="flex min-w-0 flex-col gap-4">
+        <div className={cn("grid gap-2", mode === "capture" && "grid-cols-2")}>
           <Button variant="secondary" block onClick={() => onRetake("back")}>
             {mode === "upload" ? "Change photos" : "Retake back"}
           </Button>
