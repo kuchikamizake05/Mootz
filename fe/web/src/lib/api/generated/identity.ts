@@ -89,6 +89,8 @@ export interface components {
             /** Format: uuid */
             id: string;
             recordMeet: boolean;
+            /** @description Short-lived private avatar URL, refreshed through authenticated own profile reads */
+            avatarUrl?: string | null;
             /** Format: date-time */
             onboardingCompletedAt: string | null;
             /** @description Verified address in server-configured chain namespace; null before binding */

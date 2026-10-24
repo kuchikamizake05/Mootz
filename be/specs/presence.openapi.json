@@ -1,0 +1,42 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "Mootz foreground friend locations", "version": "1.0.0" },
+  "security": [{ "bearerAuth": [] }],
+  "paths": {
+    "/v1/me/location-sharing": {
+      "get": { "responses": { "200": { "description": "Account preference, defaults to enabled; browser permission still required.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/LocationSharing" } } } } } },
+      "put": {
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/LocationSharing" } } } },
+        "responses": { "200": { "description": "Saved; disabling atomically deletes the position.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/LocationSharing" } } } } }
+      }
+    },
+    "/v1/me/location": {
+      "put": {
+        "description": "Foreground only. Sample age <=30s, future skew <=5s, accuracy <=500m. Stored as an approximate 200m cell with a 60s lease. Independent of Meet verification.",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PositionSample" } } } },
+        "responses": { "204": { "description": "Latest position replaced." }, "400": { "description": "Invalid, inaccurate or stale sample." }, "409": { "description": "Sharing disabled." } }
+      },
+      "delete": { "responses": { "204": { "description": "Position removed; preference unchanged." } } }
+    },
+    "/v1/friends/locations": {
+      "get": {
+        "description": "Up to 500 recent enabled locations through current accepted friendships only. Excludes self and expired positions. Poll every 5s while visible. Responses are no-store.",
+        "responses": { "200": { "description": "Authorized positions.", "content": { "application/json": { "schema": { "type": "object", "required": ["items"], "properties": { "items": { "type": "array", "items": { "$ref": "#/components/schemas/FriendLocation" } } } } } } } }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": { "bearerAuth": { "type": "http", "scheme": "bearer" } },
+    "schemas": {
+      "LocationSharing": { "type": "object", "additionalProperties": false, "required": ["enabled"], "properties": { "enabled": { "type": "boolean" } } },
+      "PositionSample": {
+        "type": "object", "additionalProperties": false, "required": ["latitude", "longitude", "accuracyMeters", "capturedAtMs"],
+        "properties": { "latitude": { "type": "number", "minimum": -90, "maximum": 90 }, "longitude": { "type": "number", "minimum": -180, "maximum": 180 }, "accuracyMeters": { "type": "number", "exclusiveMinimum": 0, "maximum": 500 }, "capturedAtMs": { "type": "integer", "minimum": 0 } }
+      },
+      "FriendLocation": {
+        "type": "object", "required": ["accountId", "displayName", "latitude", "longitude", "updatedAt", "expiresAt"],
+        "properties": { "accountId": { "type": "string", "format": "uuid" }, "displayName": { "type": ["string", "null"] }, "avatarUrl": { "type": ["string", "null"], "description": "Private avatar URL valid for at most 60 seconds; signed only after accepted-friend and location authorization." }, "latitude": { "type": "number" }, "longitude": { "type": "number" }, "updatedAt": { "type": "string", "format": "date-time" }, "expiresAt": { "type": "string", "format": "date-time" } }
+      }
+    }
+  }
+}

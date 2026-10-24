@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { PageShell } from "./page-shell";
 import { useRecordMeet } from "./queries";
 import { Switch } from "./switch";
+import { LocationSharingCard } from "@/features/presence/sharing-card";
 
 export function SettingsView() {
   const record = useRecordMeet();
@@ -17,6 +18,7 @@ export function SettingsView() {
   return (
     <PageShell title="Meet settings" showDemoBadge={false} onBack={() => { setDraft(null); router.push("/profile"); }}>
       <section className="flex flex-1 flex-col items-center gap-4 pt-2">
+        <LocationSharingCard />
         <span className="grid size-14 place-items-center rounded-2xl bg-mootz-canvas text-mootz-deep"><SlidersHorizontal size={26} /></span>
         <h2 className="text-center font-display text-[38px] font-extrabold leading-none">Your Meets,<br />your choice.</h2>
         <p className="text-center text-base text-mootz-muted">Choose what goes onchain.<br />Your Dot is created either way.</p>

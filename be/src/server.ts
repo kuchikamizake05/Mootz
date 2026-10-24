@@ -9,6 +9,8 @@ import { createRegistryAccess } from './chain/registry.ts';
 import { purgeExpiredOfferLocations } from './meet/routes.ts';
 import { createCollectionGateway } from './chain/collection.ts';
 import { readFrame } from './frames/service.ts';
+import { purgeExpiredFriendLocations } from './presence/routes.ts';
+import { readAvatarUrl } from './profile/avatar.ts';
 
 async function main() {
   const config = loadConfig(process.env);
@@ -27,7 +29,9 @@ async function main() {
     ...(verifier && storage ? { reactions: { verifyToken: (token: string) => verifier.verify(token), pool: database.pool, storage, processImage } } : {}),
     ...(verifier&&storage&&registry?{meets:{verifyToken:(token:string)=>verifier.verify(token),pool:database.pool,domain:registry.domain,storage,assertWallet:registry.assertWallet}}:{}),
     ...(verifier ? {
-      profile: { verifyToken: (token: string) => verifier.verify(token), repository: createProfileRepository(database.pool, config.walletChainId), readFrame:currentFrame },
+      ...(storage ? { avatars: { verifyToken: (token: string) => verifier.verify(token), pool: database.pool, storage, processImage } } : {}),
+      presence: { verifyToken: (token: string) => verifier.verify(token), pool: database.pool, ...(storage ? { avatarStorage: storage } : {}) },
+      profile: { verifyToken: (token: string) => verifier.verify(token), repository: createProfileRepository(database.pool, config.walletChainId), readFrame:currentFrame, ...(storage ? { readAvatar: (id: string) => readAvatarUrl(database.pool, storage, id) } : {}) },
       frames: { verifyToken: (token: string) => verifier.verify(token), pool: database.pool, ...(collection ? { gateway:collection } : {}) },
       wallet: { verifyToken: (token: string) => verifier.verify(token), pool: database.pool, domain: config.walletDomain, chainId: config.walletChainId },
       friends: { verifyToken: (token: string) => verifier.verify(token), pool: database.pool },
@@ -39,7 +43,7 @@ async function main() {
       dots: { verifyToken: (token:string)=>verifier.verify(token),pool:database.pool },
     } : {}),
   });
-  const purge=()=>purgeExpiredOfferLocations(database.pool).catch(()=>{process.stderr.write('Offer location cleanup unavailable\n');});
+  const purge=()=>Promise.all([purgeExpiredOfferLocations(database.pool),purgeExpiredFriendLocations(database.pool)]).catch(()=>{process.stderr.write('Location cleanup unavailable\n');});
   let cleanup:ReturnType<typeof setInterval>|undefined;
   app.addHook('onReady',async()=>{await purge();cleanup=setInterval(()=>{void purge();},15000);cleanup.unref();});
   app.addHook('onClose',async()=>{if(cleanup)clearInterval(cleanup);});

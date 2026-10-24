@@ -1,5 +1,7 @@
 # Keputusan dan hal yang belum dikunci
 
+Pembaruan 24 Oktober 2026: pengguna menyetujui lokasi teman otomatis selama aplikasi foreground terlihat, update/polling 5 detik, default aktif dengan izin browser, dimatikan dari profil. Accepted friends saja, area perkiraan 200m, lease 60 detik, offchain tanpa riwayat pergerakan. Ini memperluas scope sebelumnya; pelacakan background tetap tidak diizinkan. Lihat [friend location](friend-location.md).
+
 Sumber perilaku produk: [PRD](../PRD.md). Kontrak interface: [baseline integrasi](int-01-baseline.md).
 
 ## Disepakati

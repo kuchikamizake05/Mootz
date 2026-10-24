@@ -16,6 +16,8 @@ import { registerCollectionRoutes } from './collections/routes.ts';
 import { registerEquipRoutes } from './collections/equip.ts';
 import { registerClaimSubmissionRoutes } from './claim-relay/routes.ts';
 import { registerFrameRoutes } from './frames/routes.ts';
+import { registerPresenceRoutes } from './presence/routes.ts';
+import { registerAvatarRoutes } from './profile/avatar.ts';
 
 export interface AppOptions {
   origins: string[];
@@ -35,6 +37,8 @@ export interface AppOptions {
   equips?: Parameters<typeof registerEquipRoutes>[1];
   claimSubmissions?: Parameters<typeof registerClaimSubmissionRoutes>[1];
   frames?: Parameters<typeof registerFrameRoutes>[1];
+  presence?: Parameters<typeof registerPresenceRoutes>[1];
+  avatars?: Parameters<typeof registerAvatarRoutes>[1];
   storageReadiness?: () => Promise<void>;
 }
 
@@ -82,6 +86,21 @@ export function createApp(options: AppOptions) {
     reply.code(status).send(failure(code, request.id));
   });
   app.get('/health', async () => ({ status: 'ok' }));
+  if (options.avatars) registerAvatarRoutes(app, options.avatars);
+  else {
+    const unavailable = async (request: import('fastify').FastifyRequest, reply: import('fastify').FastifyReply) => reply.code(503).send(failure('MEDIA_UNAVAILABLE', request.id));
+    app.put('/v1/me/avatar', unavailable);
+    app.delete('/v1/me/avatar', unavailable);
+  }
+  if (options.presence) registerPresenceRoutes(app, options.presence);
+  else {
+    const unavailable = async (request: import('fastify').FastifyRequest, reply: import('fastify').FastifyReply) => reply.code(503).send(failure('AUTH_UNAVAILABLE', request.id));
+    app.get('/v1/me/location-sharing', unavailable);
+    app.put('/v1/me/location-sharing', unavailable);
+    app.put('/v1/me/location', unavailable);
+    app.delete('/v1/me/location', unavailable);
+    app.get('/v1/friends/locations', unavailable);
+  }
   if (options.profile) registerProfileRoutes(app, options.profile);
   else {
     const unavailable = async (request: import('fastify').FastifyRequest, reply: import('fastify').FastifyReply) => reply.code(503).send(failure('AUTH_UNAVAILABLE', request.id));

@@ -19,6 +19,8 @@ import { getBrowseOrigin } from "@/features/shell/browse-origin";
 import { useJakartaToday, useRecordMeet, useStreak } from "./queries";
 import { Switch } from "./switch";
 import { useViewerIdentity } from "./viewer";
+import { LocationSharingCard } from "@/features/presence/sharing-card";
+import { AvatarEditor } from "./avatar-editor";
 
 function StreakCard() {
   const streak = useStreak();
@@ -88,6 +90,8 @@ export function ProfileView() {
         {env.demoFixtures && <p className="text-xs font-bold text-mootz-muted">Demo profile · Fictional data</p>}
       </div>
 
+      <AvatarEditor />
+      <LocationSharingCard />
       <div className="grid grid-cols-2 border-y border-mootz-hairline py-2">
         <Link href="/dots" className="flex flex-col justify-center gap-1 pr-4">
           <span className="font-display text-[28px] leading-none text-mootz-deep">

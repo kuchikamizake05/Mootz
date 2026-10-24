@@ -2,6 +2,15 @@
 
 Run each module's actual scripts from its directory. Record results for the current checkout; do not infer deployment or end-to-end readiness from unit tests.
 
+## Foreground friend location — 24 October 2026
+
+Avatar follow-up: profile JPEG/PNG upload/removal and authenticated own-avatar reads are connected to the friend-location marker. Latest combined backend run: 329 tests PASS. Targeted presence+avatar coverage: lines 97.77%, branches 82.6%, functions 92.3%, statements 94.06% (80% aggregate gates PASS). Frontend unit tests (30), generated API check, typecheck/lint and production build PASS; four Map/profile Playwright+axe checks at 390/1440 PASS. Avatar tests cover invalid/unauthenticated uploads, normalization/private storage, stranger denial, authorized signing, replacement/removal and failed-upload preservation. Production cloud storage and two-phone avatar display remain UNVERIFIED. Deployment also requires migration `018_profile_avatar.sql`.
+
+- Backend typecheck, lint and build PASS. Combined unit/integration execution: 325 tests PASS on the dedicated local `mootz_frames_tests` PostgreSQL/PostGIS database. Presence-specific coverage: lines/functions 100%, statements 98.24%, branches 94.44%; 80% gates PASS. Tests include current friend authorization, pending/stranger/removed access, expiry, coarse coordinates, concurrent opt-out, account authentication and cleanup.
+- Frontend lint, unit tests (30 on current shared checkout), generated API/protocol checks, production build PASS. Targeted Playwright/axe: Map, profile, settings and map-selection flow at 390px and 1440px: 8 PASS using labelled fixtures. Initial browser run lacked public Privy configuration; rerun with the project's example public App ID passed. This does not prove actual authentication or GPS.
+- Early broader DB run against a newly isolated database failed existing suite prerequisites (one suite requires the exact `mootz_frames_tests` name and readiness needs PostGIS); rerun on the documented test database passed. No application database was reset.
+- UNVERIFIED: two real phones, location permission/foreground behavior on Safari/Android, actual authenticated friend markers on HTTPS, production migration/deployment. Sampling and marker refresh are every 5 seconds; network/GPS delays remain possible. Implemented locally; no production deployment performed for this feature.
+
 | Area | Checks |
 | --- | --- |
 | Backend | `npm ci --ignore-scripts`, `npm run typecheck`, `npm run lint`, `npm run build`, `npm run check:protocol`, `npm test`, `npm run test:deploy`, `npm audit` |

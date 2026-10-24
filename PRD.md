@@ -1,5 +1,7 @@
 # Mootz: Product Requirements Document
 
+Pembaruan scope 24 Oktober 2026 — **ROV-19: Foreground friend location**: posisi perkiraan teman accepted dapat tampil tanpa foto; default aktif setelah izin browser, kirim dan baca setiap 5 detik selama app terlihat, nonaktifkan dari profil. Posisi terakhir kedaluwarsa setelah 60 detik; offchain, tanpa riwayat/background tracking. Lihat [spesifikasi](docs/friend-location.md). Requirement ROV-01–18 tetap.
+
 Status: spesifikasi awal; seluruh requirement aplikasi masih **belum diimplementasikan**. Requirement di sini adalah perilaku yang dituju, bukan klaim fitur tersedia. Parameter yang diberi label usulan tetap perlu divalidasi.
 
 ## 1. Ringkasan dan hipotesis

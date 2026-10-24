@@ -1,0 +1,16 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "Mootz profile avatar", "version": "1.0.0" },
+  "security": [{ "bearerAuth": [] }],
+  "paths": {
+    "/v1/me/avatar": {
+      "put": {
+        "description": "Replace only the authenticated account's avatar. JPEG/PNG up to 8 MiB; decoded, normalized and metadata stripped. Only a thumbnail is stored in private media. No client-selected account ID, storage key or remote URL is accepted.",
+        "requestBody": { "required": true, "content": { "image/jpeg": { "schema": { "type": "string", "format": "binary" } }, "image/png": { "schema": { "type": "string", "format": "binary" } } } },
+        "responses": { "200": { "description": "Saved avatar; null URL if signing is temporarily unavailable.", "content": { "application/json": { "schema": { "type": "object", "required": ["avatarUrl"], "properties": { "avatarUrl": { "type": ["string", "null"] } } } } } }, "400": { "description": "Invalid image." }, "401": { "description": "Missing/invalid identity." }, "413": { "description": "Upload too large." }, "503": { "description": "Media unavailable." } }
+      },
+      "delete": { "responses": { "204": { "description": "Own avatar reference removed; fallback avatar shown." }, "401": { "description": "Missing/invalid identity." }, "503": { "description": "Media unavailable." } } }
+    }
+  },
+  "components": { "securitySchemes": { "bearerAuth": { "type": "http", "scheme": "bearer" } } }
+}

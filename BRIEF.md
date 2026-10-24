@@ -1,5 +1,7 @@
 # Mootz: Product & Hackathon Brief
 
+Pembaruan 24 Oktober 2026: lokasi teman foreground ditambahkan sesuai permintaan pengguna; update otomatis tiap 5 detik saat app terlihat, izin browser wajib, dimatikan lewat profil, accepted friends saja dan posisi kedaluwarsa 60 detik. Area perkiraan tanpa foto/onchain/riwayat/background tracking. Ketentuan baru ini berlaku atas pernyataan scope lama tentang tracking teman; lihat [detail](docs/friend-location.md).
+
 ## 1. Produk dalam satu kalimat
 
 **Mootz adalah aplikasi sosial Map + Feed untuk berbagi foto harian depan-belakang dengan teman, dan membuktikan pertemuan langsung lewat Meet yang menjadi Dot di peta serta dapat dicatat di Monad.**

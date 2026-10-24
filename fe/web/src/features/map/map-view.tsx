@@ -18,6 +18,7 @@ import { cn } from "@/lib/cn";
 import { env } from "@/lib/env";
 import { getBasemap, getCamera, saveBasemap, saveCamera, type BasemapKind } from "./camera-store";
 import { MapMarker } from "./map-marker";
+import { FriendLocationLayer } from "@/features/presence/friend-layer";
 
 const MAP_STYLE = "https://tiles.openfreemap.org/styles/positron";
 const satelliteStyle = () => `https://api.maptiler.com/maps/satellite/style.json?key=${env.mapTilerKey}`;
@@ -155,6 +156,7 @@ export function MapView() {
     <div className="absolute inset-0 overflow-hidden bg-mootz-canvas">
       {/* size-full, not absolute: maplibre-gl.css forces position: relative on this node. */}
       <div ref={containerRef} className="size-full [&_.maplibregl-ctrl-top-left]:mt-[84px] [&_.maplibregl-ctrl-top-left_.maplibregl-ctrl]:ml-2" />
+      <FriendLocationLayer map={map} />
 
       {/* Dot areas sit under moment markers (zIndex 0); a Dot area is never anyone's live position. */}
       {map &&

@@ -1,5 +1,7 @@
 # Rencana Map dan Satellite
 
+Pembaruan scope 24 Oktober 2026: layer lokasi teman foreground terpisah dari marker momen/Dot ditambahkan. Perkiraan area, accepted friends, refresh 5 detik, expiry 60 detik, kontrol profil; tidak terkait basemap maupun Meet. Ini menggantikan pengecualian tracking teman di bawah hanya untuk foreground sharing; background tetap di luar scope. Lihat [detail](friend-location.md).
+
 Rencana basemap untuk brief, PRD (ROV-02/04/11/18), dan desain. Ini rencana pengembangan dan handoff desain; belum ada integrasi, konfigurasi API key MapTiler di repo, atau pemeriksaan visual citra venue.
 
 ## Satu peta, dua sumber latar
