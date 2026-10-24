@@ -8,7 +8,7 @@
 
 Mootz is a social Map + Feed app inspired by BeReal and Zenly/Bump. Share front-and-back photos with friends, confirm a shared moment through **Meet**, and carry consented Meet records and event collectibles on Monad.
 
-**Status: backend and smart-contract source are implemented; product frontend is planned and end-to-end acceptance remains outstanding.** The backend includes identity, private media, friendships, moments, reactions/comments, Meet/Dots, frames, Event claims, relay recovery and chain finality workers. Contract sources, ABI and synthetic signing vectors are included. Live deployment, real-device acceptance and production readiness require separate verification. See [backend setup](be/README.md), [API interfaces](docs/interfaces.md) and [verification](docs/verification.md).
+**Status: backend and smart-contract source are implemented; both contracts are deployed and source-verified on Monad testnet. Product frontend is planned and end-to-end acceptance remains outstanding.** The backend includes identity, private media, friendships, moments, reactions/comments, Meet/Dots, frames, Event claims, relay recovery and chain finality workers. Contract sources, ABI and synthetic signing vectors are included. Backend deployment, real-device acceptance and production readiness require separate verification. See [backend setup](be/README.md), [API interfaces](docs/interfaces.md) and [verification](docs/verification.md).
 
 ## Repository structure
 
@@ -64,7 +64,20 @@ Signatures and location checks do not prove photo authenticity, unique humans, o
 | Maps | MapLibre; OpenFreeMap by default and user-selected MapTiler Satellite |
 | Chain | Monad testnet, viem, Solidity, and Foundry in `sc/` |
 
-Backend and contract runtime/dependency versions are pinned in their module manifests. Hosting, gas sponsorship and public deployment addresses require environment-specific configuration. MapTiler's free plan has usage limits; follow the [map plan](docs/map-plan.md) for attribution, quota handling, and fallback.
+Backend and contract runtime/dependency versions are pinned in their module manifests. Hosting, gas sponsorship and consumer configuration require environment-specific setup. MapTiler's free plan has usage limits; follow the [map plan](docs/map-plan.md) for attribution, quota handling, and fallback.
+
+## Monad testnet deployment
+
+Deployed on **2026-10-24**, chain ID **10143**, from commit `f0a966d`. Both contracts returned **Pass - Verified** on Monadscan; MonadVision returned a partial match.
+
+| Contract | Verified source |
+| --- | --- |
+| MeetRegistry | [0x6fcdc6f98ab1ead21ae44f1e57f1ffeb5d3a49ff](https://testnet.monadscan.com/address/0x6fcdc6f98ab1ead21ae44f1e57f1ffeb5d3a49ff#code) |
+| EventCollection | [0x3d368ee46756102b0e0567f846f5ad9fcdff8a01](https://testnet.monadscan.com/address/0x3d368ee46756102b0e0567f846f5ad9fcdff8a01#code) |
+
+Deployment receipts, runtime bytecode hashes and roles passed readback through an independent public RPC. Actual deployment fees totaled **0.40790004 MON**. See the [public deployment record](sc/abi/deployment.monad-testnet.json) for transaction hashes, constructor arguments, role addresses and explorer verification responses, and the [contract README](sc/README.md) for reproducible checks.
+
+Admin, relayer and issuer currently share one approved testnet wallet. No demo collection or public two-wallet Meet/claim smoke was created by this deployment. INT-01 consumer approval and product integration remain outstanding; deployment does not close SC-03 or establish production readiness.
 
 ## Start here
 

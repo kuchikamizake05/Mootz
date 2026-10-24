@@ -2,7 +2,7 @@
 
 Owner: Diaz (@amantajatii).
 
-**Contract sources and tests are included. Public Monad deployment is not configured.** MeetRegistry and EventCollection implement the [candidate INT-01 signing protocol](specs/README.md). Consumer acceptance and public deployment verification remain required. Do not treat local addresses as public contracts.
+**Both contracts are deployed on Monad testnet (chain 10143) and source-verified on Monadscan.** MeetRegistry and EventCollection implement the [candidate INT-01 signing protocol](specs/README.md). Consumer acceptance and public two-wallet Meet/claim smoke remain unverified.
 
 | Contract | Behavior |
 | --- | --- |
@@ -10,6 +10,19 @@ Owner: Diaz (@amantajatii).
 | EventCollection | ERC1155 recipient-bound issuer voucher, one claim per wallet/collection, immutable cap and public metadata; no transfers, admin mint, burn, upgrade, or Meet-triggered mint |
 
 No Dots token. Photo/location/audience/eligibility remain backend responsibilities. Signatures do not prove GPS, authenticity, signing time or unique humans. Public records expose wallet pairs; opt-out and failed chain records must not remove Dots.
+
+## Public testnet deployment
+
+Deployed 2026-10-24 from commit `f0a966dfe9adbfb8f4a8f59b742e9f53f3cdfe27`. Public receipts, constructor arguments, runtime hashes and verification responses are recorded in [deployment.monad-testnet.json](abi/deployment.monad-testnet.json).
+
+| Contract | Monadscan verified source |
+| --- | --- |
+| MeetRegistry | [0x6fcdc6f98ab1ead21ae44f1e57f1ffeb5d3a49ff](https://testnet.monadscan.com/address/0x6fcdc6f98ab1ead21ae44f1e57f1ffeb5d3a49ff#code) |
+| EventCollection | [0x3d368ee46756102b0e0567f846f5ad9fcdff8a01](https://testnet.monadscan.com/address/0x3d368ee46756102b0e0567f846f5ad9fcdff8a01#code) |
+
+Deployment receipts, runtime bytecode hashes and roles were independently reread through the public testnet RPC. Monadscan returned `Pass - Verified`; MonadVision returned a partial match through the monskills verification API. Actual deployment fees totaled **0.40790004 MON**.
+
+The approved testnet configuration assigns admin, relayer and issuer to deployer `0x1B6A8259fB8aB197ee27F45788f14D77B35301f9`. These are distinct roles held by one wallet; operational separation has not been performed. No demo collection, public Meet or claim was created by this deployment. INT-01 remains a candidate; deployment is not evidence of full product integration or completion of SC-03.
 
 ## Reproduce
 
@@ -43,7 +56,7 @@ Follow the [official Foundry guidance](https://docs.monad.xyz/tooling-and-infra/
 
 `npm run vectors` regenerates vectors; `npm run check:artifacts` detects stale ABI, types or vectors. Solidity `VectorsTest` reproduces full EIP-712 hashes/signers and commitment encoding. Backend `storedPhotoCommitment` adapts private stored media digests to the canonical chain commitment; the internal SHA256 pair commitment remains separate. INT-01 consumer approval and live compatibility checks remain required.
 
-## Deployment preparation (not executed on testnet)
+## Future deployment procedure
 
 Use a funded encrypted Foundry keystore, explicit public role addresses and a verified Monad testnet RPC. Never pass keys on the command line or commit them. The script reads public role addresses only; it rejects chain IDs other than10143 and deploys contracts without granting the deployer implicit privileges. Admin controls role rotation and collection creation; issuer/relay are separate operational roles. Public metadata is reviewed manually. No pause, proxy, upgrade or historical Meet deletion exists.
 
