@@ -9,7 +9,7 @@ Status: backend, Meet/Event/frame APIs, relay workers and canonical contract exp
 | be/ | Node24.13, TypeScript5.9, Fastify5, npm11 module-local lockfile. Docker PostgreSQL/PostGIS and API, private Supabase Storage. Scripts: lint/typecheck/test/test:db/test:coverage/build. API localhost3001. |
 | fe/web/ | Wangsit's Next.js/TypeScript initial demo. Public API base localhost3001, public Privy App ID; browser origin localhost3000. Product manifest/lockfile/scripts and fresh-install acceptance are Wangsit-owned and currently absent. |
 | fe/app/ | Mobile delivery deferred until after the initial web demo. No mobile framework/build or native background-location behavior is promised. Framework selection is a separate owner decision before mobile implementation. |
-| sc/ | Diaz's Solidity0.8.30/Cancun/Foundry1.5.1 candidate; exact npm lockfile, public schema/helpers/ABI, typecheck and generated-artifact checks. Public deployment belongs to SC-03. |
+| sc/ | Diaz's Solidity0.8.30/Cancun/Foundry1.8.0 candidate with Monad execution; exact npm lockfile, public schema/helpers/ABI, typecheck and generated-artifact checks. Public deployment belongs to SC-03. |
 
 No root workspace dependency install is defined. Run each module's npm ci from its own lockfile. Existing package-manager pins are module-local; do not rewrite another owner's lockfile just to match patch versions. Frontend consumes public artifacts and backend HTTP APIs, never be/src business code.
 

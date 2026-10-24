@@ -15,9 +15,9 @@ await new Promise((resolve, reject) => { listener.once('error', reject); listene
 const port = listener.address().port;
 await new Promise((resolve) => listener.close(resolve));
 // This script starts its OWN loopback chain. No external RPC or secret environment input is accepted.
-const chain = defineChain({ id: 10143, name: 'Local Anvil fixture, NOT Monad', nativeCurrency: { name: 'Test', symbol: 'TEST', decimals: 18 }, rpcUrls: { default: { http: [`http://127.0.0.1:${port}`] } } });
+const chain = defineChain({ id: 10143, name: 'Local Monad Anvil fixture, NOT testnet', nativeCurrency: { name: 'Test', symbol: 'TEST', decimals: 18 }, rpcUrls: { default: { http: [`http://127.0.0.1:${port}`] } } });
 const rpc = chain.rpcUrls.default.http[0];
-const anvil = spawn('anvil', ['--host', '127.0.0.1', '--port', String(port), '--chain-id', '10143', '--accounts', '0', '--timestamp', '1800000000', '--silent'], { stdio: 'ignore' });
+const anvil = spawn('anvil', ['--network', 'monad', '--host', '127.0.0.1', '--port', String(port), '--chain-id', '10143', '--accounts', '0', '--timestamp', '1800000000', '--silent'], { stdio: 'ignore' });
 let exited = false;
 anvil.once('exit', () => { exited = true; });
 anvil.once('error', () => { exited = true; });
@@ -27,7 +27,7 @@ const acct = (n) => privateKeyToAccount(`0x${n.toString(16).padStart(64, '0')}`)
 const deployer = acct(1), admin = acct(2), relayer = acct(3), issuer = acct(4), poster = acct(5), scanner = acct(6);
 const wallet = (account) => createWalletClient({ account, chain, transport: http(rpc) });
 const hash = (text) => keccak256(stringToHex(text));
-const report = { environment: 'LOCAL_DISPOSABLE_ANVIL_NOT_MONAD', protocolStatus, chainId: 10143, roles: { deployer: deployer.address, admin: admin.address, relayer: relayer.address, issuer: issuer.address }, transactions: [], checks: [] };
+const report = { environment: 'LOCAL_MONAD_ANVIL_NOT_TESTNET', protocolStatus, chainId: 10143, roles: { deployer: deployer.address, admin: admin.address, relayer: relayer.address, issuer: issuer.address }, transactions: [], checks: [] };
 async function receipt(hash, label) {
   const r = await client.waitForTransactionReceipt({ hash });
   assert.equal(r.status, 'success', label);
@@ -112,7 +112,9 @@ try {
   const pending = await Promise.all(Array.from({ length: 51 }, async (_, i) => {
     const concurrentVoucher = { collectionId: 2n, recipient: acct(1000 + i).address, issuer: issuer.address, nonce: hash(`concurrent-${i}`), deadline };
     const concurrentSignature = await issuer.signTypedData({ domain: collectionDomain(10143, collection), types: claimTypes, primaryType: 'Claim', message: concurrentVoucher });
-    return wallet(relayer).writeContract({ address: collection, abi: collectionABI, functionName: 'claim', args: [concurrentVoucher, concurrentSignature], gas: 300000n, nonce: firstNonce + i });
+    const params = { address: collection, abi: collectionABI, functionName: 'claim', args: [concurrentVoucher, concurrentSignature] };
+    const estimate = await client.estimateContractGas({ ...params, account: relayer.address });
+    return wallet(relayer).writeContract({ ...params, gas: estimate + estimate / 10n, nonce: firstNonce + i });
   }));
   await client.request({ method: 'evm_mine', params: [] });
   await client.request({ method: 'evm_setAutomine', params: [true] });

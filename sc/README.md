@@ -13,7 +13,9 @@ No Dots token. Photo/location/audience/eligibility remain backend responsibiliti
 
 ## Reproduce
 
-Tooling: Foundry **v1.5.1** (`.foundry-version`), Solidity **0.8.30**, EVM **Cancun**, optimizer 200. JS tooling npm **11.19.0**, Node >=24 <27. Dependencies OpenZeppelin Contracts 5.6.1, viem 2.57.10 and TypeScript 5.9.3 are exact-pinned with npm lockfile.
+Tooling: Foundry **v1.8.0** (`.foundry-version`), Monad execution (`network = "monad"`), Solidity **0.8.30**, compiler target **Cancun**, optimizer 200. JS tooling npm **11.19.0**, Node >=24 <27. Dependencies OpenZeppelin Contracts 5.6.1, viem 2.57.10 and TypeScript 5.9.3 are exact-pinned with npm lockfile.
+
+Ensure both `forge --version` and `anvil --version` resolve to v1.8.0 before running these scripts. The version file does not switch your shell's PATH automatically; a separate toolchain directory can be prepended without replacing the global installation.
 
 ```sh
 cd sc
@@ -27,9 +29,9 @@ npm audit
 npm run smoke:local
 ```
 
-`smoke:local` starts and stops its own loopback Anvil node with disposable, explicitly public test keys. It runs the deployment script, checks roles/code/digests, sends a valid Meet and claim, tests 51 concurrent claims against cap50, rejects unauthorized/opt-out/replay/recipient substitution/transfer, and rereads ownership and event count with an independent RPC client. It is **not a Monad fork or remote testnet check**, despite using chain ID10143 to exercise the deployment guard. Never fund these public fixture keys on a real network.
+`smoke:local` starts and stops its own loopback Anvil node with `--network monad` and disposable, explicitly public test keys. It runs the deployment script, checks roles/code/digests, sends a valid Meet and claim, tests 51 concurrent claims against cap50 using RPC gas estimates with a 10% buffer, rejects unauthorized/opt-out/replay/recipient substitution/transfer, and rereads ownership and event count with an independent RPC client. It is **not a Monad fork or remote testnet check**, despite using chain ID10143 to exercise the deployment guard. Never fund these public fixture keys on a real network.
 
-Local Ethereum EVM tests do not establish Monad gas/finality compatibility. Current [Monad guidance](https://docs.monad.xyz/developer-essentials/differences) recommends Foundry1.8+ with Monad execution enabled; the available pinned1.5.1 toolchain here does not provide that verification. Before actual deployment, deliberately upgrade/verify a Monad-enabled toolchain and rerun all checks rather than silently changing the team's global installation.
+Follow the [official Foundry guidance](https://docs.monad.xyz/tooling-and-infra/toolkits/foundry) and use v1.8.0 for Forge and Anvil. Local Monad execution exercises Monad rules and gas accounting, but does not establish live network gas estimates, consensus or finality. Remote testnet simulation and receipt/readback checks remain required before claiming public deployment.
 
 ## Signing and consumer exports
 
@@ -39,7 +41,7 @@ Local Ethereum EVM tests do not establish Monad gas/finality compatibility. Curr
 - [abi/MeetRegistry.json](abi/MeetRegistry.json), [abi/EventCollection.json](abi/EventCollection.json): generated ABIs; `npm run export` after a build.
 - [abi/deployment.template.json](abi/deployment.template.json): explicitly empty testnet address/role/receipt handoff. Fill a separate deployment record only from verified public receipts.
 
-`npm run vectors` regenerates vectors; `npm run check:artifacts` detects stale ABI, types or vectors. Solidity `VectorsTest` reproduces full EIP-712 hashes/signers and commitment encoding. Current backend pair commitment is a different internal SHA256 construction: integration requires explicit INT-01 agreement/adaptation; no live compatibility is claimed.
+`npm run vectors` regenerates vectors; `npm run check:artifacts` detects stale ABI, types or vectors. Solidity `VectorsTest` reproduces full EIP-712 hashes/signers and commitment encoding. Backend `storedPhotoCommitment` adapts private stored media digests to the canonical chain commitment; the internal SHA256 pair commitment remains separate. INT-01 consumer approval and live compatibility checks remain required.
 
 ## Deployment preparation (not executed on testnet)
 

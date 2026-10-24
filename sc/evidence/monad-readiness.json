@@ -1,0 +1,56 @@
+{
+  "checkedAt": "2026-10-24T04:15:47.166Z",
+  "status": "SIMULATION_ONLY_NOT_DEPLOYED",
+  "toolchain": {
+    "version": "1.8.0",
+    "location": "/private/tmp/mootz-foundry-v1.8.0",
+    "archiveSha256": "0599b28a19af97c3ae91fab12ad868a1922db7770c4adff6b6d26235862153d0",
+    "globalInstallationReplaced": false
+  },
+  "executionNetwork": "monad",
+  "protocolStatus": "candidate-int-01-not-approved",
+  "checks": {
+    "solidityTests": {
+      "passed": 75,
+      "failed": 0,
+      "fuzzRunsPerTest": 256
+    },
+    "lint": "PASS",
+    "typecheck": "PASS",
+    "canonicalArtifacts": "PASS",
+    "localSmoke": {
+      "passed": 8,
+      "concurrentSubmitted": 51,
+      "concurrentSuccessful": 50,
+      "concurrentReverted": 1
+    },
+    "build": "PASS_WITH_STATIC_ANALYSIS_WARNINGS",
+    "additionalFuzz": {
+      "passed": 2,
+      "failed": 0,
+      "runsPerTest": 2048
+    }
+  },
+  "simulation": {
+    "rpc": "https://testnet-rpc.monad.xyz",
+    "chainId": 10143,
+    "fixtureAddressesOnly": true,
+    "broadcast": false,
+    "estimatedGasLimit": "4724983",
+    "estimatedMaxFeePerGasGwei": "203",
+    "estimatedMaxCostMon": "0.959171549",
+    "deploymentAddressesAreNotPublicContracts": true
+  },
+  "remaining": [
+    "Verified deployer and admin/relayer/issuer addresses",
+    "Funded encrypted deployment account",
+    "INT-01 consumer approval",
+    "Actual broadcast, explorer verification and public Meet/claim readback"
+  ],
+  "limitations": [
+    "Build emits static-analysis warnings; this is not a security audit",
+    "Local smoke does not verify public consensus or finality",
+    "Gas estimate is specific to this fixture simulation and current fees",
+    "Forge script warns about temporary generated DeployHelper artifacts; simulation still succeeds"
+  ]
+}

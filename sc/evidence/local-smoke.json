@@ -1,0 +1,365 @@
+{
+  "environment": "LOCAL_MONAD_ANVIL_NOT_TESTNET",
+  "protocolStatus": "candidate-int-01-not-approved",
+  "chainId": 10143,
+  "roles": {
+    "deployer": "0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf",
+    "admin": "0x2B5AD5c4795c026514f8317c7a215E218DcCD6cF",
+    "relayer": "0x6813Eb9362372EEF6200f3b1dbC3f819671cBA69",
+    "issuer": "0x1efF47bc3a10a45D4B230B5d10E37751FE6AA718"
+  },
+  "transactions": [
+    {
+      "label": "deploy MeetRegistry",
+      "hash": "0x8077559dbb56815cb41fc839e31c8cbc97e805d85abb701aff6c52a6c1f00f93",
+      "blockNumber": "1",
+      "status": "success"
+    },
+    {
+      "label": "deploy EventCollection",
+      "hash": "0x804ea1d2c3caa3f66c9d8124093120f779f1785f7f68573a448c1390dcdc7ed9",
+      "blockNumber": "2",
+      "status": "success"
+    },
+    {
+      "label": "valid Meet",
+      "hash": "0x09e1d0ab24631a96721b5899b33b36959bd322f5fb8e57bafa4bdfab971d8014",
+      "blockNumber": "3",
+      "status": "success"
+    },
+    {
+      "label": "configure capped collection",
+      "hash": "0x877819afc652f1ac77d03805e855ba6bef68a8df94e2ae1a6633d64c41e9cd1b",
+      "blockNumber": "4",
+      "status": "success"
+    },
+    {
+      "label": "eligible collection claim",
+      "hash": "0x61d2e700c055e30c4d84733ef981bd71417c908b108c75dd8d83669feccc17c7",
+      "blockNumber": "5",
+      "status": "success"
+    },
+    {
+      "label": "configure concurrent cap test",
+      "hash": "0x917d1962b5a6bada5559bd7202f03f80253d0600b362773d545412a04bbc783e",
+      "blockNumber": "6",
+      "status": "success"
+    }
+  ],
+  "checks": [
+    {
+      "label": "unauthorized relay rejected",
+      "status": "PASS"
+    },
+    {
+      "label": "OFFCHAIN_MEET rejected",
+      "status": "PASS"
+    },
+    {
+      "label": "Meet replay rejected",
+      "status": "PASS"
+    },
+    {
+      "label": "recipient substitution rejected",
+      "status": "PASS"
+    },
+    {
+      "label": "duplicate claim rejected",
+      "status": "PASS"
+    },
+    {
+      "label": "nontransferable ownership",
+      "status": "PASS"
+    },
+    {
+      "label": "51 concurrent claims in one block cannot exceed cap 50",
+      "status": "PASS"
+    },
+    {
+      "label": "deployment code, roles, digest, receipts and independent RPC reads",
+      "status": "PASS"
+    }
+  ],
+  "concurrentCap": {
+    "submitted": 51,
+    "successful": 50,
+    "reverted": 1,
+    "supply": "50",
+    "cap": "50",
+    "sameBlock": true,
+    "receipts": [
+      {
+        "hash": "0x4b7f83714b0e9a49f6ec4603f029b34d39155053d16d544dacf8c48d34245178",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0xd21a5bc3c1671e79b95c8f9af91a2d217d2b9ffe5fb0ea894142747347271b46",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x0d7167df2ef01e78030cc3591864fc2e1135a55890bb1d381cfdefb140bb17f5",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x533ddc8297f871f59acf5d26d99326d52cb3068ece495fbb545f3c9b4f8cd00d",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x9ac412d2ef04cc9b03d1fbb7b94d7d3846242ebed0d2d14bce89eca2bd5f8ffe",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0xc1e07e64f06d5232bd739149f5fc5c6f1fe9f7349f340e0c98242bbc5f9daa3d",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x73420cc108f7dbb193143de0b2086bd1ef503f79ab13681b9c114cee7992de29",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0xab785697eeb2517566debb3971bac3d111493960f0ee35219ca7144075d7afbf",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x58836fb89ea86ae05082be763a225e66668c523301605965d7242a2dfcd8105f",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x8273015fa92206937f642bfd2e5f99c03cfd62c0d923034cd8da5d1654b6f610",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x11b43c11212220589c41178c34877bf92dc16e487bd5847261c071e2f9ea0f8c",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x94039a5a054e627bb2faab0c3ed21657de334007cca86e637c4abc2fa5072c8f",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x37befd9290bec2e0b8fe9127cc81b9f718a48f5057587281dbca738315f3888d",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x8509697acfa58ebf5d50745f9b3aab3f1a3e7034041e2578dff09a0af11df531",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x043669aba2e69a323200d57df40bc3e32532c4f8789f2c3cd138cd2a7f079889",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x4b35e9693eb870200a2b9eba9404051b8174a7711a8fc841ab6052ffe290b31b",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x80ba2b61255a924ad01d7fe5b74fea833b59de10a23aea9f2132b6fb62b9c6e3",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0xbddf20ce095ea2e41ee26bd696cab1d2cf00810d6119fe2512891833e7504dc1",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x879f038bf54669f5bd24e5d09a44381837764cf3580a0c668859bc79317b66c5",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x463d41ac2bb16be7c2eaf85e35c67c20a99dc9785950157d7fedf659a0455950",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x1291d795cb79c4d798f5c33c2d2c2d9c14fea70ac7d53bcade653802b9224184",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x6d3e15f7eb1e98e34d842fdc45e80cb21c114710c86c73b58b6821bf276d454e",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x3620a2949725a76338517890871c6a33a5d350b2711624230452689d3add371e",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0xd29f84870e02dd20c90200519f82146720c16c6ad3fc3be8a3949d0572c3d020",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x74fd8fe9d8f5980ba21b1d74d6209971d735031a936fcc66c007666343deb379",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0xe19ddde4efe461fc1399b14cbd27e85d669cea5517156b7bc74c93ca69b4e3bc",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x2bf0486a98e225e72598cbd25b72ea761d8db26414e4db8266eb41175dba9960",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x9ad6553005386543f55baeb4fc447d7127a7af388b8ecc07954ae348ebd1650f",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x93ab9ee6027b42eaed18678d98ab67d27695f56a394aff4b7df84417282ef2ef",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x6eb228cf3dc622585c08252fcf2e94d73184dde50e39dd436a11ce58b7c9704a",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x25ba1a0b845f01bfaf7e5b2cbb063e56e1c93708036e8a0573fc3a3fe101840e",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x3c75f5b05f8094cb598bc906e445c0528cc268567089b247becb1c1350280699",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x3c3e604af9df81fff81831e0f91ad42e4c362133f70693b9a57bf76aa7bf7e82",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x28e45316538614af057690757568eb2235399ed39bf94bfbf5431db23713dbbb",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0xea0ae49f6a9982279cc32fb42dde210fa9c5429372fc94fe76838c37ef243dca",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x1a2f4ada76ac574c8099580403f3463fd47c763dcc21d56b680fac336a7e64b2",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x4ce1d424acfd98bec6ea0b9ba507bcb775313ed98a303b79dd4f94d5ee10adcc",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0xa226bd898179ccd36b4f12befb326e82249d286e1a5e4cfa843f4100d14582ca",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0xcf0929d4eba6d156a2609abb4f6bfbb435f7afdbed2457e4ebd4dbe679268bd5",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x8e72915eb2636a4e98d0b132cfc17a286fa6cb1328fda6209ff1923076e1348e",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x518dcb1c20866c28d973aaee2cb491174df364581b326207aa5a6d9a17fc063e",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x63d3be3b46e7e8af013e29664534de9874de96e6ba1c87b07e517ca945f91c70",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0xacf4fe4162d3b99e8f4ea94a21a7dfa66a656fc61a967bf183db2f8691c08660",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x93260fdbe924cdf4d4ee9129c25db94a2baee6371abb53c448f3797c94a50fda",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0xc6965ddf2b7572663f65ed56d4a7e625bd2c72ddc5dcf9e511e17e49184008d1",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0xe03de174c2b11f92dec2fa21694ca7c9491c861717b5123b2dfb78b879620c90",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x2a28af4be0928a69ef74f8a8656bb500570ce0e090d7d60d32c7e1d026f9e996",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x88a323ffa7cc3558b8fc1ddbf2a463f3ab7dbafb993e517fc0b267acfc08fd12",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0xabdddff5812bab7b77db888bda8ff01b2358070ec1358f746fa408fa04dd425d",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0x77ba97fb3176b91d19347997cbfddfd1177ea1863702845ad9668af3c87aaa9a",
+        "status": "success",
+        "blockNumber": "7"
+      },
+      {
+        "hash": "0xca5ab39228b01bee8aa4426433ef9f46c598a778356a99604798348966a685fd",
+        "status": "reverted",
+        "blockNumber": "7"
+      }
+    ]
+  },
+  "runtimeBytecodeHashes": {
+    "registry": "0x565b408a8549f042a05f429e527bf6d9a7d5222a9d554e5ac80f35512d0f27a6",
+    "collection": "0x35849103043f06f4556d459799370313f75710ec97a971a2530043ad47f5f609"
+  },
+  "addresses": {
+    "registry": "0xf2e246bb76df876cef8b38ae84130f4f55de395b",
+    "collection": "0x2946259e0334f33a064106302415ad3391bed384"
+  },
+  "readback": {
+    "poster": "0xe1AB8145F7E55DC933d51a18c793F901A3A0b276",
+    "scanner": "0xE57bFE9F44b819898F47BF37E5AF72a0783e1141",
+    "eventId": "0xd1bdf2ec2c7532d0fd692b48dcf4e1d00ed68b3fef10abf4e2a2471b1e215475",
+    "ownership": "1",
+    "eventMeetCount": "1",
+    "totalSupply": "1",
+    "cap": "50"
+  }
+}

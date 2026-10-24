@@ -1,4 +1,5 @@
 [profile.default]
+network = "monad"
 src = "src"
 test = "test"
 script = "script"
