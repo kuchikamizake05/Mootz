@@ -16,7 +16,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
   if (!ready) {
     return (
       <main className="grid min-h-dvh place-items-center bg-mootz-canvas p-6">
-        <StateMessage icon={LoaderCircle} busy title="Loading…" />
+        <StateMessage icon={LoaderCircle} busy title="Loading…" className="w-full max-w-sm items-center! gap-4 text-center" />
       </main>
     );
   }
