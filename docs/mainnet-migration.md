@@ -18,3 +18,31 @@ NEXT_PUBLIC_API_BASE_URL=https://api.mootz.fun
 ```
 
 Privy default/supported chain, wallet signing/switching, organizer reads and explorer links now share the selected network. Keep existing Privy configuration and disable fixture mode. Backend startup and contract receipt checks do not establish a completed two-device Meet/claim flow. Meet records disclose wallet pairs publicly; media, location and Dots remain offchain.
+
+## Runtime cutover result
+
+Cutover completed on 2026-10-24 at approximately 09:25 UTC. Live API image:
+`mootz-backend:mainnet-20261024`, digest
+`sha256:395b17a2504aee92c31d9050c3533fb7b63f328c7cb429d004ad394b51d87260`.
+The image uses the previously running server source plus the scoped mainnet patch;
+unrelated in-progress organizer location changes were excluded from this deployment.
+Migration 022 completed. Live container health, database readiness and private
+storage readiness all returned HTTP 200, and both contract signing-domain probes
+passed against mainnet from the live API container.
+
+Validation: Node 24 backend build/typecheck/lint, 256 unit tests and 153 PostgreSQL
+integration tests passed on the VPS using disposable databases with PostGIS.
+Frontend typecheck, 53 unit tests, lint and generated exports passed locally.
+The frontend production build passed with `npm run build -- --webpack`;
+Turbopack was unavailable here because its helper could not bind a port.
+
+Server backup/config rollback and the sanitized source patch are retained privately
+under `/home/ubuntu/.local/state/mootz-mainnet-20261024`; the database backup stays
+in the server's existing backup directory. No database export or secret was copied
+back to the local machine. The server checkout contains the deployed mainnet patch
+as tracked local changes, so the existing auto-deployer intentionally refuses to
+overwrite it. Reconcile the tested patch with the merged main branch before
+restoring normal automatic deployment; do not reset these changes to testnet.
+No transaction worker was enabled and no live Meet or collectible claim was sent
+by this migration. Those flows and the teammate's Vercel deployment remain separate
+acceptance steps.
