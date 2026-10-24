@@ -29,7 +29,7 @@ export function ScannerFlow() {
     return (
       <MeetFrame title="Scan to Meet" onClose={close}>
         <DemoBadge />
-        <div className="grid aspect-square w-full place-items-center rounded-[28px] bg-mootz-ink p-6 text-center text-sm font-bold text-white">
+        <div className="mx-auto grid aspect-square w-full max-w-[360px] place-items-center rounded-3xl bg-mootz-ink p-6 text-center text-sm font-bold text-white">
           Demo viewfinder · Camera not connected
         </div>
         <p className="text-mootz-muted">Open Meet on your phone to scan a friend&apos;s QR. For a preview of the next step, open the demo preview.</p>
@@ -158,7 +158,7 @@ function Scanner({ onClose }: { onClose: () => void }) {
       )}
       <div className={cn("flex flex-col gap-4", failed && "hidden")}>
         <h2 className="font-display text-center text-[32px] leading-none">Point at your friend&apos;s Mootz QR</h2>
-        <div className="relative grid h-[360px] w-full place-items-center overflow-hidden rounded-[28px] bg-mootz-ink">
+        <div className="relative mx-auto grid aspect-square w-full max-w-[360px] place-items-center overflow-hidden rounded-3xl bg-mootz-ink">
           <video ref={video} playsInline muted aria-label="Camera viewfinder" className="absolute inset-0 size-full object-cover" />
           <div aria-hidden className="relative z-10 grid size-[236px] place-items-center rounded-[28px] border-[3px] border-mootz-light">
             <ScanLine size={56} className="text-white/80" />

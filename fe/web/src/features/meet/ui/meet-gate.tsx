@@ -59,7 +59,7 @@ export function MeetGate({
   // Gate screens always use the light frame: StateMessage text is ink-on-light.
   const frame = (body: ReactNode) => (
     <MeetFrame title={title} onClose={() => closeFlow(router)}>
-      {body}
+      <div className="my-auto flex w-full flex-col py-8 [&_h2]:text-[32px] [&_h2]:leading-tight [&_button]:w-full [&_button]:min-h-12 [&>div]:gap-3 [&>div>div:last-child]:w-full">{body}</div>
     </MeetFrame>
   );
 
