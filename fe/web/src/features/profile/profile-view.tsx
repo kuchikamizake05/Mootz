@@ -21,6 +21,7 @@ import { Switch } from "./switch";
 import { useViewerIdentity } from "./viewer";
 import { LocationSharingCard } from "@/features/presence/sharing-card";
 import { AvatarEditor } from "./avatar-editor";
+import { OrganizerLink } from "@/features/organizer/access";
 
 function StreakCard() {
   const streak = useStreak();
@@ -106,6 +107,7 @@ export function ProfileView() {
       </div>
 
       <StreakCard />
+      <OrganizerLink />
 
       <div className="grid grid-cols-2 gap-3">
         <ButtonLink href="/meet/scan" size="lg" variant="secondary">Scan to Meet</ButtonLink>

@@ -52,7 +52,7 @@ Mootz connects these pieces: everyday paired photos, private friend sharing, sho
 | Optional Meet records | Both people explicitly sign onchain consent | Public wallet-pair record in MeetRegistry |
 | Events and collectibles | Check in, meet attendees and claim an eligible event memory | Backend eligibility; nontransferable collectible on Monad |
 | Profile and frames | Posting streak, achievement frames and equipped collection frames | Offchain progress and equip state; no payouts |
-| Organizer view | Inspect collection ownership and event Meet counts | Direct contract reads |
+| Organizer tools | Approved organizers create events and record attendance; independent reader inspects ownership and event Meet counts | Backend permission/ownership checks; separate direct contract reads |
 
 These interfaces and service modules are present in source. Their availability is separate from completion of a connected, two-device acceptance run.
 
