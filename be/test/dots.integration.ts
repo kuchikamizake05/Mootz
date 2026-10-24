@@ -81,3 +81,8 @@ it('reports exact-transaction finality without granting access or removing Dots'
   await pool.query('UPDATE meets SET transaction_hash=NULL WHERE id=$1',[meet]);
  }
 });
+it('exposes participant usernames in participant order, null when unset',async()=>{
+ const handle='dt_'+crypto.randomUUID().replaceAll('-','').slice(0,12);await pool.query('UPDATE accounts SET username=$2 WHERE id=$1',[ids[0],handle]);
+ const one=await get('/v1/dots/'+dotIds[0]);expect(one.json().participants).toEqual([ids[0],ids[1]]);expect(one.json().participantUsernames).toEqual([handle,null]);
+ const listed=await get('/v1/dots');expect(listed.json().items.length).toBeGreaterThan(0);for(const item of listed.json().items)expect(item.participantUsernames).toEqual([handle,null]);
+});

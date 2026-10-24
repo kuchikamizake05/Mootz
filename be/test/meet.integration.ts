@@ -118,8 +118,9 @@ it('binds signature to domain and requires both check-ins during event window', 
 });
 it('proxies preview bytes only within active QR and rejects expiry during private storage read',async()=>{
   const data=await offer();const proof={offerDigest:data.digest,posterSignature:data.signature};
+  const handle='mt_'+crypto.randomUUID().replaceAll('-','').slice(0,12);await pool.query('UPDATE accounts SET username=$2 WHERE id=$1',[ids[0],handle]);
   const preview=await app.inject({method:'POST',url:`/v1/meet/offers/${data.id}/preview`,headers:headers(2),payload:proof});
-  expect(preview.statusCode).toBe(200);expect(preview.body).not.toContain('https://');
+  expect(preview.statusCode).toBe(200);expect(preview.json().moment.authorUsername).toBe(handle);expect(preview.body).not.toContain('https://');
   const path=preview.json().moment.images[0].path;expect(path).toMatch(/\/media\/(front|back)$/);
   const image=await app.inject({method:'POST',url:path,headers:headers(2),payload:proof});expect(image.statusCode).toBe(200);expect(image.headers['cache-control']).toBe('no-store');
   expect((await app.inject({method:'POST',url:path,headers:headers(2),payload:{...proof,offerDigest:`0x${'ff'.repeat(32)}`}})).statusCode).toBe(400);
