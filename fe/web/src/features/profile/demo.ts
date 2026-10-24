@@ -8,3 +8,7 @@ export const demoStreak = (): Streak => ({
   lastPublicationDay: jakartaDay(new Date()),
   timeZone: "Asia/Jakarta",
 });
+
+/** Demo viewer handle, and handles the demo "backend" reports as taken. */
+export const demoViewerUsername = "faaid";
+export const DEMO_TAKEN_USERNAMES = ["demo_a", "demo_b", "demo_c", "demo_d", "admin"];

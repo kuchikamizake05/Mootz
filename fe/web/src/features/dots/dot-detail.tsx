@@ -9,7 +9,8 @@ import { Photo } from "@/components/ui/photo";
 import { RecordingStatusRow, StateMessage } from "@/components/ui/status";
 import { ApiError } from "@/lib/api/client";
 import { useMoment } from "@/features/moments/queries";
-import { DotsPage, ParticipantPair } from "./dot-parts";
+import { friendRef } from "@/features/profile/username";
+import { DotsPage, ParticipantPair, otherParticipant } from "./dot-parts";
 import { formatDotWhen, isFinal, recordingStatus, type Dot } from "./model";
 import { useDot, useSetVisibility, useViewerId } from "./queries";
 
@@ -94,16 +95,17 @@ function Visibility({ dot, isParticipant }: { dot: Dot; isParticipant: boolean }
 function DotBody({ dot }: { dot: Dot }) {
   const viewerId = useViewerId();
   const status = recordingStatus(dot);
+  const otherUsername = otherParticipant(dot, viewerId).username;
   const isParticipant = !!viewerId && dot.participants.includes(viewerId);
 
   return (
     <>
       <div className="flex items-center gap-3">
-        <ParticipantPair participants={dot.participants} viewerId={viewerId} />
-        <p className="text-sm font-bold text-mootz-ink">You<br />Your friend</p>
+        <ParticipantPair dot={dot} viewerId={viewerId} />
+        <p className="text-sm font-bold text-mootz-ink">You<br />{otherUsername ? `@${otherUsername}` : "Your friend"}</p>
       </div>
       <div>
-        <h2 className="font-display text-[34px] leading-tight text-mootz-ink">You and your friend were here</h2>
+        <h2 className="font-display text-[34px] leading-tight text-mootz-ink">You and {friendRef(otherUsername)} were here</h2>
         <p className="mt-1 text-sm font-semibold text-mootz-muted">{formatDotWhen(dot.createdAt)}</p>
       </div>
       {dot.location ? (

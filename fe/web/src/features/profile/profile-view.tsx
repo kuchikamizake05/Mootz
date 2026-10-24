@@ -85,8 +85,16 @@ export function ProfileView() {
       </div>
       <section className="relative -mt-11 flex min-h-[678px] flex-col gap-4 rounded-t-[32px] bg-white px-6 pb-6 pt-[72px]">
       <div className="flex flex-col items-center gap-1 text-center">
-        <div className="absolute -top-[72px]"><Avatar name={viewer.name} src={viewer.avatarSrc} size={128} frame={avatarFrame(frame.data)} /></div>
+        <div className="absolute -top-[72px]"><Avatar name={viewer.avatarName} src={viewer.avatarSrc} size={128} frame={avatarFrame(frame.data)} /></div>
         <h1 className="font-display text-[40px] leading-none text-mootz-ink">{viewer.name}</h1>
+        {viewer.username ? (
+          <p className="flex items-center gap-2 text-base font-bold text-mootz-deep">
+            @{viewer.username}
+            <Link href="/profile/username" className="text-sm underline">Edit</Link>
+          </p>
+        ) : viewer.username === null ? (
+          <Link href="/profile/username" className="text-sm font-extrabold text-mootz-deep underline">Choose username</Link>
+        ) : null}
         {env.demoFixtures && <p className="text-xs font-bold text-mootz-muted">Demo profile · Fictional data</p>}
       </div>
 

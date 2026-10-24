@@ -2,15 +2,16 @@
 
 import { usePrivy } from "@privy-io/react-auth";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { jsonBody } from "@/lib/api/client";
+import { ApiError, jsonBody } from "@/lib/api/client";
 import { useApi, useProfile } from "@/lib/api/use-api";
 import { env } from "@/lib/env";
-import { DEMO_OWN_CODE, demoRelationships } from "./demo";
+import { DEMO_KNOWN_USERNAMES, DEMO_OWN_CODE, DEMO_OWN_USERNAME, demoRelationships } from "./demo";
+import type { FriendTarget } from "@/features/profile/username";
 import type { FriendPage, Relationship } from "./model";
 
 const listKey = ["friends", "list", env.demoFixtures ? "demo" : "me"];
 
-/** Your own friend code (account ID). */
+/** Your own friend code (account ID), kept as a fallback to your @username. */
 export function useOwnCode() {
   const profile = useProfile();
   return env.demoFixtures ? DEMO_OWN_CODE : profile.data?.id;
@@ -53,20 +54,24 @@ function useAfterChange() {
   };
 }
 
-/** Send a request by friend code. 404: unknown code. 409: they already requested you. */
+/** Send a request by @username or, as a fallback, account code. 404: unknown. 400: yourself. 409: they already requested you. */
 export function useSendRequest() {
   const api = useApi();
   const after = useAfterChange();
   return useMutation({
-    mutationFn: async (accountId: string) => {
-      const id = accountId.toLowerCase();
+    mutationFn: async (target: FriendTarget) => {
       if (env.demoFixtures) {
         const now = new Date().toISOString();
-        return { accountId: id, status: "pending", direction: "outgoing", createdAt: now, updatedAt: now } as Relationship;
+        const username = "username" in target ? target.username : null;
+        if (username === DEMO_OWN_USERNAME) throw new ApiError(400, "SELF_REQUEST", null);
+        if (username && !DEMO_KNOWN_USERNAMES.includes(username)) throw new ApiError(404, "NOT_FOUND", null);
+        // Stable fake ID per handle so a repeat request isn't listed twice.
+        const accountId = "accountId" in target ? target.accountId : `00000000-0000-4000-8000-${[...username!].map((c) => c.charCodeAt(0).toString(16)).join("").padEnd(12, "0").slice(0, 12)}`;
+        return { accountId, username, status: "pending", direction: "outgoing", createdAt: now, updatedAt: now } as Relationship;
       }
-      return api<Relationship>("/v1/friends/requests", jsonBody({ accountId: id }));
+      return api<Relationship>("/v1/friends/requests", jsonBody(target));
     },
-    onSuccess: (rel) => after((items) => (items.some((r) => r.accountId === rel.accountId) ? items : [...items, rel])),
+    onSuccess: (rel) => after((items) => (items.some((r) => r.accountId === rel.accountId || (!!rel.username && r.username === rel.username)) ? items : [...items, rel])),
   });
 }
 

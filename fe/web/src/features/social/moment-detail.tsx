@@ -50,9 +50,9 @@ function Reactions({ id }: { id: string }) {
           )}
           {others.map((r) => (
             <li key={r.id} className="flex items-center gap-3">
-              <Photo src={r.thumbnailUrl} alt={`Reaction selfie from ${personLabel(r.accountId, viewerId)}`} className="size-14 rounded-2xl" />
+              <Photo src={r.thumbnailUrl} alt={`Reaction selfie from ${personLabel(r.accountId, viewerId, r.username)}`} className="size-14 rounded-2xl" />
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-black text-mootz-ink">{personLabel(r.accountId, viewerId)}</p>
+                <p className="text-sm font-black text-mootz-ink">{personLabel(r.accountId, viewerId, r.username)}</p>
                 <p className="text-xs text-mootz-muted">Sent selfie · {relativeTime(r.createdAt)}</p>
               </div>
             </li>

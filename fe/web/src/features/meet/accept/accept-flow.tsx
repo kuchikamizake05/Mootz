@@ -12,7 +12,8 @@ import { useApi, useApiBytes } from "@/lib/api/use-api";
 import { OFFCHAIN_MEET, RECORD_MEET } from "@/lib/chain/generated/protocol";
 import { env } from "@/lib/env";
 import type { LocationSample, MeetPreview, MeetResult } from "../api";
-import { demoCaption, demoPhotos } from "../demo";
+import { friendRef, handleLabel } from "@/features/profile/username";
+import { demoCaption, demoPartnerUsername, demoPhotos } from "../demo";
 import { getLocationSample } from "../location";
 import {
   acceptTypedData,
@@ -367,11 +368,12 @@ function Preview({
 }) {
   const router = useRouter();
   const caption = preview?.moment.caption ?? demoCaption;
+  const poster = demo ? demoPartnerUsername : preview?.moment.authorUsername;
   return (
     <MeetFrame title="Meet preview" onBack={() => router.push("/meet/scan")}>
       {demo && <DemoBadge />}
-      <p className="text-sm font-extrabold">Your friend</p>
-      <PairedPhoto backSrc={back} frontSrc={front} authorName="your friend" className="h-[200px] w-full lg:h-[360px]" />
+      <p className="text-sm font-extrabold">{handleLabel(poster, "Your friend")}</p>
+      <PairedPhoto backSrc={back} frontSrc={front} authorName={friendRef(poster)} className="h-[200px] w-full lg:h-[360px]" />
       {caption && <p className="text-base">{caption}</p>}
       <h2 className="font-display text-[32px] leading-[1.05]">Confirm you&apos;re in this photo with your friend</h2>
       <p className="font-bold text-mootz-deep">Only this moment is shared with you.</p>

@@ -58,7 +58,7 @@ export function FramesView() {
           return (
             <li key={item.id} className={cn("rounded-[22px] border border-mootz-hairline p-4", item.id === "first_meet" ? "bg-mootz-canvas" : "bg-white")}>
               <div className="flex items-center gap-3">
-                <Avatar name={viewer.name} src={viewer.avatarSrc} size={56} frame={item.unlocked ? "achievement" : "lilac"} className={cn(!item.unlocked && "opacity-60")} />
+                <Avatar name={viewer.avatarName} src={viewer.avatarSrc} size={56} frame={item.unlocked ? "achievement" : "lilac"} className={cn(!item.unlocked && "opacity-60")} />
                 <div className="min-w-0 flex-1">
                   <h2 className="font-display text-2xl leading-tight text-mootz-ink">{item.name}</h2>
                   <p className="text-sm font-semibold text-mootz-muted">{requirementLabel(item)}</p>
@@ -107,7 +107,7 @@ export function FramesView() {
       )}
       {active.data && (
         <div className="flex items-center gap-3 rounded-[28px] bg-mootz-surface p-4 shadow-float">
-          <Avatar name={viewer.name} src={viewer.avatarSrc} size={56} frame={avatarFrame(active.data)} />
+          <Avatar name={viewer.avatarName} src={viewer.avatarSrc} size={56} frame={avatarFrame(active.data)} />
           <p className="flex-1 text-sm font-semibold text-mootz-muted">
             Wearing <span className="font-extrabold text-mootz-ink">{frameName(active.data)}</span>
           </p>
@@ -120,7 +120,7 @@ export function FramesView() {
       {body}
       {eventFrame && (
         <div className="flex items-center gap-3 rounded-[24px] bg-mootz-lilac p-4 text-sm font-bold text-mootz-deep">
-          <Avatar name={viewer.name} src={viewer.avatarSrc} size={52} frame="event" />
+          <Avatar name={viewer.avatarName} src={viewer.avatarSrc} size={52} frame="event" />
           <span>
             {eventFrame.displayName}
             <br />
