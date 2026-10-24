@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/brand/mootz/mootz-logo-v1.svg" width="120" alt="Mootz logo">
+</p>
+
 <h1 align="center">Mootz</h1>
 <p align="center"><strong>Share your day. Meet in person.</strong><br>A social Map + Feed with shared memories on Monad.</p>
 <p align="center"><a href="https://mootz-red.vercel.app">Website</a> · <a href="https://mootz-red.vercel.app/app">Open app</a> · <a href="docs/hackathon.md">Judge guide</a> · <a href="sc/abi/deployment.monad-testnet.json">Deployment evidence</a></p>
