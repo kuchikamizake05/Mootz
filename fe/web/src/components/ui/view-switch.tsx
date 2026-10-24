@@ -22,7 +22,7 @@ export function ViewSwitch({
     <nav
       aria-label="Primary"
       className={cn(
-        "relative inline-grid h-[52px] w-[184px] shrink-0 grid-cols-2 rounded-[28px] border border-b-2 border-mootz-depth bg-mootz-lilac p-[3px] shadow-[0_3px_0_var(--color-mootz-depth),inset_0_1px_0_#ffffff66]",
+        "relative inline-grid h-[52px] w-[184px] shrink-0 grid-cols-2 rounded-[28px] border border-b-2 border-[var(--mootz-edge)] bg-mootz-lilac p-[3px] shadow-[0_3px_0_var(--mootz-drop),inset_0_1px_0_#ffffff66]",
         className,
       )}
     >

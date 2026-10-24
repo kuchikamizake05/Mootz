@@ -27,28 +27,34 @@
 }
 
 /*
- * "Button feel" from A.01: 1px depth border (2px bottom), a solid drop of the
- * depth colour and a faint inner highlight. Pressed removes the drop.
+ * "Button feel" from A.01, softened: a light depth edge (thicker at the bottom) and a
+ * solid drop in translucent depth purple instead of near-black. Pressed removes the drop.
  */
+/* Plain custom properties: Tailwind only emits @theme variables that utilities use. */
+:root {
+  --mootz-edge: color-mix(in srgb, var(--color-mootz-depth) 32%, transparent);
+  --mootz-drop: color-mix(in srgb, var(--color-mootz-depth) 28%, transparent);
+}
+
 @utility raised {
-  border: 1px solid var(--color-mootz-depth);
+  border: 1px solid var(--mootz-edge);
   border-bottom-width: 2px;
-  box-shadow: 0 3px 0 var(--color-mootz-depth), inset 0 1px 0 #ffffff66;
+  box-shadow: 0 3px 0 var(--mootz-drop), inset 0 1px 0 #ffffff66;
   transition: transform 80ms ease-out, box-shadow 80ms ease-out;
   &:active:not(:disabled) {
     transform: translateY(3px);
-    box-shadow: 0 0 0 var(--color-mootz-depth), inset 0 1px 0 #ffffff66;
+    box-shadow: 0 0 0 var(--mootz-drop), inset 0 1px 0 #ffffff66;
   }
 }
 
 @utility raised-strong {
-  border: 1px solid var(--color-mootz-depth);
+  border: 1px solid var(--mootz-edge);
   border-bottom-width: 3px;
-  box-shadow: 0 4px 0 var(--color-mootz-depth), inset 0 1px 0 #ffffff66;
+  box-shadow: 0 4px 0 var(--mootz-drop), inset 0 1px 0 #ffffff66;
   transition: transform 80ms ease-out, box-shadow 80ms ease-out;
   &:active:not(:disabled) {
     transform: translateY(4px);
-    box-shadow: 0 0 0 var(--color-mootz-depth), inset 0 1px 0 #ffffff66;
+    box-shadow: 0 0 0 var(--mootz-drop), inset 0 1px 0 #ffffff66;
   }
 }
 

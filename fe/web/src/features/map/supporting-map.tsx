@@ -3,10 +3,11 @@
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AttributionControl, Map as MapLibreMap, setWorkerUrl } from "maplibre-gl";
+import { Map as MapLibreMap, setWorkerUrl } from "maplibre-gl";
 import { MapPinOff } from "lucide-react";
 import { PhotoMomentMarker } from "@/components/ui/map-markers";
 import type { MomentCard } from "@/features/moments/model";
+import { addCollapsedAttribution } from "./attribution";
 import { MapMarker } from "./map-marker";
 
 const MAP_STYLE = "https://tiles.openfreemap.org/styles/positron";
@@ -31,7 +32,7 @@ export function SupportingMap({ moment, onOpen }: { moment: MomentCard | undefin
       zoom: 15,
       attributionControl: false,
     });
-    instance.addControl(new AttributionControl({ compact: true }), "bottom-left");
+    addCollapsedAttribution(instance, "bottom-left");
     instance.on("load", () => setMap(instance));
     return () => {
       setMap(null);

@@ -13,7 +13,7 @@ export function PostMomentButton({ className, size = 80, ...props }: ButtonProps
       title="Post moment"
       className={cn(
         "inline-grid shrink-0 place-items-center rounded-full border-[3px] border-white bg-mootz-deep text-white",
-        "shadow-[0_6px_0_var(--color-mootz-depth),inset_0_1px_0_#ffffff66] transition-transform active:translate-y-1.5 active:shadow-none",
+        "shadow-[0_6px_0_var(--mootz-drop),inset_0_1px_0_#ffffff66] transition-transform active:translate-y-1.5 active:shadow-none",
         className,
       )}
       style={{ width: size, height: size }}
