@@ -12,8 +12,8 @@
     "sync:protocol": "node scripts/sync-protocol.mjs",
     "gen:api": "node scripts/gen-api.mjs",
     "check:generated": "node scripts/sync-protocol.mjs --check && node scripts/gen-api.mjs --check",
-    "predev": "node scripts/copy-vendor.mjs",
-    "prebuild": "node scripts/copy-vendor.mjs",
+    "predev": "node scripts/copy-landing.mjs && node scripts/copy-vendor.mjs",
+    "prebuild": "node scripts/copy-landing.mjs && node scripts/copy-vendor.mjs",
     "e2e": "playwright test"
   },
   "dependencies": {

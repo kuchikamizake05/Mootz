@@ -149,7 +149,7 @@ export function MapView() {
   const missing = open && !selected && (env.demoFixtures || selectedQuery.isError || (!selectedQuery.isPending && !selectedQuery.data));
   const satelliteFailed = phase === "error" && basemap === "satellite";
   const mapFailed = phase === "error" && basemap === "map";
-  const lift = open ? sheetHeight + 16 : 104;
+  const lift = open ? sheetHeight + 120 : 112;
 
   return (
     <div className="absolute inset-0 overflow-hidden bg-mootz-canvas">
@@ -161,7 +161,7 @@ export function MapView() {
         dots.map((d) => (
           <MapMarker key={d.id} map={map} latitude={d.location!.latitude} longitude={d.location!.longitude} zIndex={0}>
             <MeetDotMarker
-              size={112}
+              size={144}
               savedOnchain={d.onchainStatus === "recorded"}
               label={d.onchainStatus === "recorded" ? "Meet Dot, saved onchain" : "Meet Dot"}
               onClick={() => router.push(`/dots/${d.id}`)}
@@ -185,7 +185,6 @@ export function MapView() {
                 author={m.author.name}
                 avatarSrc={m.author.avatarSrc}
                 frame={m.author.frame}
-                photoSrc={m.frontSrc}
                 selected={m.id === momentId}
                 onClick={() => select(m.id)}
               />
@@ -316,7 +315,6 @@ export function MapView() {
           open && "lg:bottom-6 lg:right-[416px]",
         )}
       >
-        {/* Friends has no destination yet. */}
         <IconButton icon={Users} size={56} label="Friends" className="pointer-events-auto" onClick={() => router.push("/friends")} />
         <IconButton
           icon={locate.state === "pending" ? LoaderCircle : LocateFixed}
@@ -331,7 +329,7 @@ export function MapView() {
       {open && (
         <div
           ref={sheetRef}
-          className="absolute inset-x-0 bottom-0 z-20 max-h-[70dvh] overflow-y-auto lg:inset-x-auto lg:bottom-4 lg:right-4 lg:top-[88px] lg:max-h-none lg:w-96"
+          className="absolute inset-x-0 bottom-[104px] z-20 max-h-[calc(100dvh-200px)] overflow-y-auto lg:inset-x-auto lg:bottom-4 lg:right-4 lg:top-[104px] lg:max-h-none lg:w-96"
         >
           {selected ? (
             <MomentSheet
@@ -339,9 +337,10 @@ export function MapView() {
               expanded={expanded}
               onToggle={() => setExpanded((v) => !v)}
               onClose={close}
+              onPhotoClick={() => router.push(href("/feed", { moment: selected.id }))}
               meetHref={canStartMeet(selected) ? `/meet/offer?moment=${selected.id}` : undefined}
-              onReact={() => router.push(`/moments/${selected.id}/react`)}
-              onComments={() => router.push(`/moments/${selected.id}/comments`)}
+              onReact={() => router.push(`${href("/feed", { moment: selected.id })}&panel=react`)}
+              onComments={() => router.push(`${href("/feed", { moment: selected.id })}&panel=comments`)}
               footer={selected.eventId ? <EventChip eventId={selected.eventId} /> : undefined}
             />
           ) : missing ? (

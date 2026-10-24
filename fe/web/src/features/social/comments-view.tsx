@@ -154,7 +154,7 @@ function ThreadView({
   );
 }
 
-export function CommentsView({ momentId }: { momentId: string }) {
+export function CommentsView({ momentId, onClose }: { momentId: string; onClose?: () => void }) {
   const moment = useMoment(momentId).data;
   const viewerId = useViewerId();
   const thread = useThread(momentId);
@@ -183,9 +183,9 @@ export function CommentsView({ momentId }: { momentId: string }) {
 
   return (
     <SocialPage>
-      <BackLink href={`/moments/${momentId}`} label="Back to moment" />
+      <div className="flex items-center gap-1 font-display text-[26px] font-extrabold"><BackLink href={`/moments/${momentId}`} label="Comments" onBack={onClose} /><span aria-label="Comment count">{thread.isPending ? "" : `${thread.count}${thread.hasMore ? "+" : ""}`}</span></div>
       <div className="flex flex-col gap-1">
-        <h1 className="font-display text-[32px] leading-none text-mootz-ink">Comments {thread.isPending ? "" : `${thread.count}${thread.hasMore ? "+" : ""}`}</h1>
+        <h1 className="sr-only">Comments</h1>
         <p className="text-xs text-mootz-muted">
           {thread.isPending
             ? "Loading…"

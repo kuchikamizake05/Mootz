@@ -14,7 +14,7 @@ function DotRow({ dot, viewerId }: { dot: Dot; viewerId: string | undefined }) {
   const onchain = status === "saved" ? "Saved onchain" : status === "pending" ? "Saving onchain…" : "Not saved onchain";
   return (
     <li>
-      <Link href={`/dots/${dot.id}`} className="flex flex-col gap-2 rounded-[28px] bg-mootz-surface p-4 shadow-float">
+      <Link href={`/dots/${dot.id}`} className="flex flex-col gap-2 rounded-[22px] border border-mootz-hairline bg-mootz-canvas p-3.5">
         <span className="flex items-center gap-3">
           <ParticipantPair participants={dot.participants} viewerId={viewerId} size={40} />
           <span className="font-display text-xl leading-tight text-mootz-ink">Meet with a friend</span>
@@ -74,10 +74,10 @@ export function DotsList() {
     <DotsPage title="Your Dots">
       {!dots.error && !dots.isPending && (
         <div>
-          <p className="font-display text-[52px] leading-none text-mootz-deep" aria-live="polite">
+          <p className="font-display text-[44px] leading-none text-mootz-deep" aria-live="polite">
             {count === null ? "Dots" : countLabel(count)}
           </p>
-          <p className="mt-2 text-sm font-semibold text-mootz-muted">Dots count Meets. Each Dot is one Meet, not a balance.</p>
+          <p className="mt-2 text-sm font-semibold text-mootz-muted">Each Dot is one Meet.</p>
         </div>
       )}
       {body}

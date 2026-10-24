@@ -157,10 +157,10 @@ function Scanner({ onClose }: { onClose: () => void }) {
         </StateMessage>
       )}
       <div className={cn("flex flex-col gap-4", failed && "hidden")}>
-        <h2 className="font-display text-[30px] leading-none">Point at your friend&apos;s Mootz QR</h2>
-        <div className="relative grid aspect-square w-full place-items-center overflow-hidden rounded-[28px] bg-mootz-ink">
+        <h2 className="font-display text-center text-[32px] leading-none">Point at your friend&apos;s Mootz QR</h2>
+        <div className="relative grid h-[360px] w-full place-items-center overflow-hidden rounded-[28px] bg-mootz-ink">
           <video ref={video} playsInline muted aria-label="Camera viewfinder" className="absolute inset-0 size-full object-cover" />
-          <div aria-hidden className="relative z-10 grid size-3/4 place-items-center rounded-[28px] border-[3px] border-mootz-light">
+          <div aria-hidden className="relative z-10 grid size-[236px] place-items-center rounded-[28px] border-[3px] border-mootz-light">
             <ScanLine size={56} className="text-white/80" />
           </div>
           {phase === "starting" && <p className="absolute bottom-4 z-10 text-sm font-bold text-white">Starting camera…</p>}

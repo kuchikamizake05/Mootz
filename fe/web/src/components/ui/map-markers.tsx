@@ -1,5 +1,5 @@
 import type { ComponentProps } from "react";
-import { CalendarDays, Images, LockKeyhole } from "lucide-react";
+import { CalendarDays, Images, LockKeyhole, Users } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { Avatar, type AvatarFrame } from "./avatar";
 import { Photo } from "./photo";
@@ -14,7 +14,7 @@ type MarkerButton = Omit<ComponentProps<"button">, "children"> & { selected?: bo
 
 const selectedRing = "outline-3 outline-offset-4 outline-mootz-select";
 
-/** Avatar-led moment: author avatar with a small photo corner (64×68). */
+/** Avatar-only moment marker at a shared posting location (64×68). */
 export function AvatarMomentMarker({
   author,
   avatarSrc,
@@ -24,6 +24,7 @@ export function AvatarMomentMarker({
   className,
   ...props
 }: MarkerButton & { author: string; avatarSrc?: string | null; frame?: AvatarFrame; photoSrc?: string | null }) {
+  void photoSrc;
   return (
     <button
       type="button"
@@ -33,7 +34,6 @@ export function AvatarMomentMarker({
       {...props}
     >
       <Avatar src={avatarSrc} name={author} size={56} frame={frame} className="absolute left-[3px] top-0 shadow-float" />
-      <Photo src={photoSrc} alt="" className="absolute left-9 top-9 size-7 rounded-[9px] border-[3px] border-white" />
     </button>
   );
 }
@@ -129,7 +129,7 @@ export function MeetDotMarker({
       style={{ width: size, height: size }}
       {...props}
     >
-      <span className="size-8 rounded-full border-[3px] border-white bg-mootz-purple" />
+      <span className="grid size-9 place-items-center rounded-full border-[3px] border-white bg-mootz-purple text-white"><Users aria-hidden size={22} strokeWidth={2.75} /></span>
       {savedOnchain && (
         <LockKeyhole
           aria-hidden

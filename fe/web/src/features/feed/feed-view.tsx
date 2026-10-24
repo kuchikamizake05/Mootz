@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Images, LoaderCircle, WifiOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PostMomentButton } from "@/components/ui/controls";
@@ -12,8 +12,12 @@ import { useMoments } from "@/features/moments/queries";
 import { EventChip } from "@/features/events/event-chip";
 import { SupportingMap } from "@/features/map/supporting-map";
 import { useViewState } from "@/features/shell/view-state";
+import { ReactView } from "@/features/social/react-view";
+import { CommentsView } from "@/features/social/comments-view";
+import { rememberBrowseOrigin } from "@/features/shell/browse-origin";
 
 const desktopQuery = "(min-width: 1024px)";
+const scrollPositions = new Map<string, number>();
 function useIsDesktop() {
   return useSyncExternalStore(
     (notify) => {
@@ -32,13 +36,55 @@ function useIsDesktop() {
  */
 export function FeedView() {
   const router = useRouter();
-  const { filter, href } = useViewState();
+  const params = useSearchParams();
+  const panel = params.get("panel");
+  const { filter, momentId, href } = useViewState();
   const { items, isPending, error, hasNextPage, fetchNextPage, refetch } = useMoments("feed", filter);
   const sentinel = useRef<HTMLDivElement>(null);
   const list = useRef<HTMLUListElement>(null);
+  const scroller = useRef<HTMLDivElement>(null);
+  const focused = useRef<string | null>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const isDesktop = useIsDesktop();
   const [activeId, setActiveId] = useState<string | null>(null);
   const active = items.find((m) => m.id === activeId) ?? items[0];
+
+  useEffect(() => {
+    if (!momentId || (panel !== "react" && panel !== "comments")) return;
+    const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const dialog = panelRef.current;
+    dialog?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") router.replace(href("/feed", { moment: momentId }), { scroll: false });
+      if (event.key !== "Tab" || !dialog) return;
+      const targets = Array.from(dialog.querySelectorAll<HTMLElement>('button:not(:disabled), a[href], input:not(:disabled), textarea:not(:disabled), [tabindex="0"]'));
+      const first = targets[0], last = targets.at(-1);
+      if (!first) { event.preventDefault(); return; }
+      if (event.shiftKey && (document.activeElement === first || document.activeElement === dialog)) { event.preventDefault(); last?.focus(); }
+      else if (!event.shiftKey && (document.activeElement === last || document.activeElement === dialog)) { event.preventDefault(); first.focus(); }
+    };
+    document.addEventListener("keydown", onKey);
+    return () => { document.removeEventListener("keydown", onKey); previous?.focus({ preventScroll: true }); };
+    // URL values define this overlay's lifetime; href is recreated on each render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [panel, momentId, filter, router]);
+
+  useEffect(() => {
+    const node = scroller.current;
+    if (!node) return;
+    node.scrollTop = scrollPositions.get(filter) ?? 0;
+    return () => { scrollPositions.set(filter, node.scrollTop); };
+  }, [filter]);
+
+  useEffect(() => {
+    if (!momentId || focused.current === momentId) return;
+    const item = list.current?.querySelector<HTMLElement>(`[data-moment-id="${CSS.escape(momentId)}"]`);
+    if (!item) return;
+    focused.current = momentId;
+    item.scrollIntoView({ block: "start", behavior: "instant" });
+    if (panel !== "react" && panel !== "comments") item.focus({ preventScroll: true });
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) item.animate([{ boxShadow: "inset 0 0 0 2px #6D28D970" }, { boxShadow: "inset 0 0 0 2px #6D28D900" }], { duration: 900 });
+  }, [momentId, items, panel]);
 
   // Desktop only: the supporting map follows the post nearest the top of the column.
   useEffect(() => {
@@ -83,7 +129,7 @@ export function FeedView() {
       <StateMessage
         icon={Images}
         title="No moments yet."
-        actions={<PostMomentButton size={64} onClick={() => router.push("/capture")} />}
+        actions={<PostMomentButton size={64} onClick={() => { rememberBrowseOrigin(); router.push("/capture"); }} />}
         className="px-4 pt-6"
       >
         <p>Share both sides of your day.</p>
@@ -94,14 +140,14 @@ export function FeedView() {
     body = (
       <ul ref={list} className="flex flex-col gap-8">
         {items.map((moment) => (
-          <li key={moment.id} data-moment-id={moment.id}>
+          <li key={moment.id} data-moment-id={moment.id} tabIndex={-1} className="scroll-mt-[76px] outline-none lg:scroll-mt-[104px]">
             <FeedPost
               moment={moment}
               onViewOnMap={moment.location ? () => router.push(href("/map", { moment: moment.id })) : undefined}
               meetHref={canStartMeet(moment) ? `/meet/offer?moment=${moment.id}` : undefined}
               detailHref={`/moments/${moment.id}`}
-              onReact={() => router.push(`/moments/${moment.id}/react`)}
-              onComments={() => router.push(`/moments/${moment.id}/comments`)}
+              onReact={() => router.push(`${href("/feed", { moment: moment.id })}&panel=react`, { scroll: false })}
+              onComments={() => router.push(`${href("/feed", { moment: moment.id })}&panel=comments`, { scroll: false })}
               footer={moment.eventId ? <EventChip eventId={moment.eventId} className="mx-4" /> : undefined}
             />
           </li>
@@ -111,8 +157,8 @@ export function FeedView() {
   }
 
   return (
-    <div className="absolute inset-0 overflow-y-auto pb-32 pt-[84px]">
-      <div className="mx-auto w-full max-w-[560px] lg:grid lg:max-w-[1312px] lg:grid-cols-[560px_1fr] lg:gap-8 lg:px-8">
+    <div ref={scroller} className="absolute inset-0 overflow-y-auto pb-32 pt-[72px] lg:pt-[104px]">
+      <div inert={!!momentId && (panel === "react" || panel === "comments")} className="mx-auto w-full max-w-[560px] lg:grid lg:max-w-[1440px] lg:grid-cols-[minmax(0,560px)_minmax(0,688px)] lg:gap-8 lg:px-16">
         <div>
           {body}
           <div ref={sentinel} aria-hidden className="h-1" />
@@ -123,6 +169,13 @@ export function FeedView() {
           </div>
         )}
       </div>
+      {momentId && (panel === "react" || panel === "comments") && (
+        <div className="fixed inset-0 z-40 flex items-end justify-center bg-mootz-ink/30 lg:items-center" onClick={() => router.replace(href("/feed", { moment: momentId }), { scroll: false })}>
+          <div ref={panelRef} tabIndex={-1} role="dialog" aria-modal="true" aria-label={panel === "react" ? "React to moment" : "Moment comments"} className="max-h-[85dvh] w-full max-w-[560px] overflow-y-auto rounded-t-[32px] bg-mootz-surface outline-none [&>main]:min-h-0 [&>main>div]:min-h-0 lg:rounded-[32px]" onClick={(event) => event.stopPropagation()}>
+            {panel === "react" ? <ReactView momentId={momentId} onClose={() => router.replace(href("/feed", { moment: momentId }), { scroll: false })} /> : <CommentsView momentId={momentId} onClose={() => router.replace(href("/feed", { moment: momentId }), { scroll: false })} />}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

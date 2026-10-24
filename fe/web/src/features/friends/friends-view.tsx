@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Check, Copy, LoaderCircle, TriangleAlert, UserPlus, Users } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
-import { Button, ButtonLink } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { StateMessage } from "@/components/ui/status";
 import { ApiError } from "@/lib/api/client";
 import { PageShell } from "@/features/profile/page-shell";
@@ -12,10 +12,10 @@ import { useFriendAction, useFriends, useOwnCode, useSendRequest } from "./queri
 
 function Row({ rel, children, note }: { rel: Relationship; children: React.ReactNode; note?: string }) {
   return (
-    <li className="flex items-center gap-3 rounded-[28px] bg-mootz-surface p-3 shadow-float">
+    <li className="flex items-center gap-3 border-b border-mootz-hairline py-3">
       <Avatar name="Friend" size={44} />
       <div className="min-w-0 flex-1">
-        <p className="font-display text-xl leading-tight text-mootz-ink">Friend</p>
+        <p className="text-base font-extrabold leading-tight text-mootz-ink">Friend</p>
         <p className="text-xs font-semibold text-mootz-muted">
           {note ? `${note} · ` : ""}Code {shortCode(rel.accountId)}
         </p>
@@ -25,7 +25,7 @@ function Row({ rel, children, note }: { rel: Relationship; children: React.React
   );
 }
 
-function AddFriend({ onDone }: { onDone: () => void }) {
+function AddFriend() {
   const own = useOwnCode();
   const send = useSendRequest();
   const [code, setCode] = useState("");
@@ -110,9 +110,6 @@ function AddFriend({ onDone }: { onDone: () => void }) {
           {send.isSuccess && "Request sent. It takes effect only after they accept."}
         </div>
       </form>
-      <Button variant="secondary" block onClick={onDone}>
-        Back to friends
-      </Button>
     </section>
   );
 }
@@ -210,9 +207,9 @@ export function FriendsView() {
   }
 
   return (
-    <PageShell title={adding ? "Add friend" : "Friends"}>
+    <PageShell title={adding ? "Add friend" : "Friends"} onBack={adding ? () => setAdding(false) : undefined}>
       {adding ? (
-        <AddFriend onDone={() => setAdding(false)} />
+        <AddFriend />
       ) : (
         <>
           <Button icon={UserPlus} size="lg" block onClick={() => setAdding(true)}>
@@ -227,9 +224,6 @@ export function FriendsView() {
             </p>
           )}
           {body}
-          <ButtonLink href="/profile" variant="secondary" block>
-            Back to profile
-          </ButtonLink>
         </>
       )}
     </PageShell>

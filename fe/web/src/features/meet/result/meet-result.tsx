@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { ButtonLink } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { getBrowseOrigin } from "@/features/shell/browse-origin";
+import { Button } from "@/components/ui/button";
 import { RecordingStatusRow, type RecordingStatus } from "@/components/ui/status";
 import { useApi } from "@/lib/api/use-api";
 import { cn } from "@/lib/cn";
@@ -33,8 +34,8 @@ const MAX_POLLS = 60;
  * never claims whose choice it was, and there is no retry.
  */
 export function MeetResultView({ meetId, initial, demo }: { meetId: string; initial?: MeetResult; demo?: boolean }) {
-  const router = useRouter();
   const api = useApi();
+  const router = useRouter();
 
   const meet = useQuery({
     queryKey: ["meet", meetId],
@@ -70,13 +71,13 @@ export function MeetResultView({ meetId, initial, demo }: { meetId: string; init
   const leave = () => clearPayload();
 
   return (
-    <MeetFrame title="You made a Dot" onClose={() => { leave(); router.push("/map"); }}>
+    <MeetFrame title="You made a Dot">
       {demo && <DemoBadge />}
       <Bloom />
-      <h2 className="font-display text-[44px] leading-[1.02]">{noLocation ? "You and your friend met" : "You and your friend were here"}</h2>
-      <div className="text-[15px] text-mootz-muted">
+      <h2 className="font-display text-center text-[36px] leading-[1.1]">{noLocation ? "You and your friend met" : "You and your friend were here"}</h2>
+      <div className="text-center text-[14px] leading-[1.4] text-mootz-muted">
         {accepted && <p>{accepted}</p>}
-        {location && <p>Approx. 200 m area</p>}
+        {location && <a href={`/map?dot=${dotId ?? ""}`} onClick={leave} className="font-bold text-mootz-deep">Approx. 200 m area</a>}
         {noLocation && <p>No map area · Location not shared</p>}
       </div>
 
@@ -91,15 +92,10 @@ export function MeetResultView({ meetId, initial, demo }: { meetId: string; init
       )}
       {noLocation && <p className="text-sm text-mootz-muted">The Dot stays on the moment, not on the map.</p>}
 
-      <div className="flex flex-col gap-2">
-        {location && (
-          <ButtonLink size="lg" block href="/map" onClick={leave}>
-            View on map
-          </ButtonLink>
-        )}
-        <ButtonLink variant={location ? "secondary" : "primary"} size="lg" block href="/map" onClick={leave}>
+      <div className="mt-auto flex flex-col gap-3">
+        <Button size="lg" block onClick={() => { leave(); router.push(getBrowseOrigin()); }}>
           Done
-        </ButtonLink>
+        </Button>
       </div>
       <p className="text-xs font-bold text-mootz-muted">The Dot already exists. Onchain records can&apos;t be removed.</p>
     </MeetFrame>

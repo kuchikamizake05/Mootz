@@ -196,7 +196,7 @@
   #hero { position: relative; isolation: isolate; overflow-x: clip; display: flex; flex-direction: column; min-height: max(100svh, 40rem); background: var(--color-6); color: var(--color-2); }
   #hero::after { content: ""; position: absolute; z-index: -1; top: 100%; left: 0; right: 0; height: 100vh; background: var(--color-6); }
   #hero .hero__media { position: absolute; z-index: 0; top: 0; bottom: -4rem; left: 16%; right: 0; overflow: hidden; mask-image: linear-gradient(90deg, transparent, var(--color-1) 30%); }
-  #hero .hero__media img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 28%; }
+  #hero .hero__media img { width: 100%; height: 100%; object-fit: contain; object-position: right bottom; }
   #hero .hero__shade { position: absolute; z-index: 0; inset: 0 0 -4rem; background: linear-gradient(180deg, color-mix(in srgb, var(--color-6) 50%, transparent), transparent 24%), linear-gradient(90deg, color-mix(in srgb, var(--color-6) 78%, transparent), color-mix(in srgb, var(--color-6) 42%, transparent) 34%, transparent 56%); pointer-events: none; }
   #hero .hero__talk { position: absolute; z-index: 1; inset: 0; overflow: clip; pointer-events: none; }
   #hero .hero__draw { position: absolute; inset: 0; }
@@ -212,7 +212,7 @@
   #hero .hero__chip--3 { offset-path: ellipse(78% 96% at 52% 176%); offset-distance: 80%; offset-anchor: 0% 0%; }
   #hero .hero__chip .m-caption, #hero .hero__chip .m-caption-2 { white-space: nowrap; }
   #hero .hero__copy { position: relative; z-index: 2; flex: 1; display: flex; padding-top: clamp(7.5rem, 17vh, 10.5rem); padding-bottom: clamp(2.5rem, 7vh, 4.5rem); }
-  #hero .hero__intro { flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 2.5rem; }
+  #hero .hero__intro { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; gap: 1.25rem; }
   #hero .hero__title { max-width: 6.7em; font-size: clamp(3rem, 6.6vw, 6.25rem); }
   #hero .hero__lower { display: grid; gap: 1.25rem; max-width: 24rem; }
   #hero .hero__proof { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; }
@@ -220,7 +220,8 @@
   #hero .hero__proof svg { width: 1rem; height: 1rem; flex: none; }
   #hero .hero__star { fill: var(--color-4); }
   #hero .hero__tick { fill: none; stroke: var(--color-7); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-  #hero .hero__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.75rem; margin-top: 0.5rem; }
+  #hero .hero__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.75rem; margin-top: 1.25rem; }
+  #hero .hero__actions .m-btn { min-height: 3.9rem; min-width: 12rem; max-width: 100%; padding: 1rem 2rem; font-size: 1.15rem; font-weight: 700; }
   @media (prefers-reduced-motion: no-preference) {
     #hero .hero__intro { animation: hero-rise 1s cubic-bezier(0.16, 0.84, 0.3, 1) backwards; }
     #hero .hero__media img { animation: hero-settle 1.2s cubic-bezier(0.16, 0.84, 0.3, 1) backwards; }
@@ -627,7 +628,7 @@
       <li><a class="m-link-2" href="#voices">Meet</a></li>
       <li><a class="m-link-2" href="#faq">Questions</a></li>
     </ul>
-    <a class="m-btn-3 nav__cta" href="#calls"><span class="m-btn__label">Explore Mootz</span><span class="m-btn__wave" aria-hidden="true"><i></i><i></i><i></i></span></a>
+    <a class="m-btn-3 nav__cta" href="/app"><span class="m-btn__label">Explore Mootz</span><span class="m-btn__wave" aria-hidden="true"><i></i><i></i><i></i></span></a>
     <button class="m-icon-btn nav__toggle" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg></button>
   </nav>
   <div class="menu" id="menu" data-lenis-prevent hidden role="dialog" aria-modal="true" aria-label="Menu">
@@ -639,7 +640,7 @@
       <li><a class="m-link-2" href="#voices">Meet</a></li>
       <li><a class="m-link-2" href="#faq">Questions</a></li>
     </ul>
-    <a class="m-btn" href="#calls"><span class="m-btn__label">Explore Mootz</span><span class="m-btn__wave" aria-hidden="true"><i></i><i></i><i></i></span></a>
+    <a class="m-btn" href="/app"><span class="m-btn__label">Explore Mootz</span><span class="m-btn__wave" aria-hidden="true"><i></i><i></i><i></i></span></a>
   </div>
 </header>
 
@@ -647,7 +648,7 @@
 <!-- hero: first screen: headline over a full-bleed photo, lead, proof line, button; caption chips ride curved lines across the photo (animation: scene:hero) -->
 <section class="hero on-dark" id="hero" data-8b-section="hero" aria-labelledby="hero-title">
   <div class="hero__media">
-    <img srcset="https://images.unsplash.com/photo-1719492172750-4ca0809345b8?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8Mnx8cGVyc29uJTIwcmVhZGluZyUyMG1lc3NhZ2UlMjBvbiUyMHBob25lJTIwc21pbGluZyUyMHNreXxlbnwxfDB8fHwxNzkxMjA5NTExfDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=400&amp;q=80 400w, https://images.unsplash.com/photo-1719492172750-4ca0809345b8?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8Mnx8cGVyc29uJTIwcmVhZGluZyUyMG1lc3NhZ2UlMjBvbiUyMHBob25lJTIwc21pbGluZyUyMHNreXxlbnwxfDB8fHwxNzkxMjA5NTExfDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=640&amp;q=80 640w, https://images.unsplash.com/photo-1719492172750-4ca0809345b8?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8Mnx8cGVyc29uJTIwcmVhZGluZyUyMG1lc3NhZ2UlMjBvbiUyMHBob25lJTIwc21pbGluZyUyMHNreXxlbnwxfDB8fHwxNzkxMjA5NTExfDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=960&amp;q=80 960w, https://images.unsplash.com/photo-1719492172750-4ca0809345b8?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8Mnx8cGVyc29uJTIwcmVhZGluZyUyMG1lc3NhZ2UlMjBvbiUyMHBob25lJTIwc21pbGluZyUyMHNreXxlbnwxfDB8fHwxNzkxMjA5NTExfDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=1160&amp;q=80 1160w, https://images.unsplash.com/photo-1719492172750-4ca0809345b8?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8Mnx8cGVyc29uJTIwcmVhZGluZyUyMG1lc3NhZ2UlMjBvbiUyMHBob25lJTIwc21pbGluZyUyMHNreXxlbnwxfDB8fHwxNzkxMjA5NTExfDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=1280&amp;q=80 1280w, https://images.unsplash.com/photo-1719492172750-4ca0809345b8?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8Mnx8cGVyc29uJTIwcmVhZGluZyUyMG1lc3NhZ2UlMjBvbiUyMHBob25lJTIwc21pbGluZyUyMHNreXxlbnwxfDB8fHwxNzkxMjA5NTExfDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=1600&amp;q=80 1600w" sizes="(max-width: 767px) 167vw, 90vw" style="background:#59c0f3 url(data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wCEAAYHBwkLCQwNDQwQERAREBgWFBQWGCMZGxkbGSM1ISchISchNS85LysvOS9UQjs7QlRhUk5SYXZpaXaUjZTBwf8BBgcHCQsJDA0NDBAREBEQGBYUFBYYIxkbGRsZIzUhJyEhJyE1LzkvKy85L1RCOztCVGFSTlJhdmlpdpSNlMHB///AABEIABgAIAMBIgACEQEDEQH/xABuAAACAwEBAAAAAAAAAAAAAAAABwMFBgIEEAACAgEEAQMFAAAAAAAAAAABAgMEAAUREiEGMUFhEyI0cZEBAQADAAAAAAAAAAAAAAAAAAUEBgcRAQACAgMBAQEAAAAAAAAAAAECEQADBAUSIROB/9oADAMBAAIRAxEAPwDsU/jI3pgAkjNgaoVSzdADcnINOlr24/q125BXK+mxDKfcHLu7w+CXXwzNZcZfqPmwXFDY1utBYMViKSH7SQWGXwrB0V12KsNwRlD59BIk6SSIFdy4D77s/wAnNh4lXSXRKrD147Nu3LsdYX1XY79jKO0LMZ7rqONpjCehaf6VWM9NV0oj8qL+4l7PkUWlX78dNkZ5Q7ks3Q9k2wwwrksrhL02ONcLy/pFiIhni0XWI7NK3DdnSWWRzxMhBPQxYWb70b7PTmCEN0Yz1+jhhkKJTKQtqLiN2kEPMRAz/9k=) 50% 28% / cover no-repeat" src="https://images.unsplash.com/photo-1719492172750-4ca0809345b8?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8Mnx8cGVyc29uJTIwcmVhZGluZyUyMG1lc3NhZ2UlMjBvbiUyMHBob25lJTIwc21pbGluZyUyMHNreXxlbnwxfDB8fHwxNzkxMjA5NTExfDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=1600&amp;q=80" width="1600" height="1200" alt="A woman smiles as she reads a message on her phone under a clear blue sky" fetchpriority="high" decoding="async">
+    <img src="assets/mootz-hero-group.png" width="1536" height="1024" alt="Ilustrasi tiga teman Mootz berbagi momen bersama lewat ponsel" fetchpriority="high" decoding="async">
   </div>
   <div class="hero__shade" aria-hidden="true"></div>
   <div class="hero__talk" aria-hidden="true">
@@ -665,16 +666,10 @@
   </div>
   <div class="hero__copy l-wrap">
     <div class="hero__intro">
-      <h1 class="m-text-2 hero__title" id="hero-title">Share your day. Meet in person. Keep a record together.</h1>
+      <h1 class="m-text-2 hero__title" id="hero-title">Make moments.<br>Meet<br>together.</h1>
       <div class="hero__lower">
-        <p class="m-text-4 hero__lead">Mootz brings your friends’ moments and the places you share into one social Map and Feed.</p>
-        <ul class="hero__proof m-text-6">
-          <li>Two-sided daily photos</li>
-          <li>Meet, made together</li>
-          <li>Private by audience</li>
-        </ul>
         <div class="hero__actions">
-          <a class="m-btn" href="#calls"><span class="m-btn__label">Explore Mootz</span><span class="m-btn__wave" aria-hidden="true"><i></i><i></i><i></i></span></a>
+          <a class="m-btn" href="/app"><span class="m-btn__label">Explore Mootz</span><span class="m-btn__wave" aria-hidden="true"><i></i><i></i><i></i></span></a>
           <a class="m-link m-text-6" href="#listen">See how it works</a>
         </div>
       </div>
@@ -684,27 +679,19 @@
 
 <!-- voice-to-text: two-panel stage: speech on one side, readable captions on the other (demo: Rear camera · the scene / Front camera · you) (animation: scene:listen) -->
 <section class="listen" id="listen" data-8b-section="voice-to-text" aria-labelledby="listen-title">
-  <div class="listen__sheet m-band" aria-hidden="true"></div>
+  <div class="listen__sheet m-band" aria-hidden="true" data-8b-motion="bandRise"></div>
   <div class="listen__head l-wrap">
-    <h2 class="m-text-3 listen__title" id="listen-title">A day, seen from both sides.</h2>
-    <p class="m-text-4 listen__lead" data-8b-motion="readAlong">One moment pairs a front and rear photo, then lands in the Feed and Map you share with friends. Friends only see what you choose to share.</p>
+    <h2 class="m-text-3 listen__title" id="listen-title">One moment.<br>Both sides.</h2>
+    <p class="m-text-4 listen__lead" data-8b-motion="readAlong">Your view. Your friends. One memory together.</p>
   </div>
   <div class="listen__hold">
     <div class="listen__stage l-wrap">
-      <div class="listen__panels">
-        <div class="listen__panel listen__panel--voice">
-          <p class="m-text-6 listen__label">Rear camera · the scene</p>
-          <div class="listen__wave" aria-hidden="true"><i style="--h:.32"></i><i style="--h:.5"></i><i style="--h:.74"></i><i style="--h:.58"></i><i style="--h:.9"></i><i style="--h:.66"></i><i style="--h:.42"></i><i style="--h:.3"></i><i style="--h:.54"></i><i style="--h:.82"></i><i style="--h:1"></i><i style="--h:.7"></i><i style="--h:.46"></i><i style="--h:.36"></i><i style="--h:.6"></i><i style="--h:.86"></i><i style="--h:.64"></i><i style="--h:.4"></i><i style="--h:.28"></i><i style="--h:.48"></i><i style="--h:.72"></i><i style="--h:.94"></i><i style="--h:.62"></i><i style="--h:.38"></i><i style="--h:.52"></i><i style="--h:.78"></i><i style="--h:.56"></i><i style="--h:.34"></i></div>
-          <div class="listen__track listen__track--voice" aria-hidden="true"></div>
+      <div class="listen__panels" aria-label="Two photos from one moment with friends">
+        <img class="listen__rear" src="assets/mootz-friends-rear-v1.png" width="1086" height="1448" alt="Three friends laughing together around a cafe table at night" loading="lazy" decoding="async">
+        <div class="listen__selfie">
+          <img src="assets/mootz-friends-front-v1.png" width="1086" height="1448" alt="Front camera selfie of two friends at the same cafe" loading="lazy" decoding="async">
         </div>
-        <div class="listen__panel listen__panel--read">
-          <p class="m-text-6 listen__label">Front camera · you</p>
-          <div class="listen__track listen__track--read">
-            <div class="listen__row"><p class="m-caption"><span class="m-caption__wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="m-caption__text">Coffee before the next session.</span></p></div>
-            <div class="listen__row"><p class="m-caption"><span class="m-caption__wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="m-caption__text">Both photos, one moment.</span></p></div>
-            <div class="listen__row"><p class="m-caption"><span class="m-caption__wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="m-caption__text">Shared with friends you choose.</span></p></div>
-          </div>
-        </div>
+
       </div>
     </div>
   </div>
@@ -930,7 +917,7 @@
       <h2 class="m-text-3" id="start-title">Take a look around.</h2>
       <p class="m-text-4">Follow a moment from the Map into the Feed, Meet, and Dot.</p>
       <div class="start__actions">
-        <a class="m-btn" href="#calls"><span class="m-btn__label">Explore Mootz</span><span class="m-btn__wave" aria-hidden="true"><i></i><i></i><i></i></span></a>
+        <a class="m-btn" href="/app"><span class="m-btn__label">Explore Mootz</span><span class="m-btn__wave" aria-hidden="true"><i></i><i></i><i></i></span></a>
         <a class="m-link m-text-6" href="#listen">See the idea</a>
       </div>
     </div>
@@ -974,10 +961,22 @@
 
 <style>
 /* Mootz concept states inside the retained animated template phone. */
-#listen .listen__panel--voice{background-image:linear-gradient(0deg,#21152f99,transparent 65%),url('https://images.unsplash.com/photo-1786772444593-b59cbed3809d?auto=format&fit=crop&w=1000&q=85');background-size:cover;background-position:center}
-#listen .listen__panel--read{background-image:linear-gradient(0deg,#21152f99,transparent 65%),url('https://images.unsplash.com/photo-1719492172750-4ca0809345b8?auto=format&fit=crop&w=1000&q=85');background-size:cover;background-position:center}
-#listen .listen__label{padding:.5rem .8rem;background:#21152fe6;color:#fff;border-radius:2rem;font-size:clamp(.75rem,1.3vw,1rem)}
-#listen .listen__wave{visibility:hidden}
+#listen{padding-bottom:clamp(5rem,10vw,10rem);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:clamp(2rem,6vw,6rem);align-items:center;padding-inline:var(--gutter,clamp(1.25rem,4vw,4rem))}
+#listen .listen__head{display:flex;flex-direction:column;align-items:flex-start;gap:1.5rem;width:100%;padding-inline:clamp(1rem,3vw,3rem) 0;margin:0}
+#listen .listen__hold{width:100%;min-width:0;margin-top:0}
+#listen .listen__stage{width:100%;padding:0;margin:0}
+#listen .listen__sheet{grid-column:auto;left:0;right:0;width:auto}
+@media(max-width:47.99rem){#listen{grid-template-columns:1fr;row-gap:2rem}#listen .listen__head{gap:1rem;padding-inline:0}}
+#listen .listen__panels{position:relative;display:block;width:min(100%,23rem);height:auto;aspect-ratio:3/4;margin-inline:auto;overflow:hidden;border-radius:var(--radius-2);background:#21152f}
+#listen .listen__rear{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;border-radius:var(--radius-2)}
+#listen .listen__selfie{position:absolute;z-index:2;bottom:1.25rem;right:1.25rem;width:30%;aspect-ratio:3/4;overflow:hidden;border-radius:1.1rem;border:3px solid #fff9;box-shadow:0 8px 24px #0005}
+#listen .listen__selfie img{display:block;width:100%;height:100%;object-fit:cover}
+#listen .listen__rear,#listen .listen__selfie img{transition:opacity .18s ease}
+#listen .listen__panels.is-fading .listen__rear,#listen .listen__panels.is-fading .listen__selfie img{opacity:.15}
+
+#listen .listen__lead{font-size:clamp(1.6rem,2.8vw,2.5rem);line-height:1.35;max-width:30rem}
+@media(max-width:47.99rem){#listen .listen__selfie{bottom:.8rem;right:.8rem;border-width:2px;border-radius:.8rem}#listen .listen__moment{bottom:.8rem;left:.8rem;font-size:.75rem}}
+
 #calls .concept-map{height:120px;position:relative;overflow:hidden;border-radius:14px;background:#d9d5e2;background-image:linear-gradient(0deg,#c9d9c4 0 20%,transparent 20%),linear-gradient(30deg,transparent 48%,#fffaf5 49%,#fffaf5 53%,transparent 54%),linear-gradient(115deg,transparent 44%,#fffaf5 45%,#fffaf5 49%,transparent 50%)}
 #calls .map-road{position:absolute;height:8px;width:130%;left:-10%;top:45%;background:#fffaf5;border:1px solid #c9bdcf;transform:rotate(-20deg)}
 #calls .map-road--two{top:66%;transform:rotate(25deg)}#calls .map-green{position:absolute;width:52px;height:35px;right:8px;top:9px;border-radius:16px;background:#bfd4ba}
@@ -1214,65 +1213,35 @@ queueMotion(() => {
 <script data-8b-part="scene:listen">
 queueMotion(() => {
   const root = document.getElementById('listen');
-  const sheet = root.querySelector('.listen__sheet');
-  const title = root.querySelector('.listen__title');
-  const hold = root.querySelector('.listen__hold');
-  const voice = root.querySelector('.listen__panel--voice');
-  const read = root.querySelector('.listen__panel--read');
-  const voiceTrack = root.querySelector('.listen__track--voice');
-  const rows = [...root.querySelectorAll('.listen__track--read > .listen__row')];
-  const bars = [...root.querySelectorAll('.listen__wave > i')];
-  gsap.matchMedia().add({ wide: '(min-width: 48rem) and (prefers-reduced-motion: no-preference)', narrow: '(max-width: 47.99rem) and (prefers-reduced-motion: no-preference)' }, context => {
-    const { wide } = context.conditions;
-    if (adjacent('hero', 'listen')) {
-      gsap.timeline({ defaults: { ease: 'none' }, scrollTrigger: { id: 'listen:entry', trigger: root, start: 'top bottom', end: 'top 20%', scrub: true, invalidateOnRefresh: true } })
-        .add(effects.bandRise(sheet), 0)
-        .fromTo(title, wide ? { y: () => innerHeight * 0.22 } : { x: () => innerWidth * 0.22 }, wide ? { y: 0 } : { x: 0 }, 0);
+  const panels = root.querySelector('.listen__panels');
+  const rear = panels.querySelector('.listen__rear');
+  const front = panels.querySelector('.listen__selfie img');
+  let swapTimer;
+  const visibility = new IntersectionObserver(([entry]) => {
+    clearInterval(swapTimer);
+    if (entry.isIntersecting && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      swapTimer = setInterval(() => {
+        panels.classList.add('is-fading');
+        setTimeout(() => {
+          const src = rear.getAttribute('src');
+          const alt = rear.alt;
+          rear.src = front.getAttribute('src');
+          rear.alt = front.alt;
+          front.src = src;
+          front.alt = alt;
+          requestAnimationFrame(() => panels.classList.remove('is-fading'));
+        }, 180);
+      }, 2000);
     }
-    root.classList.add('is-staged');
-    const clones = rows.map(row => {
-      const clone = row.cloneNode(true);
-      clone.classList.add('listen__row--voice');
-      const text = clone.querySelector('.m-caption__text');
-      const words = text.textContent.trim().split(/\s+/);
-      text.textContent = '';
-      words.forEach((word, index) => {
-        const span = document.createElement('span');
-        span.className = 'listen__word';
-        span.style.setProperty('--h', (0.45 + 0.55 * Math.abs(Math.sin(index * 1.7 + word.length))).toFixed(2));
-        span.textContent = word;
-        text.append(span, index < words.length - 1 ? ' ' : '');
-      });
-      voiceTrack.append(clone);
-      return clone;
+  }, { threshold: 0.2 });
+  visibility.observe(panels);
+  gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
+    gsap.from(root.querySelector('.listen__selfie'), {
+      y: 24, opacity: 0, rotation: -3, duration: 0.8, ease: 'power2.out',
+      scrollTrigger: { trigger: root.querySelector('.listen__panels'), start: 'top 75%', once: true }
     });
-    const pairs = rows.map((row, index) => [row, clones[index]]);
-    gsap.timeline({ defaults: { ease: 'none' }, scrollTrigger: { id: 'listen:join', trigger: hold, start: 'top bottom', end: 'top top', scrub: true, invalidateOnRefresh: true } })
-      .fromTo(voice, { x: () => -innerWidth * (wide ? 0.08 : 0.07) }, { x: 0 }, 0)
-      .fromTo(read, { x: () => innerWidth * (wide ? 0.08 : 0.07) }, { x: 0 }, 0);
-    const setters = bars.map(bar => gsap.quickSetter(bar, 'scaleY'));
-    const cross = gsap.timeline({ defaults: { ease: 'power1.inOut' }, scrollTrigger: {
-      id: 'listen', trigger: hold, start: 'top top', end: 'bottom bottom', scrub: true, invalidateOnRefresh: true,
-      onUpdate: self => {
-        const progress = self.progress;
-        const swell = Math.sin(Math.PI * progress);
-        setters.forEach((set, index) => set(1 - swell * 0.7 * (1 - Math.abs(Math.sin(index * 0.45 + progress * 18)))));
-      }
-    } });
-    pairs.forEach((pair, index) => {
-      const row = pair[0];
-      const shift = wide
-        ? () => -(row.offsetLeft - read.offsetWidth + row.offsetWidth + 32)
-        : () => voice.offsetHeight;
-      cross.fromTo(pair, wide ? { x: shift } : { y: shift }, wide ? { x: 0, duration: 1 } : { y: 0, duration: 1 }, index * 0.8);
-    });
-    cross.to({}, { duration: 0.35 });
-    return () => {
-      root.classList.remove('is-staged');
-      clones.forEach(clone => clone.remove());
-    };
   });
-}, { first: true, id: 'listen' });
+}, { near: document.getElementById('listen'), id: 'listen' });
 </script>
 <script data-8b-part="scene:calls">
 queueMotion(() => {

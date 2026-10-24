@@ -100,7 +100,7 @@ function ActionTile({
       type="button"
       className={cn(
         "inline-flex h-[60px] flex-col items-center justify-center gap-1 rounded-[22px] bg-mootz-surface p-2 font-extrabold text-mootz-deep",
-        tone === "raised" ? "raised text-sm" : "border border-mootz-hairline text-[11px] shadow-[0_3px_8px_#35116f20]",
+        tone === "raised" ? "raised text-[13px]" : "raised text-[11px]",
         className,
       )}
       {...props}

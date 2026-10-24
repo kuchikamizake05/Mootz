@@ -4,6 +4,10 @@ This folder adapts the free Linea landing template by 8B into a static Mootz con
 
 The page is a concept preview, not a working product. It has no login, download, contact form, waitlist, live map, or real QR scan. The phone UI is illustrative and clearly labels its QR-like artwork as nonfunctional.
 
+Explore Mootz now links to `/app` in the combined Next.js deployment. Preview
+through `fe/web/` to use that link; a standalone static server only serves the
+landing. See [single-project Vercel setup](../docs/vercel-web.md).
+
 ## Preview
 
 Serve this folder with any static file server. For example, from landing:

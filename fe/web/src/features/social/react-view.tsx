@@ -72,7 +72,7 @@ function SelfieCapture({ onShot, onCancel }: { onShot: (shot: Shot) => void; onC
   );
 }
 
-export function ReactView({ momentId }: { momentId: string }) {
+export function ReactView({ momentId, onClose }: { momentId: string; onClose?: () => void }) {
   const moment = useMoment(momentId);
   const reactions = useReactions(momentId);
   const library = useSelfies();
@@ -130,12 +130,12 @@ export function ReactView({ momentId }: { momentId: string }) {
   if (moment.error && isNotFound(moment.error)) {
     return (
       <SocialPage>
-        <BackLink href="/feed" label="Back" />
+        <BackLink href="/feed" label="Back" onBack={onClose} />
         <StateMessage icon={TriangleAlert} title="Moment not available">It may have been removed, or it isn&apos;t shared with you.</StateMessage>
       </SocialPage>
     );
   }
-  const back = <BackLink href={`/moments/${momentId}`} label="Back to moment" />;
+  const back = <BackLink href={`/moments/${momentId}`} label="Back to moment" onBack={onClose} />;
   const live = <p className="sr-only" aria-live="polite">{notice}</p>;
 
   // Capture and review

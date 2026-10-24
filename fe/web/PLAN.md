@@ -1,6 +1,6 @@
 # Rencana implementasi Mootz web
 
-Owner: Wangsit. Status: rencana, belum ada kode. Sumber desain: `Mootz.pen` (pen.dev, lokal di mesin owner), dibaca lewat MCP pen.dev. Scope dan acceptance tetap mengikuti [PRD](../../PRD.md), [AGENTS](../../AGENTS.md), [roadmap](../../docs/roadmap.md) dan [handoff INT-01](../../docs/handoff-int-01-wangsit.md). Bila desain bertentangan dengan dokumen tersebut, dokumen menang.
+Owner: Wangsit. Status: frontend sudah diimplementasikan; revisi visual dan navigasi terbaru disinkronkan dari canvas melalui MCP pada 24 Oktober 2026. Sumber terbaru: `MonBlitz/Mootz.pen`, termasuk aturan navigasi H07 dan header current-event-only. Lihat [catatan sinkronisasi](../../docs/design/pen-sync-2026-10-24.md). Scope dan acceptance tetap mengikuti [PRD](../../PRD.md), [AGENTS](../../AGENTS.md), [roadmap](../../docs/roadmap.md) dan [handoff INT-01](../../docs/handoff-int-01-wangsit.md). Bila desain bertentangan dengan dokumen tersebut, dokumen menang.
 
 ## 1. Inventaris desain
 

@@ -16,6 +16,11 @@ npm run dev                  # http://localhost:3000
 
 The API is expected at `NEXT_PUBLIC_API_BASE_URL` (default `http://localhost:3001`); start it from [be/](../../be/README.md).
 
+Landing and app now share this Next.js deployment: `/` serves the landing and
+`/app` opens the app at `/map`. `predev` and `prebuild` copy the landing source
+and assets from `../../landing/`; restart dev after changing that source.
+See [single-project Vercel setup](../../docs/vercel-web.md).
+
 | Script | Purpose |
 | --- | --- |
 | `npm run lint` | ESLint |

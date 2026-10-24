@@ -1,4 +1,5 @@
 import type { useRouter } from "next/navigation";
+import { getBrowseOrigin } from "@/features/shell/browse-origin";
 
 /** Only same-origin absolute paths are accepted as a post-onboarding destination. */
 export function safeNext(value: string | null | undefined, fallback = "/map") {
@@ -7,8 +8,7 @@ export function safeNext(value: string | null | undefined, fallback = "/map") {
 
 /** Close returns to where the user came from; a direct entry falls back to the Map. */
 export function closeFlow(router: ReturnType<typeof useRouter>) {
-  if (window.history.length > 1) router.back();
-  else router.push("/map");
+  router.push(getBrowseOrigin());
 }
 
 /** UUID as the protocol's bytes32: raw 16 bytes, right-padded with zeros. */

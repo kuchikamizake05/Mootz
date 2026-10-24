@@ -4,13 +4,14 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Camera, CameraOff, Flame, ImagePlus, LoaderCircle, MapPin, RefreshCw, ScanLine, X } from "lucide-react";
-import { Button, ButtonLink, IconButton } from "@/components/ui/button";
+import { BackButton, Button, IconButton } from "@/components/ui/button";
 import { PairedPhoto } from "@/components/ui/moment";
 import { Photo } from "@/components/ui/photo";
 import { StateMessage } from "@/components/ui/status";
 import { useApi } from "@/lib/api/use-api";
 import { env } from "@/lib/env";
 import { cn } from "@/lib/cn";
+import { getBrowseOrigin } from "@/features/shell/browse-origin";
 import { makeShot, shotFromFile, shotFromVideo, type Shot } from "./image";
 import { UPLOAD_STEPS, describeError, newJob, runUpload, StepError, type Coords, type StreakDto, type UploadJob, type UploadStep } from "./publish";
 import { useCamera } from "./use-camera";
@@ -21,15 +22,15 @@ type LocationState = "off" | "locating" | "on" | "denied";
 type Result = { id: string; streak: { kind: "updated"; days: number } | { kind: "unchanged" } | { kind: "none" }; demo: boolean };
 
 const STEP_LABEL: Record<Step, string> = {
-  rear: "Step 1 of 3",
-  selfie: "Step 2 of 3",
-  review: "Step 3 of 3",
+  rear: "Step 1 of 2 · Back camera",
+  selfie: "Step 2 of 2 · Front camera",
+  review: "Paired review",
   uploading: "Posting",
   posted: "Done",
   "upload-pick": "Upload photos",
   "upload-review": "Review",
 };
-const TITLE: Partial<Record<Step, string>> = { review: "Your moment", "upload-review": "Your moment", uploading: "Posting moment", posted: "Moment posted", "upload-pick": "Upload photos" };
+const TITLE: Partial<Record<Step, string>> = { rear: "Post a moment", selfie: "Now take your selfie", review: "Your moment", "upload-review": "Your moment", uploading: "Posting moment", posted: "Moment posted", "upload-pick": "Upload photos" };
 const STEP_NAME: Record<UploadStep, string> = { draft: "Creating your moment", back: "Uploading back photo", front: "Uploading selfie", publish: "Publishing" };
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -161,30 +162,28 @@ export function CaptureFlow() {
     setStep(mode === "capture" ? "review" : "upload-review");
   };
 
-  const close = () => router.push("/map");
+  const close = () => router.push(getBrowseOrigin());
   const title = TITLE[step];
   const wide = step === "review" || step === "upload-review";
 
   return (
-    <main className="min-h-dvh bg-mootz-canvas lg:grid lg:place-items-center lg:p-8">
+    <main className="min-h-dvh bg-mootz-surface lg:grid lg:place-items-center lg:p-8">
       <div className={cn("mx-auto flex min-h-dvh w-full max-w-[430px] flex-col gap-3 px-4 pb-6 pt-4 lg:min-h-0 lg:max-w-[760px] lg:rounded-[32px] lg:bg-mootz-surface lg:p-8 lg:shadow-float", wide && "lg:max-w-[760px]")}>
-        <header className="flex items-start justify-between gap-3">
-          <div>
-            {title && <h1 className="font-display text-[34px] leading-none text-mootz-ink">{title}</h1>}
-            <p className="mt-1 text-sm font-bold text-mootz-muted" aria-live="polite">
-              {STEP_LABEL[step]}
-              {env.demoFixtures && " · Demo: nothing is uploaded"}
-            </p>
+        <header className="flex min-h-11 items-center justify-between gap-2">
+          <div className="flex min-w-0 items-center gap-2">
+            {(step === "selfie" || step === "review" || step === "upload-review") && <BackButton onClick={() => setStep(step === "selfie" ? "rear" : mode === "capture" ? "selfie" : "upload-pick")} />}
+            {title && <h1 className={cn("font-display leading-none text-mootz-ink", step === "rear" || step === "posted" ? "text-[30px]" : "text-[26px]")}>{title}</h1>}
           </div>
-          <IconButton icon={X} label="Close and go back to the map" onClick={close} />
+          {(step === "rear" || step === "upload-pick") && <IconButton icon={X} label="Close capture" onClick={close} />}
         </header>
+        <p className="text-sm font-bold text-mootz-muted" aria-live="polite">{STEP_LABEL[step]}{env.demoFixtures && " · Demo: nothing is uploaded"}</p>
 
         {step === "rear" && (
           <Viewfinder
             key="rear"
             facing="environment"
             label="Back camera viewfinder"
-            hint="Frame what's around you, then take the back photo."
+            hint="First the scene. Then your selfie."
             shutter="Take back photo"
             onShot={(b) => {
               setSide("back", b);
@@ -200,8 +199,8 @@ export function CaptureFlow() {
             facing="user"
             mirror
             label="Front camera viewfinder"
-            hint="Now take your selfie."
-            shutter="Take selfie"
+            hint="Back photo saved for this draft. Your selfie completes the pair."
+            shutter="Capture selfie"
             previewSrc={back?.url}
             onRetakeBack={() => setStep("rear")}
             onShot={(b) => {
@@ -254,7 +253,7 @@ export function CaptureFlow() {
 
         {step === "uploading" && <Progress done={done} failure={failure} onRetry={post} onCancel={cancelUpload} />}
 
-        {step === "posted" && result && back && front && <Posted result={result} mode={mode} back={back} front={front} located={!!coords} />}
+        {step === "posted" && result && back && front && <Posted result={result} mode={mode} back={back} front={front} />}
       </div>
     </main>
   );
@@ -318,7 +317,7 @@ function Viewfinder({
 
   return (
     <div className="flex flex-1 flex-col gap-3">
-      <div className="relative min-h-[420px] flex-1 overflow-hidden rounded-[22px] bg-mootz-ink">
+      <div className={cn("relative overflow-hidden rounded-[28px] bg-mootz-ink", facing === "environment" ? "h-[438px]" : "h-[400px]")}>
         <video
           ref={videoRef}
           aria-label={label}
@@ -340,22 +339,23 @@ function Viewfinder({
           </div>
         )}
       </div>
-      <p className="text-sm text-mootz-muted" aria-live="polite">
+      <p className="text-lg font-bold text-mootz-ink" aria-live="polite">
         {error ? "Couldn't save that photo. Try again." : hint}
       </p>
-      <div className="flex items-center gap-2">
+      <div className="flex flex-col-reverse items-center gap-3">
         {onRetakeBack && (
-          <Button variant="secondary" icon={RefreshCw} onClick={onRetakeBack}>
-            Retake back photo
+          <Button variant="secondary" block onClick={onRetakeBack}>
+            Retake back
           </Button>
         )}
-        <Button size="lg" icon={Camera} className="flex-1" disabled={status !== "ready" || busy} onClick={snap}>
-          {shutter}
+        <Button size="lg" icon={Camera} aria-label={shutter} className={facing === "environment" ? "size-[76px] rounded-full p-0 [&>svg]:size-[30px]" : "w-full"} disabled={status !== "ready" || busy} onClick={snap}>
+          {facing === "user" && shutter}
         </Button>
       </div>
-      <button type="button" onClick={onFallback} className="min-h-11 text-sm font-extrabold text-mootz-deep underline">
+      <button type="button" onClick={onFallback} className="raised min-h-12 rounded-2xl bg-white px-3 text-[15px] font-extrabold text-mootz-deep">
         Upload photos instead
       </button>
+      <p className="text-sm font-bold leading-[1.4] text-mootz-muted">{facing === "environment" ? "Post any time. A completed camera pair can extend your daily streak and start an optional Meet." : "If this stage fails, keep the back capture. Never publish an incomplete pair."}</p>
     </div>
   );
 }
@@ -442,7 +442,7 @@ function Review({
 }) {
   return (
     <div className="flex flex-col gap-3 lg:grid lg:grid-cols-2 lg:gap-6">
-      <PairedPhoto backSrc={back.url} frontSrc={front.url} authorName="you" className="aspect-[358/360] w-full lg:aspect-[3/4]" />
+      <PairedPhoto backSrc={back.url} frontSrc={front.url} authorName="you" className="h-[260px] w-full lg:aspect-[3/4]" />
       <div className="flex flex-col gap-3">
         <div className="flex gap-2">
           <Button variant="secondary" block onClick={() => onRetake("back")}>
@@ -543,7 +543,8 @@ function Progress({
   );
 }
 
-function Posted({ result, mode, back, front, located }: { result: Result; mode: Mode; back: Shot; front: Shot; located: boolean }) {
+function Posted({ result, mode, back, front }: { result: Result; mode: Mode; back: Shot; front: Shot }) {
+  const router = useRouter();
   const { streak } = result;
   return (
     <div className="flex flex-col gap-3 lg:grid lg:grid-cols-2 lg:gap-6">
@@ -577,12 +578,9 @@ function Posted({ result, mode, back, front, located }: { result: Result; mode: 
             <ScanLine aria-hidden size={20} />
           </Link>
         )}
-        <ButtonLink size="lg" block href="/feed">
-          View your moment
-        </ButtonLink>
-        <ButtonLink variant="secondary" block href={located && !result.demo ? `/map?moment=${result.id}` : "/map"}>
-          Back to map
-        </ButtonLink>
+        <Button size="lg" block onClick={() => router.push(getBrowseOrigin())}>
+          Done
+        </Button>
       </div>
     </div>
   );

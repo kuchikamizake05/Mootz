@@ -29,3 +29,5 @@ Loaded from images.unsplash.com. Free to use under the [Unsplash License](https:
 ## Mootz adaptation
 
 Approved Mootz SVG marks are copied from assets/brand/mootz in the parent repository. The dual-photo panels and concept Feed reuse the credited Unsplash hero and outdoor conversation photographs above; the photos illustrate the concept and are not actual Mootz user posts.
+
+The hero uses the approved AI-generated group illustration from `../assets/pitch/visuals/team-lifestyle-3-slide-version.png`. See `../assets/pitch/README.md` for asset provenance.

@@ -10,20 +10,20 @@ import { isMissing, isUnavailable } from "./model";
 
 export function BackLink({ href, children }: { href: string; children: ReactNode }) {
   return (
-    <Link href={href} className="inline-flex min-h-11 items-center gap-1.5 text-sm font-extrabold text-mootz-deep">
-      <ArrowLeft aria-hidden size={18} strokeWidth={2.25} />
+    <Link href={href} aria-label={typeof children === "string" && children.trim() ? children : "Back"} className="inline-flex min-h-11 items-center gap-1.5 text-sm font-extrabold text-mootz-deep">
+      <span className="grid size-11 shrink-0 place-items-center"><ArrowLeft aria-hidden size={24} strokeWidth={2.25} /></span>
       {children}
     </Link>
   );
 }
 
 export const Card = ({ children, className = "" }: { children: ReactNode; className?: string }) => (
-  <section className={`flex flex-col gap-1 rounded-[28px] bg-mootz-surface p-4 shadow-float ${className}`}>{children}</section>
+  <section className={`flex flex-col gap-2 rounded-[22px] border border-mootz-hairline bg-mootz-surface p-4 ${className}`}>{children}</section>
 );
 
 export function Loading({ label }: { label: string }) {
   return (
-    <PageShell header={<span />}>
+    <PageShell title="Event">
       <StateMessage icon={LoaderCircle} busy title={label} />
     </PageShell>
   );

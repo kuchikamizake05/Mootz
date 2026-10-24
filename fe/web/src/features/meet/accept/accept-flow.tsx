@@ -355,7 +355,6 @@ function Preview({
   demo,
   onApprove,
   onDecline,
-  onClose,
 }: {
   preview?: MeetPreview;
   front: string;
@@ -366,14 +365,15 @@ function Preview({
   onDecline: () => void;
   onClose: () => void;
 }) {
+  const router = useRouter();
   const caption = preview?.moment.caption ?? demoCaption;
   return (
-    <MeetFrame title="Meet preview" onClose={onClose}>
+    <MeetFrame title="Meet preview" onBack={() => router.push("/meet/scan")}>
       {demo && <DemoBadge />}
       <p className="text-sm font-extrabold">Your friend</p>
-      <PairedPhoto backSrc={back} frontSrc={front} authorName="your friend" className="h-[360px] w-full" />
+      <PairedPhoto backSrc={back} frontSrc={front} authorName="your friend" className="h-[200px] w-full lg:h-[360px]" />
       {caption && <p className="text-base">{caption}</p>}
-      <h2 className="font-display text-[34px] leading-[1.05]">Confirm you&apos;re in this photo with your friend</h2>
+      <h2 className="font-display text-[32px] leading-[1.05]">Confirm you&apos;re in this photo with your friend</h2>
       <p className="font-bold text-mootz-deep">Only this moment is shared with you.</p>
       <p className="text-sm text-mootz-muted">
         Approving adds your confirmation to this Meet.

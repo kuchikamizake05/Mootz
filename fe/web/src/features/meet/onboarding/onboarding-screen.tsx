@@ -55,12 +55,12 @@ function Onboarding({ save, demo }: { save: Save; demo?: boolean }) {
     <MeetFrame title="Your Meets, your choice" onClose={() => closeFlow(router)}>
       {demo && <DemoBadge />}
       <LockKeyhole aria-hidden size={48} strokeWidth={2} className="text-mootz-deep" />
-      <h2 className="font-display text-[40px] leading-[1.05]">Save your Meets onchain?</h2>
-      <p className="text-[17px] text-mootz-muted">
+      <h2 className="font-display whitespace-pre-line font-extrabold text-[38px] leading-[1.05]">{"Save your Meets\nonchain forever?"}</h2>
+      <p className="text-[16px] leading-[1.4] text-mootz-muted">
         Anyone can see which wallets met and when. Photos and location stay private.
       </p>
 
-      <div className="flex min-h-16 items-center justify-between gap-3 rounded-2xl bg-mootz-surface p-4">
+      <div className="flex min-h-[88px] items-center justify-between gap-3 rounded-2xl bg-mootz-surface p-4">
         <div id="record-label">
           <p className="text-sm font-extrabold">Save my Meets onchain</p>
           <p className="text-xs text-mootz-muted">Applies to future Meets only.</p>
@@ -79,16 +79,16 @@ function Onboarding({ save, demo }: { save: Save; demo?: boolean }) {
 
       <p className="text-sm text-mootz-muted">
         {on
-          ? "This is optional. A record is saved only if both people choose ON. Otherwise the Meet still creates a Dot."
+          ? "This is optional. A Meet still creates a Dot when saving is off. A record is saved only if both people choose ON."
           : "Saving is off. Meets still create a Dot, and nothing is saved onchain."}
       </p>
 
-      <div className="flex flex-col gap-2">
+      <div className="mt-auto flex flex-col gap-3">
         <Button size="lg" block disabled={busy} onClick={onContinue}>
           {busy ? "Saving…" : "Continue"}
         </Button>
         <ButtonLink variant="secondary" size="lg" block href="/meet/whats-recorded">
-          What&apos;s recorded?
+          Learn more
         </ButtonLink>
       </div>
       <p role="alert" className="text-sm font-bold text-mootz-deep">

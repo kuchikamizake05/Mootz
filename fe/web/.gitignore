@@ -52,6 +52,9 @@ next-env.d.ts
 # copied by scripts/copy-vendor.mjs
 /public/vendor/
 
+# Generated from the repository's landing/ source.
+/public/landing/
+
 # Playwright output
 /test-results/
 /playwright-report/

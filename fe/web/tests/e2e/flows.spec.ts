@@ -2,6 +2,27 @@ import { expect, test } from "@playwright/test";
 
 // Core journeys in demo-fixture mode. Real API, wallet, camera and two-device Meet are manual.
 
+test("settings: Back discards the draft and Save persists it", async ({ page }) => {
+  await page.goto("/profile");
+  const toggle = page.getByRole("switch", { name: "Save my Meets onchain" });
+  await expect(toggle).toBeEnabled();
+  const initial = await toggle.getAttribute("aria-checked");
+  await page.getByRole("link", { name: "Details", exact: true }).click();
+  await expect(page).toHaveURL(/\/profile\/settings$/);
+  await expect(toggle).toBeEnabled();
+  await toggle.click();
+  await page.getByRole("button", { name: "Back", exact: true }).click();
+  await expect(page).toHaveURL(/\/profile$/);
+  await expect(toggle).toHaveAttribute("aria-checked", initial!);
+  await page.getByRole("link", { name: "Details", exact: true }).click();
+  await expect(page).toHaveURL(/\/profile\/settings$/);
+  await expect(toggle).toBeEnabled();
+  await toggle.click();
+  await page.getByRole("button", { name: "Save", exact: true }).click();
+  await expect(page).toHaveURL(/\/profile$/);
+  await expect(toggle).toHaveAttribute("aria-checked", initial === "true" ? "false" : "true");
+});
+
 test("map: select a moment, open the sheet, close it", async ({ page }) => {
   await page.goto("/map");
   await page.getByRole("button", { name: "Moment by Demo friend A" }).click();

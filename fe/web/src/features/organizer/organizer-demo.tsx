@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import type { Address, EIP1193Provider } from "viem";
 import { CircleSlash, LoaderCircle, PlugZap, RefreshCw, ServerCrash, ShieldCheck, Wallet, WalletMinimal, XCircle } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Button, ButtonLink } from "@/components/ui/button";
 import { StateMessage } from "@/components/ui/status";
 import { env } from "@/lib/env";
 import { contractsDeployed, getInjectedProvider, proveControl, readRecognition, requestAccount } from "./chain";
@@ -100,13 +100,20 @@ export function OrganizerDemo({ collectionId }: { collectionId: string | null })
   const connected = state.step === "authenticating" || state.step === "reading" || state.step === "result" || state.step === "error";
 
   return (
-    <main className="min-h-dvh bg-mootz-canvas text-mootz-ink">
-      <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-6 px-6 py-8 lg:grid lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-14 lg:px-10 lg:py-16">
-        <section className="flex flex-col gap-4">
+    <main className="min-h-dvh bg-mootz-canvas text-mootz-ink lg:bg-white">
+      <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-6 px-6 py-8 lg:grid lg:grid-cols-[440px_minmax(0,568px)] lg:items-start lg:gap-14 lg:px-10 lg:py-16">
+        <aside className="hidden min-h-[620px] flex-col gap-[22px] rounded-[32px] bg-mootz-deep p-8 text-white lg:flex">
+          <p className="text-xs font-bold">DEMO GATHERING B / INDEPENDENT RECOGNITION</p>
+          <h2 className="font-display text-[40px] font-extrabold leading-none">Workshop A memories,<br />recognized at Gathering B.</h2>
+          <Avatar name="Demo Workshop A" size={104} frame="event" />
+          <p className="text-lg">This separate demo page reads collection ownership and event Meet count directly from Monad, not a Mootz inventory decision.</p>
+          <p className="text-sm">Private photos remain in access-controlled Mootz storage. No universal cross-app support is implied.</p>
+        </aside>
+        <section className="flex min-h-[780px] flex-col gap-3 lg:bg-mootz-canvas lg:p-7" aria-live="polite">
           <p className="text-xs font-extrabold text-mootz-deep">Organizer demo / Monad Testnet</p>
-          <h1 className="font-display text-5xl leading-none lg:text-7xl">Demo Gathering B</h1>
+          <h1 className="font-display text-[38px] font-extrabold leading-none">Demo Gathering B</h1>
           <p className="font-bold text-mootz-muted">Recognizing Workshop A memories</p>
-          <div className="raised flex items-center gap-4 rounded-[28px] bg-mootz-surface p-4">
+          <div className="flex items-center gap-4 rounded-[24px] bg-mootz-surface p-4">
             <Avatar name="Demo Workshop A" size={80} frame="event" />
             <div className="flex flex-col text-sm font-extrabold text-mootz-deep">
               <span>Demo Workshop A frame</span>
@@ -114,12 +121,7 @@ export function OrganizerDemo({ collectionId }: { collectionId: string | null })
               <span>From Demo Workshop A{collectionId ? ` · Collection #${collectionId}` : ""}</span>
             </div>
           </div>
-          <p className="hidden text-sm text-mootz-muted lg:block">
-            Gathering B is an independent organizer. It never calls a Mootz API or database: it reads public contracts directly from Monad.
-          </p>
-        </section>
-
-        <section className="flex flex-col gap-4 lg:rounded-[28px] lg:bg-mootz-surface lg:p-8 lg:shadow-float" aria-live="polite">
+          <p className="text-[17px] text-mootz-ink">Read Workshop A collection ownership and onchain event Meet count directly from Monad.</p>
           {collectionId === null ? (
             <StateMessage icon={CircleSlash} title="Collection not valid">
               The collection in the link must be a positive whole number, for example ?collection=1.
@@ -140,6 +142,7 @@ export function OrganizerDemo({ collectionId }: { collectionId: string | null })
             </p>
           )}
           <p className="text-sm text-mootz-muted">{LIMITATION}</p>
+          <ButtonLink href="/map" variant="secondary" block>Open event in Mootz</ButtonLink>
           {connected && (
             <Button variant="secondary" size="lg" block onClick={reset}>
               Disconnect

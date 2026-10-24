@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/cn";
+import { ArrowLeft } from "lucide-react";
 
 type Variant = "primary" | "secondary" | "soft";
 type Size = "md" | "lg";
@@ -26,7 +27,7 @@ export function buttonClass({ variant = "primary", size = "md", block = false } 
   block?: boolean;
 }) {
   return cn(
-    "inline-flex select-none items-center justify-center gap-2 rounded-2xl font-extrabold",
+    "inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-2xl font-extrabold",
     variants[variant],
     sizes[size],
     block && "w-full",
@@ -74,7 +75,16 @@ export function IconButton({
       )}
       {...props}
     >
-      <Icon aria-hidden size={size === 44 ? 22 : 25} strokeWidth={2.25} />
+      <Icon aria-hidden size={size === 44 ? 24 : 25} strokeWidth={2.25} />
+    </button>
+  );
+}
+
+export function BackButton({ label = "Back", className, ...props }: { label?: string } & Omit<ComponentProps<"button">, "children">) {
+  return (
+    <button type="button" aria-label={label} title={label}
+      className={cn("inline-flex size-11 shrink-0 items-center justify-center rounded-full text-mootz-deep", className)} {...props}>
+      <ArrowLeft aria-hidden size={24} strokeWidth={2.25} />
     </button>
   );
 }

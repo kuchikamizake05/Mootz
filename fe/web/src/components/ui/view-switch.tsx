@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Images, Map } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 export type View = "map" | "feed";
@@ -21,14 +22,14 @@ export function ViewSwitch({
     <nav
       aria-label="Primary"
       className={cn(
-        "relative inline-grid h-[52px] w-[184px] grid-cols-2 rounded-[28px] border border-mootz-hairline bg-mootz-lilac p-[3px] shadow-soft",
+        "relative inline-grid h-[52px] w-[184px] shrink-0 grid-cols-2 rounded-[28px] border border-b-2 border-mootz-depth bg-mootz-lilac p-[3px] shadow-[0_3px_0_var(--color-mootz-depth),inset_0_1px_0_#ffffff66]",
         className,
       )}
     >
       <span
         aria-hidden
         className={cn(
-          "absolute top-[3px] h-11 w-[88px] rounded-3xl bg-mootz-deep transition-transform duration-200 ease-out",
+          "absolute left-[3px] top-[3px] h-11 w-[88px] rounded-3xl bg-mootz-deep transition-transform duration-200 ease-out motion-reduce:transition-none",
           active === "feed" ? "translate-x-[88px]" : "translate-x-0",
         )}
       />
@@ -38,10 +39,11 @@ export function ViewSwitch({
           href={hrefs[view]}
           aria-current={active === view ? "page" : undefined}
           className={cn(
-            "relative z-10 grid h-11 place-items-center rounded-3xl text-sm font-extrabold",
+            "relative z-10 flex h-11 items-center justify-center gap-1.5 rounded-3xl text-sm font-extrabold",
             active === view ? "text-white" : "text-mootz-deep",
           )}
         >
+          {view === "map" ? <Map aria-hidden size={16} /> : <Images aria-hidden size={16} />}
           {view === "map" ? "Map" : "Feed"}
         </Link>
       ))}

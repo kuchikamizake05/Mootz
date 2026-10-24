@@ -1,8 +1,8 @@
 "use client";
 
-import { ArrowLeft, Check, LoaderCircle, TriangleAlert } from "lucide-react";
+import { Check, LoaderCircle, TriangleAlert } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
-import { Button, ButtonLink } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { StateMessage } from "@/components/ui/status";
 import { ApiError } from "@/lib/api/client";
 import { cn } from "@/lib/cn";
@@ -56,7 +56,7 @@ export function FramesView() {
           const wearing = activeId === item.id;
           const pending = setFrame.isPending && setFrame.variables === item.id;
           return (
-            <li key={item.id} className="rounded-[28px] bg-mootz-surface p-4 shadow-float">
+            <li key={item.id} className={cn("rounded-[22px] border border-mootz-hairline p-4", item.id === "first_meet" ? "bg-mootz-canvas" : "bg-white")}>
               <div className="flex items-center gap-3">
                 <Avatar name={viewer.name} src={viewer.avatarSrc} size={56} frame={item.unlocked ? "achievement" : "lilac"} className={cn(!item.unlocked && "opacity-60")} />
                 <div className="min-w-0 flex-1">
@@ -93,11 +93,7 @@ export function FramesView() {
   const eventFrame = active.data?.kind === "collection" ? active.data : null;
 
   return (
-    <PageShell
-      header={
-        <h1 className="font-display text-[32px] leading-none text-mootz-ink">Your frames</h1>
-      }
-    >
+    <PageShell title="Your frames">
       <p className="text-sm font-semibold text-mootz-muted">
         Frames unlock automatically from your Meets. They are free, cosmetic and stay offchain. Nothing here can be bought.
       </p>
@@ -132,9 +128,6 @@ export function FramesView() {
           </span>
         </div>
       )}
-      <ButtonLink href="/profile" variant="secondary" block icon={ArrowLeft}>
-        Back to profile
-      </ButtonLink>
     </PageShell>
   );
 }

@@ -47,8 +47,8 @@ export function PairedPhoto({
         src={frontSrc}
         alt={`Selfie by ${authorName}`}
         className={cn(
-          "absolute left-3 top-3 rounded-[18px] border-[3px] border-white",
-          selfie === "md" ? "h-[104px] w-[84px]" : "h-[150px] w-[120px]",
+          "absolute border-[3px] border-white",
+          selfie === "md" ? "left-3 top-3 h-[104px] w-[84px] rounded-[18px]" : "left-4 top-4 h-[146px] w-[112px] rounded-[20px]",
         )}
       />
     </div>
@@ -73,18 +73,20 @@ export function MomentActions({
   onReact,
   onComments,
   className,
+  immersive = false,
 }: {
   commentCount: number;
   onReact?: () => void;
   onComments?: () => void;
   className?: string;
+  immersive?: boolean;
 }) {
   return (
-    <div className={cn("flex gap-2", className)}>
-      <Button variant="secondary" icon={ScanFace} className="flex-1" onClick={onReact}>
+    <div className={cn("flex gap-2", immersive && "justify-between", className)}>
+      <Button variant="secondary" icon={ScanFace} className={immersive ? "w-[108px] rounded-3xl bg-mootz-surface/95 px-[12px]" : "flex-1"} onClick={onReact}>
         React
       </Button>
-      <Button variant="secondary" icon={MessageCircle} className="flex-1" onClick={onComments}>
+      <Button variant="secondary" icon={MessageCircle} className={immersive ? "w-[144px] rounded-3xl bg-mootz-surface/95 px-[12px]" : "flex-1"} onClick={onComments}>
         Comments {commentCount}
       </Button>
     </div>
@@ -124,12 +126,11 @@ function PlaceRow({ place, onViewOnMap, compact }: { place: string; onViewOnMap?
   return (
     <div className="flex min-h-11 items-center gap-1.5">
       <MapPin aria-hidden size={18} strokeWidth={2.25} className="shrink-0 text-mootz-deep" />
-      <p className={cn("min-w-0 flex-1 truncate text-mootz-muted", compact ? "text-sm" : "text-xs")}>{place} · Posted here</p>
-      {onViewOnMap && (
-        <Button variant="secondary" icon={MapPin} onClick={onViewOnMap} className="shrink-0 px-3">
-          View on map
-        </Button>
-      )}
+      {onViewOnMap ? (
+        <button type="button" onClick={onViewOnMap} className={cn("min-h-11 min-w-0 flex-1 truncate text-left text-mootz-deep", compact ? "text-sm" : "text-xs")} aria-label={`View ${place} on map`}>
+          {place} · Posted here
+        </button>
+      ) : <p className={cn("min-w-0 flex-1 truncate text-mootz-deep", compact ? "text-sm" : "text-xs")}>{place} · Posted here</p>}
     </div>
   );
 }
@@ -171,12 +172,14 @@ export function FeedPost({
           frontSrc={moment.frontSrc}
           authorName={moment.author.name}
           className="aspect-[390/470] w-full lg:aspect-[560/540]"
+          selfie="lg"
         />
         <MomentActions
           commentCount={moment.commentCount}
           onReact={onReact}
           onComments={onComments}
           className="absolute inset-x-3 bottom-3"
+          immersive
         />
       </div>
       {moment.caption &&
@@ -225,6 +228,7 @@ export function MomentSheet({
   onClose,
   onReact,
   onComments,
+  onPhotoClick,
   meetHref,
   footer,
 }: {
@@ -234,6 +238,7 @@ export function MomentSheet({
   onClose?: () => void;
   onReact?: () => void;
   onComments?: () => void;
+  onPhotoClick?: () => void;
   meetHref?: string;
   footer?: ReactNode;
 }) {
@@ -253,12 +258,14 @@ export function MomentSheet({
         <IconButton icon={X} label="Close preview" onClick={onClose} />
       </div>
       <MomentByline author={moment.author} postedLabel={moment.postedLabel} />
+      <button type="button" onClick={onPhotoClick} disabled={!onPhotoClick} aria-label={`Open ${moment.author.name}'s moment in Feed`} className="block w-full rounded-[22px] text-left disabled:cursor-default">
       <PairedPhoto
         backSrc={moment.backSrc}
         frontSrc={moment.frontSrc}
         authorName={moment.author.name}
         className={cn("w-full", expanded ? "h-[280px]" : "h-[200px]")}
       />
+      </button>
       {expanded && moment.caption && <p className="text-base text-mootz-ink">{moment.caption}</p>}
       {expanded && moment.place && <PlaceRow place={moment.place} compact />}
       <MomentActions commentCount={moment.commentCount} onReact={onReact} onComments={onComments} />

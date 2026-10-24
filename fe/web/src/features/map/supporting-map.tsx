@@ -45,9 +45,9 @@ export function SupportingMap({ moment, onOpen }: { moment: MomentCard | undefin
   }, [map, location]);
 
   return (
-    <aside aria-label="Where this moment was posted" className="flex flex-col gap-3">
+    <aside aria-label="Where this moment was posted" className="relative flex flex-col gap-4">
       {moment && (
-        <div className="rounded-2xl bg-mootz-surface px-4 py-3 shadow-soft">
+        <div className="absolute left-5 right-5 top-5 z-10 max-w-[362px] rounded-[22px] bg-mootz-surface px-4 py-3 shadow-soft">
           <p className="font-black text-mootz-ink">{moment.own ? "Your moment" : `${moment.author.name}’s moment`}</p>
           <p className="text-sm text-mootz-muted">
             {moment.place ? `${moment.place} · ` : ""}
@@ -55,7 +55,7 @@ export function SupportingMap({ moment, onOpen }: { moment: MomentCard | undefin
           </p>
         </div>
       )}
-      <div className="relative h-[520px] overflow-hidden rounded-[28px] bg-mootz-canvas">
+      <div className="relative h-[min(648px,calc(100dvh-180px))] min-h-[360px] overflow-hidden rounded-[32px] bg-mootz-canvas">
         <div ref={setNode} className="size-full" />
         {map && moment && location && (
           <MapMarker map={map} latitude={location.latitude} longitude={location.longitude}>
@@ -79,8 +79,8 @@ export function SupportingMap({ moment, onOpen }: { moment: MomentCard | undefin
           </div>
         )}
       </div>
-      <div>
-        <p className="font-display text-2xl text-mootz-ink">Two photos. One shared moment.</p>
+      <div className="ml-auto max-w-[344px]">
+        <p className="font-display text-[22px] text-mootz-ink">Two photos. One shared moment.</p>
         <p className="text-sm text-mootz-muted">This pin marks where the moment was posted, not where your friend is now.</p>
         {moment?.location && (
           <button type="button" className="mt-2 min-h-11 text-sm font-extrabold text-mootz-deep underline" onClick={() => router.push(`/map?moment=${moment.id}`)}>

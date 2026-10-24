@@ -1,9 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { MeetFrame } from "../ui/meet-frame";
-import { closeFlow } from "../ui/nav";
 
 const sections = [
   {
@@ -26,18 +24,15 @@ const sections = [
 
 export function WhatsRecorded() {
   const router = useRouter();
-  const back = () => closeFlow(router);
+  const back = () => router.back();
   return (
-    <MeetFrame title="What's recorded?" onClose={back}>
+    <MeetFrame title="What's recorded?" onBack={back} centeredTitle>
       {sections.map((s) => (
-        <section key={s.title}>
-          <h2 className="font-display text-[22px] leading-tight">{s.title}</h2>
-          <p className="mt-1 text-[15px] text-mootz-muted">{s.body}</p>
+        <section key={s.title} className="border-b border-mootz-hairline pb-5 last:border-0">
+          <h2 className="font-display text-[25px] leading-tight">{s.title}</h2>
+          <p className="mt-2 text-[15px] leading-[1.4] text-mootz-muted">{s.body}</p>
         </section>
       ))}
-      <Button variant="secondary" block onClick={back}>
-        Back
-      </Button>
     </MeetFrame>
   );
 }
