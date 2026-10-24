@@ -4,11 +4,13 @@ import { ChevronDown, LockKeyhole, MapPin, MapPinOff, MessageCircle, ScanFace, S
 import { cn } from "@/lib/cn";
 import { Avatar, type AvatarFrame } from "./avatar";
 import { Button, IconButton } from "./button";
-import { Photo } from "./photo";
+import { PairedPhoto } from "./paired-photo";
+export { PairedPhoto } from "./paired-photo";
 
 export type MomentAuthor = { name: string; avatarSrc?: string | null; frame?: AvatarFrame };
 
 export type MomentView = {
+  mediaId?: string;
   author: MomentAuthor;
   postedLabel: string; // e.g. "12m ago"
   backSrc?: string | null;
@@ -22,38 +24,6 @@ export type MomentView = {
   /** Authored by the viewer: shows "Location not shared" instead of hiding the place row. */
   own?: boolean;
 };
-
-/**
- * The same front/back pair everywhere (A.02): back photo fills, the selfie sits in
- * the top-left corner. Both photos keep their own audience checks upstream.
- */
-export function PairedPhoto({
-  backSrc,
-  frontSrc,
-  authorName,
-  className,
-  selfie = "md",
-}: {
-  backSrc?: string | null;
-  frontSrc?: string | null;
-  authorName: string;
-  className?: string;
-  selfie?: "md" | "lg";
-}) {
-  return (
-    <div className={cn("relative overflow-hidden rounded-[22px] bg-mootz-lilac", className)}>
-      <Photo src={backSrc} alt={`Back camera photo by ${authorName}`} className="absolute inset-0" />
-      <Photo
-        src={frontSrc}
-        alt={`Selfie by ${authorName}`}
-        className={cn(
-          "absolute border-[3px] border-white",
-          selfie === "md" ? "left-3 top-3 h-[104px] w-[84px] rounded-[18px]" : "left-4 top-4 h-[146px] w-[112px] rounded-[20px]",
-        )}
-      />
-    </div>
-  );
-}
 
 export function MomentByline({ author, postedLabel, avatarSize = 52 }: { author: MomentAuthor; postedLabel: string; avatarSize?: number }) {
   return (
@@ -168,6 +138,7 @@ export function FeedPost({
       )}
       <div className="relative">
         <PairedPhoto
+          momentId={moment.mediaId}
           backSrc={moment.backSrc}
           frontSrc={moment.frontSrc}
           authorName={moment.author.name}
@@ -258,14 +229,14 @@ export function MomentSheet({
         <IconButton icon={X} label="Close preview" onClick={onClose} />
       </div>
       <MomentByline author={moment.author} postedLabel={moment.postedLabel} />
-      <button type="button" onClick={onPhotoClick} disabled={!onPhotoClick} aria-label={`Open ${moment.author.name}'s moment in Feed`} className="block w-full rounded-[22px] text-left disabled:cursor-default">
       <PairedPhoto
+        momentId={moment.mediaId}
         backSrc={moment.backSrc}
         frontSrc={moment.frontSrc}
         authorName={moment.author.name}
         className={cn("w-full", expanded ? "h-[280px]" : "h-[200px]")}
       />
-      </button>
+      {onPhotoClick && <button type="button" onClick={onPhotoClick} aria-label={`Open ${moment.author.name}'s moment in Feed`} className="min-h-11 text-sm font-bold text-mootz-deep">View in Feed</button>}
       {expanded && moment.caption && <p className="text-base text-mootz-ink">{moment.caption}</p>}
       {expanded && moment.place && <PlaceRow place={moment.place} compact />}
       <MomentActions commentCount={moment.commentCount} onReact={onReact} onComments={onComments} />

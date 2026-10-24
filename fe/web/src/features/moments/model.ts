@@ -51,6 +51,7 @@ export function toMomentCard(moment: ApiMoment, viewerId: string | undefined): M
   const own = moment.authorId === viewerId;
   return {
     id: moment.id,
+    mediaId: moment.id,
     authorId: moment.authorId,
     source: moment.source,
     location: moment.location,

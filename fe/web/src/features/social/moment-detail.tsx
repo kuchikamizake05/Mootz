@@ -134,7 +134,7 @@ export function MomentDetail({ id }: { id: string }) {
         <div className="w-28 shrink-0"><BackButton /></div>
         <div className="min-w-0 flex-1"><MomentByline author={m.author} postedLabel={m.postedLabel} avatarSize={40} /></div>
       </header>
-      <PairedPhoto backSrc={m.backSrc} frontSrc={m.frontSrc} authorName={m.author.name} selfie="lg" className="aspect-[4/5] w-full" />
+      <PairedPhoto momentId={m.mediaId} backSrc={m.backSrc} frontSrc={m.frontSrc} authorName={m.author.name} selfie="lg" className="aspect-[4/5] w-full" />
       {m.caption && <p className="text-base font-bold text-mootz-ink">{m.caption}</p>}
       {m.place && m.location ? (
         <div className="flex min-h-11 items-center gap-1.5">
