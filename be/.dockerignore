@@ -1,0 +1,12 @@
+node_modules
+dist
+coverage
+.env
+.env.*
+test
+*.log
+dev-login/
+deploy/vps/.env
+deploy/vps/backups/
+**/*.dump
+**/*.partial

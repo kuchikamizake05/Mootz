@@ -1,0 +1,52 @@
+# Local development database. Never expose this credential or port publicly.
+services:
+  api:
+    image: mootz-backend:local
+    build: .
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3001
+      LOG_LEVEL: info
+      ALLOWED_ORIGINS: http://localhost:3000
+      DATABASE_URL: postgresql://mootz:mootz_local_only@db:5432/mootz
+      PRIVY_APP_ID: ${PRIVY_APP_ID:-}
+      PRIVY_VERIFICATION_KEY: ${PRIVY_VERIFICATION_KEY:-}
+      WALLET_PROOF_DOMAIN: ${WALLET_PROOF_DOMAIN:-localhost:3001}
+      WALLET_CHAIN_ID: ${WALLET_CHAIN_ID:-10143}
+      SUPABASE_URL: ${SUPABASE_URL:-}
+      SUPABASE_SECRET_KEY: ${SUPABASE_SECRET_KEY:-}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY:-}
+      SUPABASE_STORAGE_BUCKET: ${SUPABASE_STORAGE_BUCKET:-mootz-private-media}
+      MEET_RPC_URL: ${MEET_RPC_URL:-}
+      MEET_REGISTRY_ADDRESS: ${MEET_REGISTRY_ADDRESS:-}
+      EVENT_COLLECTION_RPC_URL: ${EVENT_COLLECTION_RPC_URL:-}
+      EVENT_COLLECTION_ADDRESS: ${EVENT_COLLECTION_ADDRESS:-}
+      EVENT_CLAIM_ISSUER_PRIVATE_KEY: ${EVENT_CLAIM_ISSUER_PRIVATE_KEY:-}
+    ports:
+      - "127.0.0.1:3001:3001"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  db:
+    image: postgis/postgis:17-3.5
+    environment:
+      POSTGRES_USER: mootz
+      POSTGRES_PASSWORD: mootz_local_only
+      POSTGRES_DB: mootz
+    ports:
+      - "127.0.0.1:55432:5432"
+    volumes:
+      - mootz_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mootz -d mootz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+volumes:
+  mootz_pg:
