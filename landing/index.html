@@ -361,40 +361,18 @@
 </style>
 <style data-8b-part="section:tune">
 @layer sections {
-  #tune { position: relative; isolation: isolate; color: var(--color-1); padding-block: clamp(4rem, 8vw, 7rem) var(--space-2); }
-  #tune > :not(.tune__sheet) { position: relative; z-index: 1; }
-  #tune .tune__stage { position: relative; z-index: 2; container-type: inline-size; padding: clamp(1.25rem, 3vw, 2.25rem) clamp(1.25rem, 3.5vw, 3rem) clamp(1.75rem, 4.5vw, 3.75rem); border-radius: var(--radius-2); background: var(--color-1); color: var(--color-2); transform-origin: 50% 50%; }
-  #tune .tune__meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem 1.5rem; color: color-mix(in srgb, currentColor 72%, transparent); }
-  #tune .tune__meta span:first-child { display: inline-flex; align-items: center; gap: 0.5rem; }
-  #tune .tune__meta i { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--color-4); }
-  #tune .tune__sample { margin-top: clamp(2rem, 7vw, 5.5rem); }
-  #tune .tune__line { display: block; width: max-content; white-space: nowrap; font-size: min(13rem, 100cqi / (var(--len) * 0.49)); line-height: 0.98; transform-origin: 0% 100%; }
-  #tune .tune__body { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 2.5rem 5rem; margin-top: clamp(3.5rem, 7vw, 6rem); }
-  #tune .tune__head { display: grid; gap: 1.5rem; align-content: start; }
-  #tune .tune__head .m-text-4 { color: var(--color-5); max-width: 26rem; }
-  #tune .tune__settings { border-top: 0.0625rem solid color-mix(in srgb, var(--color-1) 16%, transparent); }
-  #tune .tune__row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 0.25rem 2rem; padding-block: 1.125rem; border-bottom: 0.0625rem solid color-mix(in srgb, var(--color-1) 16%, transparent); }
-  #tune .tune__row .m-text-8 { grid-column: 1; color: var(--color-5); }
-  #tune .tune__ctl { grid-column: 2; grid-row: 1 / span 2; }
-  #tune .tune__slider { position: relative; width: 8.5rem; height: 0.375rem; border-radius: var(--radius-3); background: color-mix(in srgb, var(--color-1) 14%, transparent); }
-  #tune .tune__fill { position: absolute; inset: 0; border-radius: inherit; background: var(--color-4); transform-origin: 0% 50%; }
-  #tune .tune__thumb { position: absolute; top: 50%; width: 1.25rem; height: 1.25rem; margin: -0.625rem 0 0 -0.625rem; border-radius: 50%; background: var(--color-1); box-shadow: var(--shadow-1); }
-  #tune [data-ctl="size"] .tune__fill { transform: scaleX(0.75); }
-  #tune [data-ctl="size"] .tune__thumb { left: 75%; }
-  #tune [data-ctl="weight"] .tune__fill { transform: scaleX(0.6); }
-  #tune [data-ctl="weight"] .tune__thumb { left: 60%; }
-  #tune .tune__seg { position: relative; display: grid; grid-template-columns: 1fr 1fr; padding: 0.25rem; border-radius: var(--radius-3); background: color-mix(in srgb, var(--color-1) 10%, transparent); font-size: 0.8125rem; font-weight: 600; }
-  #tune .tune__seg span { position: relative; z-index: 1; padding: 0.375rem 0.875rem; text-align: center; }
-  #tune .tune__seg span:last-child { color: var(--color-2); }
-  #tune .tune__pill { position: absolute; top: 0.25rem; bottom: 0.25rem; left: 50%; width: calc(50% - 0.25rem); border-radius: var(--radius-3); background: var(--color-1); }
-  #tune .tune__toggle { position: relative; width: 2.75rem; height: 1.5rem; border-radius: var(--radius-3); background: var(--color-4); }
-  #tune .tune__toggle::after { content: ""; position: absolute; top: 0.1875rem; right: 0.1875rem; width: 1.125rem; height: 1.125rem; border-radius: 50%; background: var(--color-1); }
-  #tune .tune__tag { padding: 0.375rem 0.75rem; border-radius: var(--radius-3); background: var(--color-2); font-size: 0.8125rem; font-weight: 600; }
-  @media (max-width: 47.99rem) {
-    #tune .tune__body { grid-template-columns: 1fr; }
-    #tune .tune__slider { width: 6rem; }
-    #tune .tune__row { gap: 0.25rem 1.25rem; }
-  }
+#tune{position:relative;isolation:isolate;scroll-margin-top:6rem;padding-block:clamp(4rem,8vw,7rem);color:var(--color-1);text-align:center}
+#tune .tune__inner{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center}
+#tune .tune__eyebrow{font-size:.7rem;font-weight:600;letter-spacing:.14em;line-height:1.5}
+#tune .tune__orbit{position:relative;display:grid;place-items:center;width:8rem;height:8rem;margin:1.5rem 0}
+#tune .tune__ring{position:absolute;inset:.3rem;border:1px solid color-mix(in srgb,var(--color-1) 18%,transparent);border-radius:50%}
+#tune .tune__dot{width:4.5rem;height:4.5rem;border-radius:50%;background:var(--color-1);box-shadow:0 0 0 .6rem color-mix(in srgb,var(--color-1) 5%,transparent)}
+#tune .tune__spark{position:absolute;top:.6rem;left:1.5rem;width:.55rem;height:.55rem;border-radius:50%;background:var(--color-4)}
+#tune h2{font-size:clamp(2.25rem,5vw,4.25rem);line-height:1.08;letter-spacing:-.045em;margin:0 0 1rem;text-wrap:balance}
+#tune .tune__lead{font-size:clamp(1rem,1.6vw,1.2rem);line-height:1.55;margin:0;color:var(--color-5)}
+#tune .tune__note{max-width:28rem;margin:1.25rem 0 0;font-size:.875rem;line-height:1.65;color:var(--color-5);text-wrap:pretty}
+#tune .tune__link{display:inline-flex;align-items:center;gap:.6rem;margin-top:1.25rem;font-size:.875rem;font-weight:600;text-underline-offset:.3em;text-decoration:underline;padding:.4rem}
+#tune .tune__link:focus-visible{outline:2px solid currentColor;outline-offset:4px;border-radius:.25rem}
 }
 </style>
 <style data-8b-part="section:rooms">
@@ -406,7 +384,7 @@
   #rooms .rooms__hold { margin-top: clamp(2.5rem, 5vw, 4rem); padding-bottom: var(--space-2); }
   #rooms .rooms__now { display: flex; align-items: center; gap: 0.5rem; width: fit-content; margin: 0 auto 1.5rem; padding: 0.4375rem 0.875rem; border-radius: var(--radius-3); background: var(--color-8); color: var(--color-9); }
   #rooms .rooms__now i { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--color-4); }
-  #rooms .rooms__track { position: relative; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1rem; max-width: 88rem; margin-inline: auto; padding-inline: var(--space-1); }
+  #rooms .rooms__track { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; max-width: 88rem; margin-inline: auto; padding-inline: var(--space-1); }
   #rooms .rooms__place { position: relative; overflow: hidden; aspect-ratio: 3 / 4.3; border-radius: var(--radius-2); background: var(--color-8); }
   #rooms .rooms__place img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
   #rooms .rooms__place::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, color-mix(in srgb, var(--color-1) 35%, transparent), transparent 26%, transparent 46%, color-mix(in srgb, var(--color-1) 78%, transparent)); pointer-events: none; }
@@ -444,35 +422,6 @@
   }
 }
 </style>
-<style data-8b-part="section:voices">
-@layer sections {
-  #voices { position: relative; isolation: isolate; overflow-x: clip; color: var(--color-1); padding-block: var(--space-2); }
-  #voices > :not(.voices__sheet) { position: relative; z-index: 1; }
-  #voices .voices__title { max-width: 16em; text-wrap: balance; }
-  #voices .voices__grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 2.5rem 4rem; align-items: start; margin-top: clamp(3rem, 6vw, 5rem); }
-  #voices .voices__expert { display: grid; gap: 1.75rem; }
-  #voices .voices__photo { overflow: hidden; aspect-ratio: 4 / 4.6; border-radius: var(--radius-2); background: var(--color-3); }
-  #voices .voices__photo img { width: 100%; height: 100%; object-fit: cover; object-position: 60% 30%; }
-  #voices .voices__quote { font-size: clamp(1.375rem, 2vw, 1.75rem); line-height: 1.3; }
-  #voices .voices__who { display: flex; align-items: center; gap: 0.75rem; }
-  #voices .voices__who span { color: var(--color-5); font-weight: 400; }
-  #voices .voices__badge { display: grid; flex: none; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 50%; background: var(--color-4); }
-  #voices .voices__badge svg { width: 1.25rem; height: 1.25rem; fill: none; stroke: var(--color-1); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-  #voices .voices__cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-  #voices .voices__col { display: grid; gap: 1rem; align-content: start; }
-  #voices .voices__col + .voices__col { margin-top: 4.5rem; }
-  #voices .voices__stars { display: flex; gap: 0.1875rem; }
-  #voices .voices__stars svg { width: 0.875rem; height: 0.875rem; fill: var(--color-4); }
-  @media (max-width: 63.99rem) {
-    #voices .voices__grid { grid-template-columns: 1fr; }
-    #voices .voices__photo { aspect-ratio: 4 / 3.4; }
-  }
-  @media (max-width: 47.99rem) {
-    #voices .voices__cols { grid-template-columns: 1fr; }
-    #voices .voices__col + .voices__col { margin-top: 0; }
-  }
-}
-</style>
 <style data-8b-part="section:setup">
 @layer sections {
   #setup { position: relative; isolation: isolate; color: var(--color-1); padding-block: var(--space-2); }
@@ -480,15 +429,17 @@
   #setup .setup__head { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: 1.5rem 4rem; align-items: end; }
   #setup .setup__head .m-text-4 { max-width: 28rem; color: var(--color-5); }
   #setup .setup__steps { display: grid; gap: 1.25rem; margin-top: clamp(3rem, 6vw, 5rem); }
-  #setup .setup__card { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 5fr) minmax(0, 5fr); gap: 1.5rem 3rem; align-items: center; min-height: clamp(19rem, 50vh, 28rem); padding: clamp(1.5rem, 4vw, 3.5rem); border-radius: var(--radius-2); transform-origin: 50% 0%; }
+  #setup .setup__card { display: grid; grid-template-columns: minmax(4rem, 1fr) minmax(0, 4.5fr) minmax(0, 4fr); gap: 2rem clamp(1.5rem, 3vw, 3rem); align-items: center; min-height: clamp(21rem, 34vw, 26rem); padding: clamp(1.5rem, 4vw, 3.5rem); border-radius: var(--radius-2); transform-origin: 50% 0%; }
   #setup .setup__card:nth-child(1) { background: var(--color-2); }
   #setup .setup__card:nth-child(2) { background: var(--color-4); }
   #setup .setup__card:nth-child(3) { background: var(--color-1); color: var(--color-2); }
-  #setup .setup__num { font-size: clamp(5rem, 11vw, 9.5rem); line-height: 0.8; }
-  #setup .setup__copy { display: grid; gap: 0.75rem; max-width: 26rem; }
-  #setup .setup__ui { display: grid; gap: 0.625rem; justify-items: start; padding: 1.25rem; border-radius: var(--radius-4); background: color-mix(in srgb, currentColor 7%, transparent); }
-  #setup .setup__check { display: flex; align-items: center; gap: 0.625rem; }
-  #setup .setup__check svg { width: 1.375rem; height: 1.375rem; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  #setup .setup__num { font-size: clamp(5rem, 8vw, 8rem); line-height: 1; font-variant-numeric: tabular-nums; align-self: center; }
+  #setup .setup__copy { display: grid; gap: 1rem; max-width: 31rem; }
+  #setup .setup__copy h3 { font-size: clamp(1.6rem, 2.7vw, 2.5rem); line-height: 1.12; letter-spacing: -.035em; text-wrap: balance; }
+  #setup .setup__copy > p { font-size: clamp(1.1rem, 1.6vw, 1.4rem); line-height: 1.55; }
+  #setup .setup__ui { display: grid; gap: 1rem; justify-items: start; font-size: clamp(1rem, 1.35vw, 1.2rem); line-height: 1.4; padding: clamp(1.25rem, 2vw, 2rem); border-radius: var(--radius-4); background: color-mix(in srgb, currentColor 7%, transparent); }
+  #setup .setup__check { display: flex; align-items: flex-start; gap: 0.75rem; }
+  #setup .setup__check svg { width: 1.5rem; height: 1.5rem; margin-top: .1em; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
   #setup .setup__option { display: flex; justify-content: space-between; align-items: center; gap: 1rem; width: 100%; padding: 0.75rem 1rem; border-radius: 0.875rem; border: 0.0625rem solid color-mix(in srgb, currentColor 25%, transparent); }
   #setup .setup__option--on { background: var(--color-1); color: var(--color-2); border-color: var(--color-1); }
   #setup .setup__ui .m-caption-2 { justify-self: end; }
@@ -499,7 +450,9 @@
   @media (max-width: 47.99rem) {
     #setup .setup__head { grid-template-columns: 1fr; }
     #setup .setup__card { grid-template-columns: 1fr; gap: 1.25rem; min-height: 0; }
-    #setup .setup__num { font-size: 4.5rem; }
+    #setup .setup__num { font-size: 4rem; }
+    #setup .setup__card { padding: 1.5rem; gap: 1.5rem; }
+    #setup .setup__ui { width: 100%; }
   }
 }
 </style>
@@ -561,54 +514,60 @@
   }
 }
 </style>
-<style data-8b-part="section:contact">
-@layer sections {
-  #contact { position: relative; isolation: isolate; color: var(--color-1); padding-block: var(--space-2) calc(var(--space-2) + 1rem); }
-  #contact > :not(.contact__sheet) { position: relative; z-index: 1; }
-  #contact .contact__inner { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: 3rem 5rem; align-items: start; }
-  #contact .contact__info { display: grid; gap: 1.75rem; }
-  #contact .contact__info > .m-text-4 { max-width: 30rem; color: var(--color-5); }
-  #contact .contact__photo { overflow: hidden; aspect-ratio: 16 / 9; border-radius: var(--radius-2); }
-  #contact .contact__photo img { width: 100%; height: 100%; object-fit: cover; object-position: 72% 40%; }
-  #contact .contact__ways { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; }
-  #contact .contact__ways li { display: grid; gap: 0.375rem; align-content: start; }
-  #contact .contact__ways .m-text-6 { color: var(--color-5); }
-  #contact .contact__form { display: grid; gap: 1.25rem; padding: clamp(1.5rem, 3.5vw, 2.75rem); border-radius: var(--radius-2); background: var(--color-2); }
-  #contact .contact__form .m-btn-2 { justify-self: start; }
-  #contact .contact__status:empty { display: none; }
-  @media (max-width: 63.99rem) {
-    #contact .contact__inner { grid-template-columns: 1fr; }
-  }
-  @media (max-width: 47.99rem) {
-    #contact .contact__ways { grid-template-columns: 1fr; }
-  }
-}
-</style>
 <style data-8b-part="section:footer">
 @layer sections {
-  #footer { position: relative; isolation: isolate; color: var(--color-2); padding-top: var(--space-2); }
+  #footer { position: relative; isolation: isolate; color: var(--color-2); padding-top: clamp(3rem, 4.5vw, 4.5rem); }
   #footer > :not(.footer__sheet) { position: relative; z-index: 1; }
   #footer .footer__inner { background: var(--color-1); }
-  #footer .footer__top { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 3rem; }
-  #footer .footer__pitch { display: grid; gap: 1.5rem; justify-items: start; max-width: 26rem; }
-  #footer .footer__pitch .m-text-4 { color: var(--color-9); }
+  #footer .footer__top { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 2rem; }
+  #footer .footer__pitch { display: grid; gap: 1.25rem; justify-items: start; max-width: 26rem; }
+  #footer .footer__pitch .m-text-4 { color: var(--color-9); font-size: 1rem; line-height: 1.5; }
   #footer .footer__cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem; }
-  #footer .footer__col { display: grid; gap: 0.875rem; align-content: start; }
+  #footer .footer__col { display: grid; gap: 1rem; align-content: start; }
   #footer .footer__col h2 { color: var(--color-9); }
-  #footer .footer__col ul { display: grid; gap: 0.625rem; }
+  #footer .footer__col ul { display: grid; gap: .75rem; }
   #footer .footer__brand { display: flex; align-items: flex-end; gap: clamp(1rem, 3vw, 3rem); margin-top: clamp(4rem, 9vw, 8rem); overflow: clip; }
   #footer .footer__logo { flex: none; width: clamp(5rem, 17vw, 15rem); height: auto; aspect-ratio: 40 / 28; fill: none; stroke-width: 3.2; stroke-linecap: round; margin-bottom: 0.08em; }
   #footer .footer__logo-a { stroke: var(--color-4); }
   #footer .footer__logo-b { stroke: var(--color-2); }
   #footer .footer__word { font-size: min(28rem, (100vw - 2 * var(--space-1) - clamp(5rem, 17vw, 15rem) - clamp(1rem, 3vw, 3rem)) / (var(--len) * 0.46)); line-height: 0.8; padding-bottom: 0.06em; }
-  #footer .footer__legal { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem 2rem; margin-top: clamp(2rem, 4vw, 3rem); padding-block: 1.5rem 2rem; border-top: 0.0625rem solid color-mix(in srgb, var(--color-2) 14%, transparent); }
+  #footer .footer__legal { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem 2rem; margin-top: 1.75rem; padding-block: 1.25rem; border-top: 0.0625rem solid color-mix(in srgb, var(--color-2) 14%, transparent); }
   #footer .footer__legal ul { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; }
-  #footer .footer__note { max-width: 46rem; margin-top: 0; padding-bottom: 2.5rem; }
+  #footer .footer__note { max-width: 46rem; margin-top: 0; padding-bottom: 1.25rem; }
   @media (max-width: 47.99rem) {
     #footer .footer__top { grid-template-columns: 1fr; }
     #footer .footer__cols { grid-template-columns: 1fr 1fr; }
   }
 }
+</style>
+<style data-mootz="app-preview">
+#calls .phone__screen{padding:0;gap:0;position:relative;background:#faf5f0}
+#calls .phone__top,#calls .phone__number,#calls .phone__saved,#calls .phone__bar{display:none}
+#calls .phone__log{margin:0;padding:0;list-style:none;min-height:0;height:100%;overflow:hidden}
+#calls .phone__msg{height:100%;width:100%;gap:0}
+#calls .app-screen{display:block;width:100%;height:100%;object-fit:cover;object-position:top}
+@media(prefers-reduced-motion:reduce){#calls .phone__log{overflow-y:auto;scroll-snap-type:y proximity}#calls .phone__msg{min-height:100%;scroll-snap-align:start}}
+</style>
+<style data-mootz="dual-camera-moments">
+#rooms .rooms__hold{margin-top:2.5rem}
+#rooms .rooms__now{margin-bottom:1rem}
+#rooms .rooms__place{height:auto;aspect-ratio:auto;background:transparent;border-radius:0;overflow:visible}
+#rooms .rooms__place::after{display:none}
+#rooms .rooms__photo{display:block;position:relative;width:100%;aspect-ratio:1;border:0;padding:0;background:var(--color-8);overflow:hidden;border-radius:1.5rem;cursor:pointer;color:var(--color-2);text-align:left}
+#rooms .rooms__photo:focus-visible{outline:3px solid var(--color-4);outline-offset:-5px}
+#rooms .rooms__place .rooms__rear{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#rooms .rooms__place .rooms__front{position:absolute;top:.875rem;left:.875rem;width:29%;height:33%;object-fit:cover;border:3px solid var(--color-2);border-radius:.875rem;box-shadow:0 3px 15px #0003;z-index:2}
+#rooms .rooms__switch{position:absolute;bottom:.8rem;right:.8rem;display:grid;place-items:center;width:2rem;height:2rem;background:#241538b8;border:1px solid #ffffff60;border-radius:50%;font-size:1.2rem;z-index:2}
+#rooms .rooms__talk{position:relative;inset:auto;padding:1.125rem 1.25rem 1.5rem;display:grid;gap:.5rem;min-height:7rem}
+#rooms .rooms__moment-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.09em;color:var(--color-9)}
+#rooms .rooms__talk p{font-size:clamp(.95rem,1.25vw,1.125rem);line-height:1.4;color:var(--color-2);max-width:24rem}
+@media(prefers-reduced-motion:no-preference){#rooms.is-track .rooms__stage{top:6.5rem;height:calc(100vh - 6.5rem);padding-top:0;justify-content:flex-start}#rooms.is-track .rooms__place{height:auto;align-self:flex-start}#rooms .rooms__rear{transition:opacity .2s ease}}
+@media(max-width:47.99rem){#rooms .rooms__hold{margin-top:2rem}#rooms .rooms__talk{padding:1rem;min-height:7rem}#rooms .rooms__place:last-child{grid-column:auto;aspect-ratio:auto}}
+</style>
+<style data-mootz="nav-button-spacing">
+#nav .nav__cta{gap:.65rem;padding-inline:1.25rem;white-space:nowrap;flex-shrink:0}
+#nav .nav__cta .m-btn__label{translate:none}
+#nav .nav__cta .m-btn__wave{position:static;translate:none;flex:none;width:.8125rem;justify-content:center}
 </style>
 </head>
 <body class="m-text">
@@ -625,7 +584,7 @@
       <li><a class="m-link-2" href="#listen">The idea</a></li>
       <li><a class="m-link-2" href="#calls">Moments</a></li>
       <li><a class="m-link-2" href="#rooms">Events</a></li>
-      <li><a class="m-link-2" href="#voices">Meet</a></li>
+      <li><a class="m-link-2" href="#setup">Meet</a></li>
       <li><a class="m-link-2" href="#faq">Questions</a></li>
     </ul>
     <a class="m-btn-3 nav__cta" href="/app"><span class="m-btn__label">Explore Mootz</span><span class="m-btn__wave" aria-hidden="true"><i></i><i></i><i></i></span></a>
@@ -637,7 +596,7 @@
       <li><a class="m-link-2" href="#listen">The idea</a></li>
       <li><a class="m-link-2" href="#calls">Moments</a></li>
       <li><a class="m-link-2" href="#rooms">Events</a></li>
-      <li><a class="m-link-2" href="#voices">Meet</a></li>
+      <li><a class="m-link-2" href="#setup">Meet</a></li>
       <li><a class="m-link-2" href="#faq">Questions</a></li>
     </ul>
     <a class="m-btn" href="/app"><span class="m-btn__label">Explore Mootz</span><span class="m-btn__wave" aria-hidden="true"><i></i><i></i><i></i></span></a>
@@ -705,7 +664,7 @@
       <h2 class="m-text-3" id="calls-title" data-8b-motion="captionIn">Your social map, in moments.</h2>
       <div class="calls__head-copy">
         <p class="m-text-4 calls__lead">Open a shared place, then see the moments connected to it. Map markers show an approximate area, only when a moment includes location.</p>
-        <a class="m-btn" href="#calls"><span class="m-btn__label">Explore the concept</span><span class="m-btn__wave" aria-hidden="true"><i></i><i></i><i></i></span></a>
+        <a class="m-btn" href="/app"><span class="m-btn__label">Open Mootz</span><span class="m-btn__wave" aria-hidden="true"><i></i><i></i><i></i></span></a>
       </div>
     </div>
     <div class="calls__grid">
@@ -719,20 +678,15 @@
       <div class="calls__aside">
         <div class="calls__sticky">
           <div class="calls__device">
-            <figure class="phone" aria-label="Illustrative Mootz concept screen">
+            <figure class="phone" aria-label="Mootz app preview with demo data">
               <div class="phone__screen">
                 <div class="phone__top">
-                  <p class="phone__who">Mootz · Concept preview</p>
-                  <p class="phone__state"><span class="phone__dot" aria-hidden="true"></span>Illustrative map · no live location</p>
+                  <p class="phone__who">Mootz · App preview</p>
+                  <p class="phone__state"><span class="phone__dot" aria-hidden="true"></span>Demo screens · illustrative locations</p>
                   <span class="phone__end" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 14c4-4 12-4 16 0l-2 3-3-1v-2c-2-1-4-1-6 0v2l-3 1z"/></svg></span>
                 </div>
                 <p class="phone__number">Map · Feed · All · Friends · Events</p>
-                <ol class="phone__log">
-                  <li class="phone__msg" data-step="1"><div class="concept-map" aria-label="Illustrative map diagram, not a live map"><i class="map-road map-road--one"></i><i class="map-road map-road--two"></i><i class="map-green"></i><b class="map-dot map-dot--one">M</b><b class="map-dot map-dot--two">•</b><span class="map-caption">Approximate area · illustrative</span></div></li>
-                  <li class="phone__msg phone__msg--you" data-step="3"><div class="concept-feed"><b>Today’s moment</b><small>Shared with friends you choose</small><div class="concept-photos"><figure><img src="https://images.unsplash.com/photo-1786772444593-b59cbed3809d?auto=format&amp;fit=crop&amp;w=420&amp;q=80" width="420" height="560" alt="Friends talking outdoors" loading="lazy" decoding="async"><figcaption>Rear photo</figcaption></figure><figure><img src="https://images.unsplash.com/photo-1719492172750-4ca0809345b8?auto=format&amp;fit=crop&amp;w=420&amp;q=80" width="420" height="315" alt="A woman checking her phone outdoors" loading="lazy" decoding="async"><figcaption>Front photo</figcaption></figure></div><p>Coffee before the next session.</p></div></li>
-                  <li class="phone__msg" data-step="4"><p class="phone__cue">Meet QR · valid for 60 seconds</p><div class="concept-qr" aria-label="Decorative QR-like illustration that cannot be scanned"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><p class="phone__note">Concept art · not scannable</p></li>
-                  <li class="phone__msg phone__msg--you" data-step="5"><div class="concept-dot"><b>•</b><span><strong>Meet confirmed</strong><small>One Dot added · offchain</small></span></div></li>
-                </ol>
+                <ol class="phone__log" aria-label="Mootz app screens with demo data"><li class="phone__msg" data-step="1"><img class="app-screen" src="assets/app-map.webp" width="780" height="1688" alt="Map with illustrative moment locations" loading="lazy" decoding="async"></li><li class="phone__msg" data-step="2"><img class="app-screen" src="assets/app-event.webp" width="780" height="1688" alt="Event details and check-in preview" loading="lazy" decoding="async"></li><li class="phone__msg" data-step="3"><img class="app-screen" src="assets/app-feed.webp" width="780" height="1688" alt="Feed with front and rear moment photos" loading="lazy" decoding="async"></li><li class="phone__msg" data-step="4"><img class="app-screen" src="assets/app-meet.webp" width="780" height="1688" alt="Meet review before approval" loading="lazy" decoding="async"></li><li class="phone__msg" data-step="5"><img class="app-screen" src="assets/app-profile.webp" width="780" height="1688" alt="Profile with demo Dots and sharing settings" loading="lazy" decoding="async"></li></ol>
                 <p class="phone__saved">Moments stay offchain</p>
                 <div class="phone__bar" aria-hidden="true"><span>Map</span><span>Feed</span><span>Profile</span></div>
               </div>
@@ -745,31 +699,19 @@
 </section>
 
 <!-- caption-styles: a wall-sized sample sentence over a list of eight settings with drawn controls (animation: scene:tune) -->
-<section class="tune" id="tune" data-8b-section="caption-styles" aria-labelledby="tune-title">
+<section class="tune" id="tune" data-8b-section="meet-record" aria-labelledby="tune-title">
   <div class="tune__sheet m-band-2" aria-hidden="true"></div>
   <div class="tune__inner l-wrap">
-    <div class="tune__stage">
-      <p class="tune__meta m-text-6"><span><i aria-hidden="true"></i>Meet record</span><span>Map → Feed → Meet → Dot</span></p>
-      <p class="tune__sample m-text-2"><span class="tune__line" style="--len:13">Small moments</span> <span class="tune__line" style="--len:14">stay together.</span></p>
-    </div>
-    <div class="tune__body">
-      <div class="tune__head">
-        <h2 class="m-text-3" id="tune-title" data-8b-motion="captionIn">A record with clear boundaries.</h2>
-        <p class="m-text-4">The Dot is an offchain marker made by a valid Meet. Saving a public record onchain is a separate choice.</p>
-      </div>
-      <ul class="tune__settings">
-        <li class="tune__row"><h3 class="m-text-5">Both people opt in</h3><p class="m-text-8">Only when both sign consent can a Meet be recorded onchain.</p><span class="tune__ctl tune__slider" data-ctl="size" aria-hidden="true"><span class="tune__fill"></span><span class="tune__thumb"></span></span></li>
-        <li class="tune__row"><h3 class="m-text-5">Public record</h3><p class="m-text-8">Recorded wallet pair and time are public and linkable.</p><span class="tune__ctl tune__slider" data-ctl="weight" aria-hidden="true"><span class="tune__fill"></span><span class="tune__thumb"></span></span></li>
-        <li class="tune__row"><h3 class="m-text-5">Private stays private</h3><p class="m-text-8">Photos, location and Dots remain offchain with audience checks.</p><span class="tune__ctl tune__seg" data-ctl="contrast" aria-hidden="true"><b class="tune__pill"></b><span>Private</span><span>Onchain</span></span></li>
-        <li class="tune__row"><h3 class="m-text-5">One Meet = one Dot</h3><p class="m-text-8">Dots mark Meets; they cannot be spent or transferred.</p><span class="tune__ctl tune__tag" aria-hidden="true">1 Dot</span></li>
-        <li class="tune__row"><h3 class="m-text-5">No chain dependency</h3><p class="m-text-8">A failed or skipped onchain save never removes the Dot.</p><span class="tune__ctl tune__toggle" aria-hidden="true"></span></li>
-        <li class="tune__row"><h3 class="m-text-5">No presence proof</h3><p class="m-text-8">Signatures and distance checks do not prove physical presence.</p><span class="tune__ctl tune__tag" aria-hidden="true">Clear terms</span></li>
-      </ul>
-    </div>
+    <p class="tune__eyebrow">A MOMENT TO KEEP</p>
+    <div class="tune__orbit" aria-hidden="true"><span class="tune__ring"></span><span class="tune__dot"></span><i class="tune__spark"></i></div>
+    <h2 id="tune-title">One Meet. One Dot.</h2>
+    <p class="tune__lead">A shared marker for a moment together.</p>
+    <p class="tune__note">Your Dot stays offchain. A public Meet record is optional, and needs both people’s consent.</p>
+    <a class="tune__link" href="#faq">What gets recorded? <span aria-hidden="true">↗</span></a>
   </div>
 </section>
 
-<!-- in-person: horizontal track of five places with photos and caption pairs, two curved lines run through all of them (animation: scene:rooms) -->
+<!-- Dual-camera moment gallery (animation: scene:rooms). -->
 <section class="rooms on-dark" id="rooms" data-8b-section="in-person" aria-labelledby="rooms-title">
   <div class="rooms__sheet m-band-4" aria-hidden="true"></div>
   <div class="rooms__head l-wrap">
@@ -780,87 +722,59 @@
     <div class="rooms__stage">
       <p class="rooms__now m-text-6"><i aria-hidden="true"></i>Event moments · shared plans</p>
       <div class="rooms__track">
-        <svg class="rooms__lines" viewBox="0 0 1000 100" preserveAspectRatio="none" aria-hidden="true">
-          <path class="rooms__line rooms__line--a" pathLength="1" d="M0 60C40 10 80 10 120 50S200 95 240 55 320 5 360 45 440 95 480 55 560 5 600 45 680 95 720 55 800 5 840 45 920 95 1000 50"/>
-          <path class="rooms__line rooms__line--b" pathLength="1" d="M0 40C40 90 80 90 120 50S200 5 240 45 320 95 360 55 440 5 480 45 560 95 600 55 680 5 720 45 800 95 840 55 920 5 1000 50"/>
-        </svg>
         <figure class="rooms__place">
-          <img srcset="https://images.unsplash.com/photo-1786772444593-63542e7d0618?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8M3x8cGhhcm1hY2lzdCUyMHRhbGtpbmclMjB0byUyMGN1c3RvbWVyJTIwY291bnRlcnxlbnwxfDF8fHwxNzkxMjA5NTc1fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=230&amp;q=80 230w, https://images.unsplash.com/photo-1786772444593-63542e7d0618?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8M3x8cGhhcm1hY2lzdCUyMHRhbGtpbmclMjB0byUyMGN1c3RvbWVyJTIwY291bnRlcnxlbnwxfDF8fHwxNzkxMjA5NTc1fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=340&amp;q=80 340w, https://images.unsplash.com/photo-1786772444593-63542e7d0618?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8M3x8cGhhcm1hY2lzdCUyMHRhbGtpbmclMjB0byUyMGN1c3RvbWVyJTIwY291bnRlcnxlbnwxfDF8fHwxNzkxMjA5NTc1fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=400&amp;q=80 400w, https://images.unsplash.com/photo-1786772444593-63542e7d0618?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8M3x8cGhhcm1hY2lzdCUyMHRhbGtpbmclMjB0byUyMGN1c3RvbWVyJTIwY291bnRlcnxlbnwxfDF8fHwxNzkxMjA5NTc1fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=450&amp;q=80 450w, https://images.unsplash.com/photo-1786772444593-63542e7d0618?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8M3x8cGhhcm1hY2lzdCUyMHRhbGtpbmclMjB0byUyMGN1c3RvbWVyJTIwY291bnRlcnxlbnwxfDF8fHwxNzkxMjA5NTc1fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=640&amp;q=80 640w, https://images.unsplash.com/photo-1786772444593-63542e7d0618?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8M3x8cGhhcm1hY2lzdCUyMHRhbGtpbmclMjB0byUyMGN1c3RvbWVyJTIwY291bnRlcnxlbnwxfDF8fHwxNzkxMjA5NTc1fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=960&amp;q=80 960w" sizes="(max-width: 767px) 90vw, 17vw" style="background:#40260c" src="https://images.unsplash.com/photo-1786772444593-63542e7d0618?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8M3x8cGhhcm1hY2lzdCUyMHRhbGtpbmclMjB0byUyMGN1c3RvbWVyJTIwY291bnRlcnxlbnwxfDF8fHwxNzkxMjA5NTc1fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=1600&amp;q=80" width="1600" height="2400" alt="A woman with a backpack orders at a café counter" loading="lazy" decoding="async">
-          <figcaption class="rooms__label m-text-6">At the counter</figcaption>
-          <div class="rooms__talk">
-            <p class="m-caption"><span class="m-caption__wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="m-caption__text">Oat milk, and anything else?</span></p>
-            <p class="m-caption-2"><span class="m-caption__wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="m-caption__text">Just a cinnamon bun, thanks.</span></p>
-          </div>
+          <button class="rooms__photo" type="button" aria-label="Switch front and rear photo: Coffee after class" aria-pressed="false">
+            <img class="rooms__rear" src="assets/mootz-cafe-rear-v1.webp" width="887" height="887" alt="Two friends laughing over coffee and croissants at a cafe" loading="lazy" decoding="async">
+            <img class="rooms__front" src="assets/mootz-cafe-front-v1.webp" width="887" height="887" alt="Their friend taking a selfie at the same cafe" loading="lazy" decoding="async">
+            <span class="rooms__switch" aria-hidden="true">↔</span>
+          </button>
         </figure>
         <figure class="rooms__place">
-          <img srcset="https://images.unsplash.com/photo-1627662166825-a860471632e4?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8ZmFtaWx5JTIwZGlubmVyJTIwdGFibGUlMjBjb252ZXJzYXRpb24lMjBsYXVnaGluZ3xlbnwxfDF8fHwxNzkxMjA5NTc1fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=290&amp;q=80 290w, https://images.unsplash.com/photo-1627662166825-a860471632e4?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8ZmFtaWx5JTIwZGlubmVyJTIwdGFibGUlMjBjb252ZXJzYXRpb24lMjBsYXVnaGluZ3xlbnwxfDF8fHwxNzkxMjA5NTc1fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=340&amp;q=80 340w, https://images.unsplash.com/photo-1627662166825-a860471632e4?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8ZmFtaWx5JTIwZGlubmVyJTIwdGFibGUlMjBjb252ZXJzYXRpb24lMjBsYXVnaGluZ3xlbnwxfDF8fHwxNzkxMjA5NTc1fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=400&amp;q=80 400w, https://images.unsplash.com/photo-1627662166825-a860471632e4?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8ZmFtaWx5JTIwZGlubmVyJTIwdGFibGUlMjBjb252ZXJzYXRpb24lMjBsYXVnaGluZ3xlbnwxfDF8fHwxNzkxMjA5NTc1fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=570&amp;q=80 570w, https://images.unsplash.com/photo-1627662166825-a860471632e4?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8ZmFtaWx5JTIwZGlubmVyJTIwdGFibGUlMjBjb252ZXJzYXRpb24lMjBsYXVnaGluZ3xlbnwxfDF8fHwxNzkxMjA5NTc1fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=640&amp;q=80 640w, https://images.unsplash.com/photo-1627662166825-a860471632e4?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8ZmFtaWx5JTIwZGlubmVyJTIwdGFibGUlMjBjb252ZXJzYXRpb24lMjBsYXVnaGluZ3xlbnwxfDF8fHwxNzkxMjA5NTc1fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=960&amp;q=80 960w" sizes="(max-width: 767px) 90vw, 22vw" style="background:#c0c0c0" src="https://images.unsplash.com/photo-1627662166825-a860471632e4?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8ZmFtaWx5JTIwZGlubmVyJTIwdGFibGUlMjBjb252ZXJzYXRpb24lMjBsYXVnaGluZ3xlbnwxfDF8fHwxNzkxMjA5NTc1fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=1600&amp;q=80" width="1600" height="1803" alt="A family laughs together over lunch at a home table" loading="lazy" decoding="async">
-          <figcaption class="rooms__label m-text-6">Around the table</figcaption>
-          <div class="rooms__talk">
-            <p class="m-caption"><span class="m-caption__wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="m-caption__text">Who wants the last one?</span></p>
-            <p class="m-caption-2"><span class="m-caption__wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="m-caption__text">Split it — half each!</span></p>
-          </div>
+          <button class="rooms__photo" type="button" aria-label="Switch front and rear photo: One more bite" aria-pressed="false">
+            <img class="rooms__rear" src="assets/mootz-dinner-rear-v1.webp" width="887" height="887" alt="Friends sharing rice dishes and snacks at a warung" loading="lazy" decoding="async">
+            <img class="rooms__front" src="assets/mootz-dinner-front-v1.webp" width="887" height="887" alt="Their friend taking a selfie at the same dinner" loading="lazy" decoding="async">
+            <span class="rooms__switch" aria-hidden="true">↔</span>
+          </button>
         </figure>
         <figure class="rooms__place">
-          <img srcset="https://images.unsplash.com/photo-1638957835514-224c57ffe617?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8ZG9jdG9yJTIwdGFsa2luZyUyMHdpdGglMjBlbGRlcmx5JTIwcGF0aWVudHxlbnwxfDF8fHwxNzkxMjA5NTc3fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=230&amp;q=80 230w, https://images.unsplash.com/photo-1638957835514-224c57ffe617?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8ZG9jdG9yJTIwdGFsa2luZyUyMHdpdGglMjBlbGRlcmx5JTIwcGF0aWVudHxlbnwxfDF8fHwxNzkxMjA5NTc3fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=340&amp;q=80 340w, https://images.unsplash.com/photo-1638957835514-224c57ffe617?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8ZG9jdG9yJTIwdGFsa2luZyUyMHdpdGglMjBlbGRlcmx5JTIwcGF0aWVudHxlbnwxfDF8fHwxNzkxMjA5NTc3fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=400&amp;q=80 400w, https://images.unsplash.com/photo-1638957835514-224c57ffe617?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8ZG9jdG9yJTIwdGFsa2luZyUyMHdpdGglMjBlbGRlcmx5JTIwcGF0aWVudHxlbnwxfDF8fHwxNzkxMjA5NTc3fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=450&amp;q=80 450w, https://images.unsplash.com/photo-1638957835514-224c57ffe617?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8ZG9jdG9yJTIwdGFsa2luZyUyMHdpdGglMjBlbGRlcmx5JTIwcGF0aWVudHxlbnwxfDF8fHwxNzkxMjA5NTc3fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=640&amp;q=80 640w, https://images.unsplash.com/photo-1638957835514-224c57ffe617?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8ZG9jdG9yJTIwdGFsa2luZyUyMHdpdGglMjBlbGRlcmx5JTIwcGF0aWVudHxlbnwxfDF8fHwxNzkxMjA5NTc3fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=960&amp;q=80 960w" sizes="(max-width: 767px) 90vw, 17vw" style="background:#8c8ca6" src="https://images.unsplash.com/photo-1638957835514-224c57ffe617?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8ZG9jdG9yJTIwdGFsa2luZyUyMHdpdGglMjBlbGRlcmx5JTIwcGF0aWVudHxlbnwxfDF8fHwxNzkxMjA5NTc3fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=1600&amp;q=80" width="1600" height="2400" alt="An audience listens to a talk in a bright hall" loading="lazy" decoding="async">
-          <figcaption class="rooms__label m-text-6">At the community talk</figcaption>
-          <div class="rooms__talk">
-            <p class="m-caption"><span class="m-caption__wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="m-caption__text">Want to meet again next week?</span></p>
-            <p class="m-caption-2"><span class="m-caption__wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="m-caption__text">Let’s save this moment.</span></p>
-          </div>
+          <button class="rooms__photo" type="button" aria-label="Switch front and rear photo: Building together" aria-pressed="false">
+            <img class="rooms__rear" src="assets/mootz-meetup-rear-v1.webp" width="887" height="887" alt="Three friends working on a small prototype together" loading="lazy" decoding="async">
+            <img class="rooms__front" src="assets/mootz-meetup-front-v1.webp" width="887" height="887" alt="Their friend taking a selfie at the same meetup" loading="lazy" decoding="async">
+            <span class="rooms__switch" aria-hidden="true">↔</span>
+          </button>
+
         </figure>
         <figure class="rooms__place">
-          <img srcset="https://images.unsplash.com/photo-1638957835514-224c57ffe617?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8bGVjdHVyZSUyMGhhbGwlMjBzdHVkZW50cyUyMGxpc3RlbmluZ3xlbnwxfDF8fHwxNzkxMjA5NTc2fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=230&amp;q=80 230w, https://images.unsplash.com/photo-1638957835514-224c57ffe617?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8bGVjdHVyZSUyMGhhbGwlMjBzdHVkZW50cyUyMGxpc3RlbmluZ3xlbnwxfDF8fHwxNzkxMjA5NTc2fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=340&amp;q=80 340w, https://images.unsplash.com/photo-1638957835514-224c57ffe617?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8bGVjdHVyZSUyMGhhbGwlMjBzdHVkZW50cyUyMGxpc3RlbmluZ3xlbnwxfDF8fHwxNzkxMjA5NTc2fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=400&amp;q=80 400w, https://images.unsplash.com/photo-1638957835514-224c57ffe617?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8bGVjdHVyZSUyMGhhbGwlMjBzdHVkZW50cyUyMGxpc3RlbmluZ3xlbnwxfDF8fHwxNzkxMjA5NTc2fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=450&amp;q=80 450w, https://images.unsplash.com/photo-1638957835514-224c57ffe617?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8bGVjdHVyZSUyMGhhbGwlMjBzdHVkZW50cyUyMGxpc3RlbmluZ3xlbnwxfDF8fHwxNzkxMjA5NTc2fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=640&amp;q=80 640w, https://images.unsplash.com/photo-1638957835514-224c57ffe617?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8bGVjdHVyZSUyMGhhbGwlMjBzdHVkZW50cyUyMGxpc3RlbmluZ3xlbnwxfDF8fHwxNzkxMjA5NTc2fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=960&amp;q=80 960w" sizes="(max-width: 767px) 90vw, 17vw" style="background:#c0c0c0" src="https://images.unsplash.com/photo-1638957835514-224c57ffe617?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8bGVjdHVyZSUyMGhhbGwlMjBzdHVkZW50cyUyMGxpc3RlbmluZ3xlbnwxfDF8fHwxNzkxMjA5NTc2fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=1600&amp;q=80" width="1600" height="2397" alt="An audience listens to a talk in a bright hall" loading="lazy" decoding="async">
-          <figcaption class="rooms__label m-text-6">At the talk</figcaption>
-          <div class="rooms__talk">
-            <p class="m-caption"><span class="m-caption__wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="m-caption__text">Questions from the back row?</span></p>
-            <p class="m-caption-2"><span class="m-caption__wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="m-caption__text">Will the slides be shared?</span></p>
-          </div>
+          <button class="rooms__photo" type="button" aria-label="Switch front and rear photo: Afternoon picnic" aria-pressed="false">
+            <img class="rooms__rear" src="assets/mootz-park-rear-v1.webp" width="887" height="887" alt="Two friends sharing snacks during a park picnic" loading="lazy" decoding="async">
+            <img class="rooms__front" src="assets/mootz-park-front-v1.webp" width="887" height="887" alt="Their friend taking a selfie at the same picnic" loading="lazy" decoding="async">
+            <span class="rooms__switch" aria-hidden="true">↔</span>
+          </button>
         </figure>
         <figure class="rooms__place">
-          <img srcset="https://images.unsplash.com/photo-1787767296743-b59cbed3809d?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8NHx8ZnJpZW5kcyUyMHRhbGtpbmclMjBvdXRkb29ycyUyMGNhZmV8ZW58MXwxfHx8MTc5MTIwOTU3N3ww&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=250&amp;q=80 250w, https://images.unsplash.com/photo-1787767296743-b59cbed3809d?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8NHx8ZnJpZW5kcyUyMHRhbGtpbmclMjBvdXRkb29ycyUyMGNhZmV8ZW58MXwxfHx8MTc5MTIwOTU3N3ww&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=340&amp;q=80 340w, https://images.unsplash.com/photo-1787767296743-b59cbed3809d?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8NHx8ZnJpZW5kcyUyMHRhbGtpbmclMjBvdXRkb29ycyUyMGNhZmV8ZW58MXwxfHx8MTc5MTIwOTU3N3ww&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=400&amp;q=80 400w, https://images.unsplash.com/photo-1787767296743-b59cbed3809d?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8NHx8ZnJpZW5kcyUyMHRhbGtpbmclMjBvdXRkb29ycyUyMGNhZmV8ZW58MXwxfHx8MTc5MTIwOTU3N3ww&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=490&amp;q=80 490w, https://images.unsplash.com/photo-1787767296743-b59cbed3809d?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8NHx8ZnJpZW5kcyUyMHRhbGtpbmclMjBvdXRkb29ycyUyMGNhZmV8ZW58MXwxfHx8MTc5MTIwOTU3N3ww&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=640&amp;q=80 640w, https://images.unsplash.com/photo-1787767296743-b59cbed3809d?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8NHx8ZnJpZW5kcyUyMHRhbGtpbmclMjBvdXRkb29ycyUyMGNhZmV8ZW58MXwxfHx8MTc5MTIwOTU3N3ww&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=960&amp;q=80 960w" sizes="(max-width: 767px) 90vw, 19vw" style="background:#404040" src="https://images.unsplash.com/photo-1787767296743-b59cbed3809d?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8NHx8ZnJpZW5kcyUyMHRhbGtpbmclMjBvdXRkb29ycyUyMGNhZmV8ZW58MXwxfHx8MTc5MTIwOTU3N3ww&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=1600&amp;q=80" width="1600" height="2092" alt="Neighbours sit and chat outside a shop on a cobbled street" loading="lazy" decoding="async">
-          <figcaption class="rooms__label m-text-6">On the corner</figcaption>
-          <div class="rooms__talk">
-            <p class="m-caption"><span class="m-caption__wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="m-caption__text">Same time tomorrow?</span></p>
-          <p class="m-caption-2"><span class="m-caption__wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="m-caption__text">Same time next week?</span></p>
-          </div>
+          <button class="rooms__photo" type="button" aria-label="Switch front and rear photo: After badminton" aria-pressed="false">
+            <img class="rooms__rear" src="assets/mootz-badminton-rear-v1.webp" width="887" height="887" alt="Two friends with rackets on a badminton court" loading="lazy" decoding="async">
+            <img class="rooms__front" src="assets/mootz-badminton-front-v1.webp" width="887" height="887" alt="Their friend taking a selfie after the same badminton game" loading="lazy" decoding="async">
+            <span class="rooms__switch" aria-hidden="true">↔</span>
+          </button>
+        </figure>
+        <figure class="rooms__place">
+          <button class="rooms__photo" type="button" aria-label="Switch front and rear photo: Night market walk" aria-pressed="false">
+            <img class="rooms__rear" src="assets/mootz-market-rear-v1.webp" width="887" height="887" alt="Two friends enjoying street snacks at an evening market" loading="lazy" decoding="async">
+            <img class="rooms__front" src="assets/mootz-market-front-v1.webp" width="887" height="887" alt="Their friend taking a selfie at the same night market" loading="lazy" decoding="async">
+            <span class="rooms__switch" aria-hidden="true">↔</span>
+          </button>
         </figure>
       </div>
     </div>
   </div>
 </section>
 
-<!-- product story: Meet consent and steps (animation: scene:voices) -->
-<section class="voices" id="voices" data-8b-section="testimonials" aria-labelledby="voices-title">
-  <div class="voices__sheet m-band" aria-hidden="true" data-8b-motion="bandRise"></div>
-  <div class="voices__inner l-wrap">
-    <h2 class="m-text-3 voices__title" id="voices-title" data-8b-motion="captionIn">A Meet is a shared choice.</h2>
-    <div class="voices__expert">
-      <div class="voices__photo"><img src="https://images.unsplash.com/photo-1643297654397-97b3201abc7c?auto=format&fit=crop&w=960&q=80" width="960" height="770" alt="A woman standing outdoors by a row of benches" loading="lazy" decoding="async"></div>
-      <blockquote class="voices__quote m-text-4" data-8b-motion="readAlong"><p>Share a moment, meet nearby, and choose together whether to save a public record.</p></blockquote>
-      <figcaption class="voices__who m-text-6"><p>How Meet works<br><span>Two people · shared consent</span></p></figcaption>
-    </div>
-    <div class="voices__cols">
-      <ul class="voices__col">
-        <li class="m-card"><p>01 · One person shares a QR that lasts 60 seconds.</p></li>
-        <li class="m-card"><p>02 · The other person reviews the moment and agrees.</p></li>
-      </ul>
-      <ul class="voices__col">
-        <li class="m-card"><p>03 · A distance check at scan time looks for 100 meters or less.</p></li>
-        <li class="m-card"><p>04 · A valid Meet creates one Dot shared by both people.</p></li>
-      </ul>
-    </div>
-  </div>
-</section>
-
 <!-- how-it-works: three numbered step cards that stack on top of each other (animation: scene:setup) -->
-<section class="setup" id="setup" data-8b-section="how-it-works" aria-labelledby="setup-title">
+<section class="setup" id="setup" data-8b-section="how-it-works" aria-label="How Mootz works">
   <div class="setup__sheet m-band-2" aria-hidden="true"></div>
   <div class="setup__inner l-wrap">
-    <div class="setup__head">
-      <h2 class="m-text-3" id="setup-title" data-8b-motion="captionIn">A day, in three beats.</h2>
-      <p class="m-text-4">From a moment on the Map to a Meet made together.</p>
-    </div>
-    <ol class="setup__steps">
+<ol class="setup__steps">
       <li class="setup__card" style="--setup-i:0">
         <p class="setup__num m-text-2" aria-hidden="true">1</p>
         <div class="setup__copy"><h3 class="m-text-5">Share a moment</h3><p class="m-text-8">Take a front and rear photo. Share with friends you choose, with optional location.</p></div>
@@ -874,16 +788,18 @@
         <p class="setup__num m-text-2" aria-hidden="true">2</p>
         <div class="setup__copy"><h3 class="m-text-5">Meet in person</h3><p class="m-text-8">Scan a short-lived QR and agree. Mootz checks distance at scan time.</p></div>
         <div class="setup__ui m-text-6" aria-hidden="true">
-          <p class="setup__option setup__option--on">Offer · 60 seconds<span>Selected</span></p>
-          <p class="setup__option">Distance · ≤100 m<span>Free</span></p>
+          <p class="setup__check"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>QR expires in 60 seconds</p>
+          <p class="setup__check"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>Both people agree</p>
+          <p class="setup__check"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>Distance checked at scan time</p>
         </div>
       </li>
       <li class="setup__card on-dark" style="--setup-i:2">
         <p class="setup__num m-text-2" aria-hidden="true">3</p>
         <div class="setup__copy"><h3 class="m-text-5">Keep the memory</h3><p class="m-text-8">A valid Meet makes one Dot. Both people may also choose to save a public record onchain.</p></div>
         <div class="setup__ui" aria-hidden="true">
-          <p class="m-caption"><span class="m-caption__wave"><i></i><i></i><i></i><i></i></span><span class="m-caption__text">Meet confirmed</span></p>
-          <p class="m-caption-2"><span class="m-caption__wave"><i></i><i></i><i></i><i></i></span><span class="m-caption__text">One Dot added · offchain</span></p>
+          <p class="setup__check"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>One valid Meet, one Dot</p>
+          <p class="setup__check"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>Dots stay offchain</p>
+          <p class="setup__check"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>Public record is optional</p>
         </div>
       </li>
     </ol>
@@ -901,17 +817,17 @@
       <details class="faq__item"><summary class="m-text-5">What does one Dot mean?<span class="faq__icon" aria-hidden="true"></span></summary><p class="m-text">Each valid Meet creates one offchain Dot for both participants. Dots are Meet markers, not currency: they cannot be transferred or spent.</p></details>
       <details class="faq__item"><summary class="m-text-5">What gets saved onchain?<span class="faq__icon" aria-hidden="true"></span></summary><p class="m-text">Only when both people separately opt in and sign consent can a Meet be recorded. Public records expose the wallet pair and time. Photos, location, and Dots stay offchain with audience checks. A failed or skipped chain save never removes the Dot.</p></details>
       <details class="faq__item"><summary class="m-text-5">Are there rewards or a shop?<span class="faq__icon" aria-hidden="true"></span></summary><p class="m-text">No. Dots are not currency, and the posting streak has no milestone rewards. Events may have separate collectibles for eligible attendees.</p></details>
-      <details class="faq__item"><summary class="m-text-5">Is the map live tracking?<span class="faq__icon" aria-hidden="true"></span></summary><p class="m-text">No. Moments can show an approximate location to friends who can see them. The phone map here is illustrative and does not follow anyone.</p></details>
+      <details class="faq__item"><summary class="m-text-5">Is the map live tracking?<span class="faq__icon" aria-hidden="true"></span></summary><p class="m-text">No. Moments can show an approximate location to friends who can see them. Friends can opt in to approximate location sharing while the app is open. There is no background tracking; sharing expires when updates stop. These previews use demo locations.</p></details>
     </div>
   </div>
 </section>
 
 <!-- call-to-action: closing call to action over a photo that opens from a small window to the full band (animation: scene:start) -->
 <section class="start on-dark" id="start" data-8b-section="call-to-action" aria-labelledby="start-title">
-  <div class="start__sheet m-band-4" aria-hidden="true"></div>
+  <div class="start__sheet m-band-2" aria-hidden="true"></div>
   <div class="start__inner l-wrap">
     <div class="start__window">
-      <img srcset="https://images.unsplash.com/photo-1726047336347-77803fc5f725?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8d29tYW4lMjBzbWlsaW5nJTIwYXQlMjBwaG9uZSUyMGdyZWVuJTIwbGVhdmVzJTIwYmFja2dyb3VuZHxlbnwxfDB8fHwxNzkxMjA5Njc3fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=400&amp;q=80 400w, https://images.unsplash.com/photo-1726047336347-77803fc5f725?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8d29tYW4lMjBzbWlsaW5nJTIwYXQlMjBwaG9uZSUyMGdyZWVuJTIwbGVhdmVzJTIwYmFja2dyb3VuZHxlbnwxfDB8fHwxNzkxMjA5Njc3fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=640&amp;q=80 640w, https://images.unsplash.com/photo-1726047336347-77803fc5f725?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8d29tYW4lMjBzbWlsaW5nJTIwYXQlMjBwaG9uZSUyMGdyZWVuJTIwbGVhdmVzJTIwYmFja2dyb3VuZHxlbnwxfDB8fHwxNzkxMjA5Njc3fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=1010&amp;q=80 1010w, https://images.unsplash.com/photo-1726047336347-77803fc5f725?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8d29tYW4lMjBzbWlsaW5nJTIwYXQlMjBwaG9uZSUyMGdyZWVuJTIwbGVhdmVzJTIwYmFja2dyb3VuZHxlbnwxfDB8fHwxNzkxMjA5Njc3fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=1180&amp;q=80 1180w, https://images.unsplash.com/photo-1726047336347-77803fc5f725?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8d29tYW4lMjBzbWlsaW5nJTIwYXQlMjBwaG9uZSUyMGdyZWVuJTIwbGVhdmVzJTIwYmFja2dyb3VuZHxlbnwxfDB8fHwxNzkxMjA5Njc3fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=1280&amp;q=80 1280w, https://images.unsplash.com/photo-1726047336347-77803fc5f725?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8d29tYW4lMjBzbWlsaW5nJTIwYXQlMjBwaG9uZSUyMGdyZWVuJTIwbGVhdmVzJTIwYmFja2dyb3VuZHxlbnwxfDB8fHwxNzkxMjA5Njc3fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=1600&amp;q=80 1600w" sizes="(max-width: 767px) 269vw, 92vw" style="background:#26260c" src="https://images.unsplash.com/photo-1726047336347-77803fc5f725?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8d29tYW4lMjBzbWlsaW5nJTIwYXQlMjBwaG9uZSUyMGdyZWVuJTIwbGVhdmVzJTIwYmFja2dyb3VuZHxlbnwxfDB8fHwxNzkxMjA5Njc3fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=1600&amp;q=80" width="1600" height="1067" alt="A young woman smiles as she talks on the phone in a leafy garden" loading="lazy" decoding="async">
+      <img src="assets/mootz-team-courtyard-v1.webp" width="1600" height="1067" alt="Tiga anggota tim Mootz berbagi momen sambil melihat ponsel di kafe taman" loading="lazy" decoding="async">
     </div>
     <div class="start__copy">
       <h2 class="m-text-3" id="start-title">Take a look around.</h2>
@@ -924,11 +840,6 @@
   </div>
 </section>
 
-<!-- closing note: no contact or signup form is presented -->
-<section class="contact" id="contact" data-8b-section="contact" aria-labelledby="contact-title">
-  <div class="contact__sheet m-band-2" aria-hidden="true" data-8b-motion="bandRise"></div>
-  <div class="contact__inner l-wrap"><div class="contact__info"><h2 class="m-text-3" id="contact-title" data-8b-motion="captionIn">A first look at Mootz.</h2><p class="m-text-4">Currently in development.</p></div></div>
-</section>
 </main>
 
 <!-- footer: tagline, link columns, giant wordmark, copyright with the Design: 8B credit and a legal note (animation: scene:footer) -->
@@ -943,12 +854,12 @@
       </div>
       <div class="footer__cols m-text-6">
         <div class="footer__col"><h2 class="m-text-6">Product</h2><ul><li><a class="m-link-2" href="#listen">Moments</a></li><li><a class="m-link-2" href="#calls">Map and Feed</a></li><li><a class="m-link-2" href="#rooms">Events</a></li><li><a class="m-link-2" href="#setup">How it works</a></li></ul></div>
-        <div class="footer__col"><h2 class="m-text-6">Meet</h2><ul><li><a class="m-link-2" href="#voices">The idea</a></li><li><a class="m-link-2" href="#tune">Privacy and consent</a></li><li><a class="m-link-2" href="#faq">Questions</a></li></ul></div>
+        <div class="footer__col"><h2 class="m-text-6">Meet</h2><ul><li><a class="m-link-2" href="#setup">The idea</a></li><li><a class="m-link-2" href="#tune">Privacy and consent</a></li><li><a class="m-link-2" href="#faq">Questions</a></li></ul></div>
         <div class="footer__col"><h2 class="m-text-6">Explore</h2><ul><li><a class="m-link-2" href="#faq">Questions</a></li><li><a class="m-link-2" href="#start">Explore Mootz</a></li></ul></div>
       </div>
     </div>
     <div class="footer__brand" aria-hidden="true">
-      <img class="footer__word footer__mootz-logo" src="assets/mootz-logo-v1.svg" width="2129" height="739" alt="" loading="lazy" decoding="async">
+      <img class="footer__word footer__mootz-logo" src="assets/mootz-logo-v1.svg" width="2129" height="739" alt="" loading="eager" decoding="async">
     </div>
     <div class="footer__legal m-text-7">
       <p>© 2026 Mootz. · Design: <a href="https://8b.com/" style="color:inherit" data-8b-credit>8B</a></p>
@@ -967,7 +878,7 @@
 #hero .hero__title{max-width:10em;font-size:clamp(3.5rem,6.4vw,6rem);line-height:1.02;letter-spacing:-.04em}
 #hero .hero__title>span{display:block}
 #hero .hero__intro{gap:1.5rem}
-#hero .hero__copy{padding-top:clamp(9rem,18vh,12rem)}
+#hero .hero__copy{padding-top:calc(clamp(9rem,18vh,12rem) + 9rem)}
 #hero .hero__actions{margin-top:.5rem;gap:1.25rem 1.75rem}
 #hero .hero__actions .m-btn{box-shadow:0 8px 24px #16092526}
 #hero .hero__media{bottom:-1rem}
@@ -977,25 +888,24 @@
 #listen .listen__panels{width:min(100%,26rem)}
 #calls .calls__head-copy{gap:1.5rem}
 #calls .calls__lead{max-width:40ch}
-#contact .contact__inner{padding-block:clamp(2.5rem,5vw,4.5rem)}
-#footer .footer__brand{align-items:center;margin-top:clamp(3rem,7vw,6rem)}
-#footer .footer__mootz-logo{display:block;width:100%;max-width:72rem;height:auto;margin-inline:auto;padding:0;filter:brightness(0) invert(1)}
+#footer .footer__brand{align-items:center;margin-top:clamp(2.5rem,4vw,3.5rem);overflow:visible}
+#footer .footer__mootz-logo{display:block;width:100%;max-width:36rem;height:auto;margin-inline:auto;padding:0;filter:brightness(0) invert(1)}
 #footer .footer__note{max-width:65ch;line-height:1.6}
 @media(min-width:48rem) and (max-width:70rem){
   #hero .hero__title{font-size:clamp(3.5rem,6.8vw,4.75rem)}
-  #hero .hero__copy{padding-top:8rem}
+  #hero .hero__copy{padding-top:14rem}
   #hero .hero__media{left:8%;bottom:-1rem}
 }
 @media(max-width:47.99rem){
   #hero{min-height:46rem}
-  #hero .hero__copy{flex:none;padding-top:7rem;padding-bottom:0}
+  #hero .hero__copy{flex:none;padding-top:10.5rem;padding-bottom:0}
   #hero .hero__title{max-width:100%;font-size:clamp(2.5rem,10.4vw,4rem);line-height:1.05;letter-spacing:-.035em}
   #hero .hero__intro{gap:1.25rem}
   #hero .hero__lower{max-width:none}
   #hero .hero__actions{margin-top:0;gap:1rem}
   #hero .hero__actions .m-btn{min-width:0;min-height:3.25rem;padding:.8rem 1.25rem;font-size:1rem}
   #hero .hero__actions .m-link{font-size:.875rem}
-  #hero .hero__media{top:18.5rem;bottom:0;left:-30%;right:auto;width:160%;height:auto;aspect-ratio:auto;mask-image:linear-gradient(180deg,transparent,#000 12%)}
+  #hero .hero__media{top:22rem;bottom:0;left:-30%;right:auto;width:160%;height:auto;aspect-ratio:auto;mask-image:linear-gradient(180deg,transparent,#000 12%)}
   #hero .hero__media img{object-fit:contain;object-position:center bottom}
   #hero .hero__shade{background:none}
   #hero .hero__chip--3{display:none}
@@ -1004,12 +914,12 @@
   #listen .listen__panels{width:min(100%,22rem)}
   #calls .calls__head,#tune .tune__head,#setup .setup__head{gap:1.5rem}
   #footer .footer__top{gap:2.5rem}
-  #footer .footer__cols{gap:2rem}
+  #footer .footer__cols{gap:1rem}
   #footer .footer__mootz-logo{width:100%;font-size:inherit;line-height:normal}
 }
 @media(max-width:24rem){
   #hero .hero__actions{align-items:flex-start;flex-direction:column;gap:.875rem}
-  #hero .hero__media{top:22rem}
+  #hero .hero__media{top:25.5rem}
 }
 
 /* Mootz concept states inside the retained animated template phone. */
@@ -1153,20 +1063,6 @@
     const order = [...document.querySelectorAll('[data-8b-section]')].filter(section => section.getAttribute('data-8b-section') !== 'navigation').map(section => section.id);
     return order.indexOf(a) >= 0 && order[order.indexOf(a) + 1] === b;
   };
-})();
-</script>
-<script data-8b-part="section-script:contact">
-(() => {
-  const form = document.getElementById('contact-form');
-  if (!form) return;
-  const status = form.querySelector('.contact__status');
-  form.addEventListener('submit', event => {
-    event.preventDefault();
-    const valid = form.checkValidity();
-    status.textContent = valid ? form.dataset.msgOk : form.dataset.msgError;
-    if (valid) form.reset();
-    else form.querySelector(':invalid')?.focus();
-  });
 })();
 </script>
 <script data-8b-part="page-init">
@@ -1329,65 +1225,10 @@ queueMotion(() => {
 <script data-8b-part="scene:tune">
 queueMotion(() => {
   const root = document.getElementById('tune');
-  const stage = root.querySelector('.tune__stage');
-  const lines = [...root.querySelectorAll('.tune__line')];
-  const sizeFill = root.querySelector('[data-ctl="size"] .tune__fill');
-  const sizeThumb = root.querySelector('[data-ctl="size"] .tune__thumb');
-  const weightFill = root.querySelector('[data-ctl="weight"] .tune__fill');
-  const weightThumb = root.querySelector('[data-ctl="weight"] .tune__thumb');
-  const pill = root.querySelector('[data-ctl="contrast"] .tune__pill');
-  const tokens = getComputedStyle(document.documentElement);
-  const paper = tokens.getPropertyValue('--color-2').trim();
-  const ink = tokens.getPropertyValue('--color-1').trim();
-  const offset = (element, stop) => {
-    let x = 0, y = 0;
-    for (let node = element; node && node !== stop; node = node.offsetParent) { x += node.offsetLeft; y += node.offsetTop; }
-    return { x, y };
-  };
-  gsap.matchMedia().add({ wide: '(min-width: 48rem) and (prefers-reduced-motion: no-preference)', narrow: '(max-width: 47.99rem) and (prefers-reduced-motion: no-preference)' }, () => {
-    if (adjacent('calls', 'tune')) {
-      const calls = document.getElementById('calls');
-      const aside = calls.querySelector('.calls__aside');
-      const sticky = calls.querySelector('.calls__sticky');
-      const screen = calls.querySelector('.phone__screen');
-      let geometry;
-      const measure = () => {
-        const startScroll = offset(root).y - innerHeight;
-        const asideAt = offset(aside);
-        const style = getComputedStyle(sticky);
-        const released = asideAt.y + aside.offsetHeight - sticky.offsetHeight - startScroll;
-        const fromBottom = style.top === 'auto' && style.bottom !== 'auto';
-        const stickyY = fromBottom
-          ? Math.min(released, innerHeight - (parseFloat(style.bottom) || 0) - sticky.offsetHeight)
-          : Math.min(Math.max(asideAt.y - startScroll, parseFloat(style.top) || 0), released);
-        const inner = offset(screen, sticky);
-        const screenX = asideAt.x + inner.x + screen.offsetWidth / 2;
-        const screenY = stickyY + inner.y + screen.offsetHeight / 2;
-        const stageAt = offset(stage);
-        geometry = {
-          x: screenX - (stageAt.x + stage.offsetWidth / 2),
-          y: screenY - (stageAt.y - startScroll + stage.offsetHeight / 2),
-          scale: innerWidth < 768 ? 0.12 : Math.max(0.16, screen.offsetWidth / stage.offsetWidth)
-        };
-        return geometry.x;
-      };
-      gsap.timeline({ scrollTrigger: { id: 'tune:entry', trigger: root, start: 'top bottom', end: 'top 30%', scrub: true, invalidateOnRefresh: true } })
-        .fromTo(stage, { scale: 0 }, { scale: () => (measure(), geometry.scale), ease: 'none', duration: 0.02, immediateRender: false }, 0)
-        .fromTo(stage, { x: measure, y: () => geometry.y, scale: () => geometry.scale }, { x: 0, y: 0, scale: 1, ease: 'power1.inOut', duration: 0.98, immediateRender: false }, 0.02)
-        .fromTo(stage, { autoAlpha: 0 }, { autoAlpha: 1, ease: 'none', duration: 0.1, immediateRender: false }, 0);
-    }
-    const track = element => element.parentElement.offsetWidth;
-    gsap.timeline({ defaults: { ease: 'none' }, scrollTrigger: { id: 'tune', trigger: root, start: 'top 30%', end: 'top -45%', scrub: true, invalidateOnRefresh: true } })
-      .fromTo(lines, { fontVariationSettings: '"wght" 300', scale: 0.8 }, { fontVariationSettings: '"wght" 800', scale: 1, duration: 1 }, 0)
-      .fromTo(sizeFill, { scaleX: 0.3 }, { scaleX: 0.75, duration: 1 }, 0)
-      .fromTo(sizeThumb, { x: () => -0.45 * track(sizeThumb) }, { x: 0, duration: 1 }, 0)
-      .fromTo(weightFill, { scaleX: 0 }, { scaleX: 1, duration: 1 }, 0)
-      .fromTo(weightThumb, { x: () => -0.6 * track(weightThumb) }, { x: () => 0.4 * track(weightThumb), duration: 1 }, 0)
-      .fromTo(stage, { backgroundColor: paper, color: ink }, { backgroundColor: ink, color: paper, duration: 0.3 }, 1.05)
-      .fromTo(pill, { xPercent: -100 }, { xPercent: 0, duration: 0.3 }, 1.05)
-      .to(lines, { fontVariationSettings: '"wght" 600', duration: 0.8 }, 1.45)
-      .to(weightFill, { scaleX: 0.6, duration: 0.8 }, 1.45)
-      .to(weightThumb, { x: 0, duration: 0.8 }, 1.45);
+  gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
+    gsap.fromTo(root.querySelectorAll('.tune__eyebrow, h2, .tune__lead, .tune__note, .tune__link'), { y: 20, opacity: 0 }, { y: 0, opacity: 1, stagger: .08, duration: .65, ease: 'power2.out', scrollTrigger: { trigger: root, start: 'top 78%', once: true } });
+    gsap.fromTo(root.querySelector('.tune__dot'), { scale: .65 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: root, start: 'top 85%', end: 'center 55%', scrub: 1 } });
+    gsap.to(root.querySelector('.tune__orbit'), { rotation: 90, ease: 'none', scrollTrigger: { trigger: root, start: 'top bottom', end: 'bottom top', scrub: 1 } });
   });
 }, { near: document.getElementById('tune'), id: 'tune' });
 </script>
@@ -1410,10 +1251,8 @@ queueMotion(() => {
     main.fromTo(track, { x: 0 }, { x: () => -travel(), duration: 1 }, 0)
       .fromTo(lines, { strokeDasharray: 1, strokeDashoffset: () => 1 - lead() }, { strokeDashoffset: 0, duration: 1 }, 0);
     places.forEach((place, index) => {
-      const image = place.querySelector('img');
-      const talk = place.querySelectorAll('.rooms__talk > *');
-      gsap.fromTo(image, { xPercent: 7 }, { xPercent: 0, ease: 'none', scrollTrigger: { id: `rooms:photo-${index}`, trigger: place, containerAnimation: main, start: 'left right', end: wide ? 'left 66%' : 'left 40%', scrub: true } });
-      gsap.fromTo(talk, { y: 36, opacity: 0 }, { y: 0, opacity: 1, ease: 'power2.out', stagger: 0.3, scrollTrigger: { id: `rooms:talk-${index}`, trigger: place, containerAnimation: main, start: wide ? 'left 100%' : 'left 100%', end: wide ? 'left 66%' : 'left 40%', scrub: true } });
+      const image = place.querySelector('.rooms__rear');
+      gsap.fromTo(image, { scale: 1.06 }, { scale: 1, ease: 'none', scrollTrigger: { id: `rooms:photo-${index}`, trigger: place, containerAnimation: main, start: 'left right', end: wide ? 'left 66%' : 'left 40%', scrub: true } });
     });
     return () => {
       ScrollTrigger.removeEventListener('refreshInit', setTravel);
@@ -1421,24 +1260,6 @@ queueMotion(() => {
     };
   });
 }, { id: 'rooms' });
-</script>
-<script data-8b-part="scene:voices">
-queueMotion(() => {
-  const root = document.getElementById('voices');
-  const colsBox = root.querySelector('.voices__cols');
-  const cols = [...root.querySelectorAll('.voices__col')];
-  const cards = [...root.querySelectorAll('.voices__col > li')];
-  const photo = root.querySelector('.voices__photo img');
-  gsap.matchMedia().add({ wide: '(min-width: 48rem) and (prefers-reduced-motion: no-preference)', narrow: '(max-width: 47.99rem) and (prefers-reduced-motion: no-preference)' }, context => {
-    const { wide } = context.conditions;
-    if (wide) {
-      cols.forEach((col, index) => gsap.fromTo(col, { y: () => innerHeight * (index ? 0.42 : 0.14) }, { y: 0, ease: 'none', scrollTrigger: { id: `voices:col-${index}`, trigger: colsBox, start: 'top bottom', end: 'top 18%', scrub: true, invalidateOnRefresh: true } }));
-    } else {
-      cards.forEach((card, index) => gsap.fromTo(card, { y: () => innerHeight * (index % 2 ? 0.16 : 0.06), x: index % 2 ? 28 : -28 }, { y: 0, x: 0, ease: 'none', scrollTrigger: { id: `voices:card-${index}`, trigger: card, start: 'top bottom', end: 'top 58%', scrub: true, invalidateOnRefresh: true } }));
-    }
-    gsap.fromTo(photo, { scale: 1.2 }, { scale: 1, ease: 'none', scrollTrigger: { id: 'voices:photo', trigger: photo.parentElement, start: 'top bottom', end: 'center 50%', scrub: true } });
-  });
-}, { near: document.getElementById('voices'), id: 'voices' });
 </script>
 <script data-8b-part="scene:setup">
 queueMotion(() => {
@@ -1483,10 +1304,25 @@ queueMotion(() => {
   const brand = root.querySelector('.footer__brand');
   const word = root.querySelector('.footer__word');
   gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
-    gsap.timeline({ defaults: { ease: 'none' }, scrollTrigger: { id: 'footer', trigger: brand, start: 'top bottom', end: 'bottom bottom', scrub: true } })
-      .fromTo(word, { yPercent: 35 }, { yPercent: 0 }, 0);
+    gsap.timeline({ defaults: { ease: 'none' }, scrollTrigger: { id: 'footer', trigger: root, start: 'top bottom', end: 'top 45%', scrub: true } })
+      .fromTo(word, { yPercent: 8 }, { yPercent: 0 }, 0);
   });
 }, { near: document.getElementById('footer'), id: 'footer' });
+</script>
+<script data-mootz="moment-photo-switch">
+document.querySelectorAll('.rooms__photo').forEach(button => {
+  button.addEventListener('click', () => {
+    const rear = button.querySelector('.rooms__rear');
+    const front = button.querySelector('.rooms__front');
+    const src = rear.getAttribute('src');
+    const alt = rear.alt;
+    rear.setAttribute('src', front.getAttribute('src'));
+    rear.alt = front.alt;
+    front.setAttribute('src', src);
+    front.alt = alt;
+    button.setAttribute('aria-pressed', String(button.getAttribute('aria-pressed') !== 'true'));
+  });
+});
 </script>
 </body>
 </html>
