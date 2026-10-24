@@ -21,6 +21,8 @@ npm run db:migrate
 npm run dev
 ```
 
+On a fresh checkout and database, this is the clean-start path: the backend-local `.env.example` provides the localhost database URL and safe disabled worker defaults; `db:migrate` applies every pending migration in order, including `015_chain_sync.sql` and `016_chain_evidence_constraints.sql`. The API does not migrate or seed on startup. For a fully containerized local run, `docker compose up -d --build --wait` also starts only the API and database; the API image does not run migrations automatically, so run `docker compose run --rm api node dist/db/cli.js migrate` before using migrated routes. Do not delete an existing database volume to obtain a clean start.
+
 The local database uses a named volume. Do not remove that volume to troubleshoot without reviewing its contents. The example password is for the localhost-bound development service only; set independent credentials for deployment.
 
 Default API: http://localhost:3001. GET /health checks the process only. GET /ready queries PostGIS and returns 503 when the dependency fails. Health routes are public operational endpoints; no application data is served.
@@ -41,6 +43,8 @@ npm run build
 npm audit --audit-level=low
 npm start
 ```
+
+`npm start` runs the built API and does not apply migrations. Build first, then apply pending migrations separately with `npm run db:migrate`.
 
 Tests use HTTP injection, real local HTTP sockets, real PostgreSQL/PostGIS, synthetic decoded images and explicitly mocked provider adapters. A local HTTP fixture also exercises the actual Supabase SDK. They do not establish a live Supabase cloud integration. The coverage gate applies to selected service modules and does not certify the startup process or future features.
 
@@ -94,7 +98,7 @@ Preview supplies scoped backend POST paths, not reusable provider URLs. Fetch JP
 
 Participants and current poster friends can read Dot metadata; scanner friends alone cannot. Map markers require location-sharing consent and use the generalized actual meeting area, not photo coordinates. Hidden markers remain counted; only their hider can restore them. See specs/meet.openapi.json and specs/dots.openapi.json.
 
-The API never sends a transaction. The separate `npm run relay:once` command after build requires explicit `RELAYER_ENABLED=true`, a dedicated server-only `RELAYER_PRIVATE_KEY`, verified roles/deployment and funding. Compose deliberately keeps this relayer key out of the public API service.
+The API never sends a transaction. Each worker is a separate one-shot command and is disabled by default; neither local Compose nor VPS Compose starts a worker. After build, `npm run relay:once` requires `RELAYER_ENABLED=true`, a dedicated server-only `RELAYER_PRIVATE_KEY`, verified roles/deployment and funding. Set the flag only in the private worker environment when deliberately running this sender; Compose deliberately keeps the relayer key out of the public API service.
 
 The worker persists raw transaction/hash before broadcast and serializes the dedicated relayer account through PostgreSQL. An unresolved signed nonce blocks new transaction preparation. Readback must match the original signed Meet; outage, opt-out, deadline or transaction failure never removes a valid Dot. Read-only nonce inspection and finalized-receipt reconciliation are available as separate explicit commands; automatic replacement/cancellation remains unimplemented. Event claim submission has its own worker below. See specs/relay.md before scheduling a worker.
 
@@ -110,7 +114,7 @@ An operator must provision an `event_collections` mapping with the backend Event
 
 `POST /v1/events/:id/claims` queues an existing own `{authorizationId}`. Matching retries return the same job. `GET /v1/events/:id/claims/:claimId` returns only that account's status, without requiring RPC connectivity. States are `pending`, `included`, `already_owned`, and `failed`; responses carry `finality: unverified|included|finalized` plus `chainOutcome`, based on exact-transaction observations from the separate chain worker. Without observations finality remains unverified. Included requires the exact successful receipt event plus ownership/nonce readback, and is provisional. An external claim can yield `already_owned`; neither state replaces the live ownership API.
 
-After build, the separate `npm run claim-relay:once` command requires `CLAIM_RELAYER_ENABLED=true`, paired Event collection configuration and a funded dedicated `RELAYER_PRIVATE_KEY` distinct from the issuer. No claim sender starts with the API or Compose. EventCollection permits anyone to submit a valid voucher; its issuer must have `ISSUER_ROLE`. The relayer needs native gas, not a special EventCollection role. API voucher issuance and transaction sponsorship use separate keys.
+After build, the separate `npm run claim-relay:once` command requires `CLAIM_RELAYER_ENABLED=true`, paired Event collection configuration and a funded dedicated `RELAYER_PRIVATE_KEY` distinct from the issuer. No claim sender starts with the API or either Compose setup. Set this flag only in the private worker environment when deliberately running the sender. EventCollection permits anyone to submit a valid voucher; its issuer must have `ISSUER_ROLE`. The relayer needs native gas, not a special EventCollection role. API voucher issuance and transaction sponsorship use separate keys.
 
 The claim worker persists exact signed bytes/hash/sender before broadcast and shares the Meet worker's global PostgreSQL lock. Either queue's unresolved signed transaction blocks new nonce preparation in both. Gas is bounded at 1,000,000 units and RPC-estimated fees must fit the configurable policy (default 500 gwei max fee and 50 gwei priority, hard maxima 1000/100); exceeding bounds stops the attempt rather than changing the signed transaction. An expired voucher with an unresolved signed nonce stays pending for operator reconciliation. See `specs/claim-relay.md`; upgrade both workers and apply migration012 before enabling this queue.
 
@@ -118,9 +122,9 @@ Actual gas sponsorship/receipt verification and finality-worker acceptance on Mo
 
 ## Chain indexing, finality and nonce diagnosis
 
-Apply migrations015–016 and build before upgrading the API or running these commands. The authenticated Dot and claim status APIs join exact-transaction observations from the new table. See [chain sync](specs/chain-sync.md) for all environment names and interpretation.
+Migrations `015_chain_sync.sql` and `016_chain_evidence_constraints.sql` add chain observations and their consistency constraints. `npm run db:migrate` applies them with all other pending migrations; on upgrade, apply migrations and build the matching API before exposing the new status fields. The authenticated Dot and claim status APIs join exact-transaction observations from the new table. See [chain sync](specs/chain-sync.md) for all environment names and interpretation.
 
-- `npm run chain-sync:once` explicitly runs read-only finalized event indexing and Meet/claim receipt reconciliation. Configure `CHAIN_SYNC_ENABLED=true`, chain10143, its RPC and actual deployment block for each selected contract. Neither the API nor Compose starts it. It never needs a signing key.
+- `npm run chain-sync:once` explicitly runs read-only finalized event indexing and Meet/claim receipt reconciliation. Configure `CHAIN_SYNC_ENABLED=true`, `CHAIN_SYNC_CHAIN_ID=10143`, its RPC, and the actual deployment block for each selected contract. It is disabled in `.env.example`, never runs with the API, and neither Compose setup starts it. It never needs a signing key.
 - `npm run relay:inspect` provides sanitized queue, nonce, expiry and funding diagnosis. It does not mutate jobs or send transactions; follow [nonce recovery](specs/nonce-recovery.md).
 - Both sender workers use separately configurable `MEET_RELAY_MAX_FEE_GWEI`/`MEET_RELAY_MAX_PRIORITY_FEE_GWEI` and `CLAIM_RELAY_MAX_FEE_GWEI`/`CLAIM_RELAY_MAX_PRIORITY_FEE_GWEI`. Defaults are500/50 whole gwei, hard maxima1000/100. Lower budgets only after saved signed transactions drain; never clear unresolved bytes to get around a budget.
 

@@ -58,8 +58,8 @@ Jadwalkan backup harian setelah latihan restore lulus. Misalnya cron privat beri
 
 ## Update / rollback
 
-Sebelum update: backup+verifikasi, catat SHA/imageID lama, hentikan perubahan bila migrasi belum kompatibel. Ambil commit yang sudah direview, build image baru dengan tag unik MOOTZ_IMAGE_TAG, jalankan migrate sebelum mengganti API. Migrasi013 mengganti tabel collection_equips dengan view; versi aplikasi lama yang memakai ON CONFLICT pada tabel lama tidak kompatibel. Jangan rollback binary secara buta sesudah migrasi. Utamakan forward fix atau pulihkan backup ke DB baru melalui rencana maintenance yang ditinjau. Jangan edit checksum/migration history, `down -v`, atau reset tabel untuk mengatasi error.
+Sebelum update: backup+verifikasi, catat SHA/imageID lama, hentikan perubahan bila migrasi belum kompatibel. Ambil commit yang sudah direview, build image baru dengan tag unik MOOTZ_IMAGE_TAG, jalankan migrate sebelum mengganti API. Jangan rollback binary secara buta sesudah migrasi yang mengubah schema; periksa kompatibilitas versi aplikasi dan database dari source/commit yang sedang dituju. Utamakan forward fix atau pulihkan backup ke DB baru melalui rencana maintenance yang ditinjau. Jangan edit checksum/migration history, `down -v`, atau reset tabel untuk mengatasi error.
 
-Pada VPS teman, rencana maintenance/backup harus dikoordinasikan. Belum diverifikasi: SSH, firewall, DNS, sertifikat publik, kapasitas, backup offsite, recovery produksi, FE dan transaksi Monad. Deploy besok baru bisa dinyatakan berhasil setelah pemeriksaan nyata tersebut.
+Pada VPS milik pihak lain, rencana maintenance dan backup harus dikoordinasikan. SSH, firewall, DNS, sertifikat publik, kapasitas, backup offsite, pemulihan produksi, FE, dan transaksi Monad belum diverifikasi. Deployment dinyatakan berhasil setelah pemeriksaan nyata tersebut selesai.
 
 Referensi: [Docker interpolation](https://docs.docker.com/compose/how-tos/environment-variables/variable-interpolation/), [Caddy HTTPS](https://caddyserver.com/docs/quick-starts/https).

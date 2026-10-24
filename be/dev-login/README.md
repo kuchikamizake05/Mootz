@@ -12,4 +12,4 @@ Audience check: enter the same synthetic moment ID under the owner account, then
 
 References: https://docs.privy.io/authentication/user-authentication/access-tokens and https://docs.privy.io/basics/react/setup
 
-Dependency policy: ws 8.x is pinned by an override. Run npm audit against the current lockfile before release. The diagnostic client has unresolved upstream dependency advisories and is intended for local verification.
+Dependency policy: direct dependencies and security overrides are exact pins in package.json. Overrides are limited to compatible releases in the same major version. Run `npm ci`, `npm run build`, and `npm audit` after dependency changes. Some Privy transitive advisories may remain until upstream publishes fixes compatible with its current Zod and UUID ranges; this diagnostic client is for local verification only.

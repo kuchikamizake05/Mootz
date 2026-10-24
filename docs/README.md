@@ -1,6 +1,6 @@
 # Mootz documentation
 
-Backend and contract source are included. The product frontend is planned; the login diagnostic client is separate from that frontend. Deployment and end-to-end acceptance must be verified in the target environment.
+Backend and smart-contract source are implemented. The product frontend remains planned; the login diagnostic client is separate from that frontend. Live deployment and end-to-end acceptance remain to be verified in the target environment.
 
 - [Product requirements](../PRD.md) and [product brief](../BRIEF.md)
 - [Architecture](architecture.md), [data model](data-model.md) and [decisions](decisions.md)

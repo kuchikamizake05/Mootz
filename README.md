@@ -8,7 +8,7 @@
 
 Mootz is a social Map + Feed app inspired by BeReal and Zenly/Bump. Share front-and-back photos with friends, confirm a shared moment through **Meet**, and carry consented Meet records and event collectibles on Monad.
 
-**Status: backend and smart contracts are implemented; product frontend and end-to-end acceptance remain in progress.** The backend includes identity, private media, friendships, moments, reactions/comments, Meet/Dots, frames, Event claims, relay recovery and chain finality workers. Contract sources, ABI and synthetic signing vectors are included. Live deployment, real-device acceptance and production readiness require separate verification. See [backend setup](be/README.md), [API interfaces](docs/interfaces.md) and [verification](docs/verification.md).
+**Status: backend and smart-contract source are implemented; product frontend is planned and end-to-end acceptance remains outstanding.** The backend includes identity, private media, friendships, moments, reactions/comments, Meet/Dots, frames, Event claims, relay recovery and chain finality workers. Contract sources, ABI and synthetic signing vectors are included. Live deployment, real-device acceptance and production readiness require separate verification. See [backend setup](be/README.md), [API interfaces](docs/interfaces.md) and [verification](docs/verification.md).
 
 ## Repository structure
 
@@ -97,6 +97,6 @@ Start with [TASKS.md](TASKS.md), and the [implementation plan](docs/implementati
 
 ## Contributing
 
-Follow [CONTRIBUTING.md](CONTRIBUTING.md), [AGENTS.md](AGENTS.md), and your assigned issue. Keep implementation status honest and attach evidence before closing work. Do not commit credentials, private photos, location dumps, or local design exports. The root [.env.example](.env.example) is a configuration inventory, not a working runtime setup.
+Follow [CONTRIBUTING.md](CONTRIBUTING.md), [AGENTS.md](AGENTS.md), and your assigned issue. Keep implementation status honest and attach evidence before closing work. Do not commit credentials, private photos, location dumps, or local design exports. The root [.env.example](.env.example) is a planning inventory; use [be/.env.example](be/.env.example) for the runnable backend environment.
 
 The initial documentation structure takes inspiration from [DuitLo](https://github.com/kuchikamizake05/DuitLo). Mootz has its own scope and implementation status. No public redistribution license has been selected.

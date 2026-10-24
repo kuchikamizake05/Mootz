@@ -1,22 +1,22 @@
 # Panduan pengembangan awal
 
-Status: dokumentasi saja (PRD, brief, desain). Belum ada aplikasi untuk di-install/dijalankan atau contract untuk dideploy. Perintah runtime ditambahkan setelah manifest, lockfile, dan scripts tersedia serta diuji.
+Status: source backend dan smart contract tersedia. Panduan [backend](../be/README.md) mencakup instalasi, migrasi, pengembangan, build, pengujian, dan perintah worker terpisah. Pemeriksaan contract dan persiapan deployment dijelaskan di [panduan smart contract](../sc/README.md). Frontend produk masih direncanakan. Deployment langsung dan penerimaan end-to-end belum diverifikasi.
 
 ## Persiapan
 
-Struktur disetujui: Wangsit mengerjakan `fe/app/` dan `fe/web/`, Faaid `be/`, Diaz `sc/`. Folder sudah berisi README; belum ada source atau runtime. Demo awal memakai web Next.js; framework/scope mobile dan runtime backend terpisah diputuskan pada INT-01. API bisnis tidak ditulis di FE.
+Struktur disetujui: Wangsit mengerjakan `fe/app/` dan `fe/web/`, Faaid `be/`, Diaz `sc/`. Source backend dan smart contract sudah tersedia; frontend produk masih direncanakan. Demo awal memakai web Next.js; framework dan cakupan mobile diputuskan pada INT-01. API bisnis tidak ditulis di FE.
 
 1. Baca [PRD](../PRD.md), [keputusan](decisions.md), [onchain](onchain-design.md), dan [roadmap](roadmap.md).
-2. Kunci runtime/package manager/workspace, manifest/lockfile/scripts tiap modul, runtime BE, dan framework/scope mobile. Sepakati API URL, autentikasi kedua client, allowed origins/CORS, dan environment per modul. Dependency termasuk pemindai QR web dipilih sesuai runtime nyata; stack pada README masih proposal.
+2. Runtime, package manager, manifest, lockfile, dan scripts backend sudah ditetapkan di `be/`. Sepakati runtime/framework client, URL API, autentikasi client, allowed origins/CORS, dan konfigurasi environment tiap modul. Pilih dependency QR browser sesuai runtime client yang digunakan.
 3. Spike awal di HP target lewat HTTPS: scan QR dengan kamera, kirim lokasi foreground, dan tanda tangan typed-data (EIP-712) tanpa popup wallet yang membingungkan atau biaya gas dari pengguna. Pilih jenis wallet/validasinya; session login tidak menggantikan tanda tangan Meet.
 4. Siapkan database/media privat, authorization server, dan dua akun fixture. Uji penolakan akses sebelum memoles Feed/Map.
 5. Kunci encoding/typed-data test vector Meet Offer dan Meet Accept dan aturan contract, lalu implementasikan slice lengkap dengan bukti di [verifikasi](verification.md).
 
 ## Konfigurasi
 
-[.env.example](../.env.example) berisi nama variabel usulan, antara lain `NEXT_PUBLIC_MEET_REGISTRY_ADDRESS`, `NEXT_PUBLIC_EVENT_COLLECTION_ADDRESS`, `RELAYER_PRIVATE_KEY`, dan `EVENT_ISSUER_SIGNER_PRIVATE_KEY`. Isi environment lokal/hosting saat scaffold memerlukannya. Public variables terbaca browser; server/service-role key, relayer key, issuer signer key, dan provider secret hanya di server.
+File root [.env.example](../.env.example) adalah inventaris rencana integrasi antarmodul dan tidak dibaca oleh backend. Konfigurasi lokal backend ada di [be/.env.example](../be/.env.example), dengan nilai awal untuk database lokal dan worker dalam keadaan nonaktif. Variabel publik dapat dibaca browser; key server, storage, relayer, dan issuer hanya boleh disimpan di environment server privat.
 
-File root tersebut adalah inventaris; jangan menyalin seluruhnya ke FE. INT-01 menetapkan contoh konfigurasi browser di `fe/web`, server-only di `be`, dan konfigurasi client mobile sesuai framework yang akhirnya dipilih. Tidak diasumsikan semua modul membaca environment root atau memakai awalan `NEXT_PUBLIC_` yang sama.
+Jangan salin seluruh inventaris root ke FE. INT-01 menetapkan konfigurasi untuk client dan serah-terima antarmodul; setiap modul tidak membaca file root dan nama variabelnya belum tentu memakai awalan `NEXT_PUBLIC_` yang sama.
 
 RPC dan chain ID contoh diverifikasi saat setup; address contract kosong karena deployment belum ada. Jangan mengirim transaksi ke address tebakan atau mencampur jaringan. Jangan mencetak environment ke log/issue.
 

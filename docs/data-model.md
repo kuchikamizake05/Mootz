@@ -1,10 +1,10 @@
 # Model data awal
 
-Status: migration identitas/preferences/friendships/events/wallet challenge/moments/media, komentar, check-in Event dan selfie/reactions tersedia di `be/migrations/` dan diuji pada PostgreSQL/PostGIS lokal. Streak dibaca dari hari publikasi, tanpa tabel counter tersendiri. Tabel Meet/Dot/frame/outbox berikut masih usulan; belum ada ABI atau contract aktif. Nama tabel dapat disesuaikan tanpa mengubah [invariant produk](../PRD.md).
+Status: migration untuk identitas, preferensi, pertemanan, acara, tantangan wallet, momen, media, komentar, check-in, reaction, Meet, Dot, frame, antrean relay, dan observasi chain tersedia di `be/migrations/`. Streak dihitung dari hari publikasi. Dokumen ini menjelaskan model logis; gunakan berkas migration dan spesifikasi backend untuk melihat schema dan detail API terkini. Source smart contract dan ABI tersedia, sedangkan deployment langsung dan penerimaan end-to-end belum diverifikasi. Pertahankan [invariant produk](../PRD.md) saat mengubah model.
 
 ## Data aplikasi privat
 
-| Entitas usulan | Data inti dan batas |
+| Entitas logis | Data inti dan batas |
 | --- | --- |
 | users | ID akun stabil, provider subject unik, display name; tanpa private key |
 | wallet_bindings | Akun, chain, wallet, periode aktif; ganti wallet tidak membuat akun baru |
@@ -33,7 +33,7 @@ MeetRegistry menyimpan atau mengemit catatan Meet (pasangan wallet, waktu, event
 
 Nontransferability koleksi perlu ditegakkan pada semua jalur mint/transfer. Standar token saja tidak menetapkan kebijakan produk.
 
-## Invariant sebelum migration
+## Invariants to preserve
 
 - Pasangan foto lengkap sebelum publikasi. Role front/back unik per momen; file yang terikat commitment Meet tidak diganti diam-diam.
 - Daily unik akun+hari. Streak naik maksimal sekali per akun per hari server (Asia/Jakarta) dan tidak menghasilkan Dots atau hak apa pun.
