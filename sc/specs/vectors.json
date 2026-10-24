@@ -1,0 +1,148 @@
+{
+  "status": "candidate-int-01-not-approved",
+  "warning": "PUBLIC SYNTHETIC FIXTURE. Addresses are not deployed contracts.",
+  "domain": {
+    "name": "MootzMeetRegistry",
+    "version": "1",
+    "chainId": 10143,
+    "verifyingContract": "0x1111111111111111111111111111111111111111"
+  },
+  "collectionDomain": {
+    "name": "MootzEventCollection",
+    "version": "1",
+    "chainId": 10143,
+    "verifyingContract": "0x2222222222222222222222222222222222222222"
+  },
+  "types": {
+    "MeetOffer": [
+      {
+        "name": "action",
+        "type": "bytes32"
+      },
+      {
+        "name": "meetId",
+        "type": "bytes32"
+      },
+      {
+        "name": "momentId",
+        "type": "bytes32"
+      },
+      {
+        "name": "photoCommitment",
+        "type": "bytes32"
+      },
+      {
+        "name": "poster",
+        "type": "address"
+      },
+      {
+        "name": "nonce",
+        "type": "bytes32"
+      },
+      {
+        "name": "issuedAt",
+        "type": "uint256"
+      },
+      {
+        "name": "expiresAt",
+        "type": "uint256"
+      },
+      {
+        "name": "eventId",
+        "type": "bytes32"
+      }
+    ],
+    "MeetAccept": [
+      {
+        "name": "action",
+        "type": "bytes32"
+      },
+      {
+        "name": "offerDigest",
+        "type": "bytes32"
+      },
+      {
+        "name": "scanner",
+        "type": "address"
+      }
+    ],
+    "Claim": [
+      {
+        "name": "collectionId",
+        "type": "uint256"
+      },
+      {
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "name": "issuer",
+        "type": "address"
+      },
+      {
+        "name": "nonce",
+        "type": "bytes32"
+      },
+      {
+        "name": "deadline",
+        "type": "uint256"
+      }
+    ]
+  },
+  "commitmentInput": {
+    "version": 1,
+    "momentId": "0x1111111122224333844455555555555500000000000000000000000000000000",
+    "frontDigest": "0x57d41480eb9440f428c053e44e5e8f533c32056458dc8b14625d883898e9b635",
+    "backDigest": "0x3fcdcbe3640f6928b72ffa2728eb971f949e535d657eac83cb3e3c512be7dbed",
+    "salt": "0x1ee5bea6024a336d86f7ab827e09939d4068460c4a259dd63aab33856eae2c03"
+  },
+  "offer": {
+    "action": "0x6389233a040dcba73eee2f2343c40d32eb70729286882353de7455a74f4901fa",
+    "meetId": "0xaaaaaaaabbbb4ccc8dddeeeeeeeeeeee00000000000000000000000000000000",
+    "momentId": "0x1111111122224333844455555555555500000000000000000000000000000000",
+    "photoCommitment": "0xbfc69b70626ed3bfcf3bb8b9ad646fd4d2f229791c45a59786cc772d0800839a",
+    "poster": "0xe05fcC23807536bEe418f142D19fa0d21BB0cfF7",
+    "nonce": "0x0358d16dc9d13e443a483153cd734a537cb77f1e8243658d2c41273fc298bdee",
+    "issuedAt": 1800000000,
+    "expiresAt": 1800000060,
+    "eventId": "0x9999999988884777866655555555555500000000000000000000000000000000"
+  },
+  "offerDigest": "0xc95f4c9ce92aa91c4b464982fd57486ac2db52a98c39a479f25465b9fec0f2ae",
+  "offerSignature": "0xa3d1182d6cb6263c370771a193bac9f8f87936cd45c118e33102c809caef189919cf05b825f904ce8e820900fd18bcc45719fca0eaf1970e73cdd82251937c471c",
+  "accept": {
+    "action": "0x6389233a040dcba73eee2f2343c40d32eb70729286882353de7455a74f4901fa",
+    "offerDigest": "0xc95f4c9ce92aa91c4b464982fd57486ac2db52a98c39a479f25465b9fec0f2ae",
+    "scanner": "0x0376AAc07Ad725E01357B1725B5ceC61aE10473c"
+  },
+  "acceptDigest": "0xb482782a70a7acfc10d5f6f168b66e87b7c754fa87f7da67b03b3a408ba3e85a",
+  "acceptSignature": "0x0a85d3416118487cdd049ba135b44ecbabe538bcc6edd51c707434da9fec873568167e01349ba5488791b69b0adae2c9edf19e81e257d4d46512476589e6fc241c",
+  "offchainOffer": {
+    "action": "0xb2dab50ce924b7b4d2903a3b3b7ffc1a959459f26e9252660298f8022f39173e",
+    "meetId": "0xaaaaaaaabbbb4ccc8dddeeeeeeeeeeee00000000000000000000000000000000",
+    "momentId": "0x1111111122224333844455555555555500000000000000000000000000000000",
+    "photoCommitment": "0xbfc69b70626ed3bfcf3bb8b9ad646fd4d2f229791c45a59786cc772d0800839a",
+    "poster": "0xe05fcC23807536bEe418f142D19fa0d21BB0cfF7",
+    "nonce": "0x0358d16dc9d13e443a483153cd734a537cb77f1e8243658d2c41273fc298bdee",
+    "issuedAt": 1800000000,
+    "expiresAt": 1800000060,
+    "eventId": "0x9999999988884777866655555555555500000000000000000000000000000000"
+  },
+  "offchainOfferDigest": "0xd224a22892527b6ee2329bd6f2e3e6c28f024dc188a310a0a4da9f0a7cc84eac",
+  "offchainOfferSignature": "0xb8a425475df625083a19aee69cd146123d1c303c6774ee256261ff3fed0f0a972e180a95188389a9b081168e7867281d469fcc0a8f23c21e514e801251b533301c",
+  "offchainAccept": {
+    "action": "0xb2dab50ce924b7b4d2903a3b3b7ffc1a959459f26e9252660298f8022f39173e",
+    "offerDigest": "0xc95f4c9ce92aa91c4b464982fd57486ac2db52a98c39a479f25465b9fec0f2ae",
+    "scanner": "0x0376AAc07Ad725E01357B1725B5ceC61aE10473c"
+  },
+  "offchainAcceptDigest": "0xd897f0048ac51bb977b1e4ce7d144b0b85684832f78055d69fadcac50189f8c8",
+  "offchainAcceptSignature": "0x37fdf0fa1a0f0794719e6e76cb4f044285a108527dd5343b46920cb8b9ab725e38e6a500f39336b72547ffaef0282d5aabd575788afe4f9caf6ca7261f8e877d1b",
+  "claim": {
+    "collectionId": 1,
+    "recipient": "0xe05fcC23807536bEe418f142D19fa0d21BB0cfF7",
+    "issuer": "0xF5A5E415061470A8b9137959180901aEa72450a4",
+    "nonce": "0xbef609a97a53a6b7779c78dae155d820d54d703803bf041d49717420f37b0d5d",
+    "deadline": 1800000300
+  },
+  "claimDigest": "0x3dfd4d49319a08573dd20efa057e7fe03da9dabec5612c4b7fa2e54b45b6194c",
+  "claimSignature": "0xf2b0cdf00d092bf7cffaba3904c9e4d0173f0674a24b53167ef8dd5f353d12ab336e6aa2b7358e8312a50947d2d993b110b0c370ca50a58419c89390348867971c"
+}

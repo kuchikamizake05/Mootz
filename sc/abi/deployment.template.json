@@ -1,0 +1,13 @@
+{
+  "status": "NOT_DEPLOYED",
+  "network": "Monad testnet",
+  "chainId": 10143,
+  "protocolStatus": "candidate-int-01-not-approved",
+  "commit": null,
+  "rpcVerifiedAt": null,
+  "meetRegistry": { "address": null, "deploymentTx": null, "bytecodeHash": null },
+  "eventCollection": { "address": null, "deploymentTx": null, "bytecodeHash": null },
+  "roles": { "admin": null, "relayer": null, "issuer": null },
+  "smokeReceipts": { "meet": null, "claim": null },
+  "explorerVerification": "UNVERIFIED"
+}
