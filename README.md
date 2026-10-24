@@ -3,7 +3,7 @@
 </p>
 
 <p align="center"><strong>Share your day. Meet in person.</strong><br>A social Map + Feed with shared memories on Monad.</p>
-<p align="center"><a href="https://mootz-red.vercel.app">Website</a> · <a href="https://mootz-red.vercel.app/app">Open app</a> · <a href="docs/hackathon.md">Judge guide</a> · <a href="sc/abi/deployment.monad-testnet.json">Deployment evidence</a></p>
+<p align="center"><a href="https://mootz.fun">Website</a> · <a href="https://mootz.fun/app">Open app</a> · <a href="docs/hackathon.md">Judge guide</a> · <a href="sc/abi/deployment.monad-mainnet.json">Deployment evidence</a></p>
 <p align="center"><a href="https://drive.google.com/file/d/1NhzpRG1vZxdORsf6gGhnkeBOaRpNs-Ms/view?usp=sharing">Watch demo</a> · <a href="https://x.com/mootzfun/status/2113922226622009563?s=20">Build in public on X</a></p>
 
 <p align="center">
@@ -17,14 +17,14 @@
   <img src="https://img.shields.io/badge/Solidity-363636?style=flat-square" alt="Solidity">
   <img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square" alt="Docker">
   <img src="https://img.shields.io/badge/Vercel-000000?style=flat-square" alt="Vercel">
-  <a href="sc/abi/deployment.monad-testnet.json"><img src="https://img.shields.io/badge/Monad-Testnet-6D28D9?style=flat-square" alt="Monad Testnet"></a>
+  <a href="sc/abi/deployment.monad-mainnet.json"><img src="https://img.shields.io/badge/Monad-Mainnet-6D28D9?style=flat-square" alt="Monad Mainnet"></a>
 </p>
 
 Mootz brings everyday moments and real-world meetups into one place. Post a front-and-back photo, discover what friends share on Map or Feed, and scan a short-lived QR to create a shared **Dot**. When both people opt in, a signed Meet record can be stored on Monad. Event organizers can also issue nontransferable collectibles to eligible attendees.
 
 Built for [Monad Blitz Jogja V2](https://monad-foundation.notion.site/Monad-Blitz-Jogja-V2-4026367594f280e2b069efefb4fb6389), 24 October 2026. This repository contains the implemented web client, backend and Solidity contracts; the separate mobile client remains planned.
 
-[Overview](#the-problem) · [Demo](#try-mootz) · [Architecture](#architecture) · [Meet protocol](#meet-protocol) · [Contracts](#verified-testnet-contracts) · [Local setup](#run-locally) · [Limitations](#security-and-current-limitations)
+[Overview](#the-problem) · [Demo](#try-mootz) · [Architecture](#architecture) · [Meet protocol](#meet-protocol) · [Contracts](#verified-mainnet-contracts) · [Local setup](#run-locally) · [Limitations](#security-and-current-limitations)
 
 ## The problem
 
@@ -53,13 +53,13 @@ These interfaces and service modules are present in source. Their availability i
 | --- | --- |
 | [Demo video](https://drive.google.com/file/d/1NhzpRG1vZxdORsf6gGhnkeBOaRpNs-Ms/view?usp=sharing) | Product demonstration |
 | [Build in public on X](https://x.com/mootzfun/status/2113922226622009563?s=20) | Mootz project post |
-| [Website](https://mootz-red.vercel.app) | Product introduction; landing phone previews are illustrative |
-| [Web app](https://mootz-red.vercel.app/app) | Map, Feed, capture, friends, Meet, profile and Event interfaces |
-| [Organizer demo](https://mootz-red.vercel.app/organizer) | Contract ownership and event Meet-count reads |
+| [Website](https://mootz.fun) | Product introduction; app screenshots and generated dual-camera moments use demo data |
+| [Web app](https://mootz.fun/app) | Map, Feed, capture, friends, Meet, profile and Event interfaces |
+| [Organizer demo](https://mootz.fun/organizer) | Contract ownership and event Meet-count reads |
 | [API health](https://api.mootz.fun/health) / [readiness](https://api.mootz.fun/ready) | Service and database availability |
 | [Judge guide](docs/hackathon.md) | Suggested walkthrough, evidence and remaining integration checks |
 
-**Current status:** website and API health/readiness returned HTTP 200 during this documentation check. Both contracts are deployed and source-verified on Monad testnet. A complete two-device login → capture → Meet → transaction → collectible walkthrough still needs acceptance evidence. Deployment does not prove every integration works; see [verification](docs/verification.md).
+**Current status:** website and API health/readiness returned HTTP 200 during this documentation check. Both contracts are deployed and source-verified on Monad mainnet. A complete two-device login → capture → Meet → transaction → collectible walkthrough still needs acceptance evidence. Deployment does not prove every integration works; see [verification](docs/verification.md).
 
 ## From a moment to a shared memory
 
@@ -71,20 +71,30 @@ These interfaces and service modules are present in source. Their availability i
 
 ## Why Monad?
 
-Monad provides a shared settlement layer for consented Meet records and Event collectibles. A separate organizer can read those records without querying Mootz's private inventory database. The prototype uses Monad testnet, EIP-712 signatures, a backend relayer and explicit transaction-finality reconciliation.
+Monad provides a shared settlement layer for consented Meet records and Event collectibles. A separate organizer can read those records without querying Mootz's private inventory database. The prototype uses Monad mainnet, EIP-712 signatures, a backend relayer and explicit transaction-finality reconciliation.
 
 Photos, precise location and Dots stay offchain behind audience checks. Public Meet records reveal which wallets met. Signatures and distance checks do not prove physical presence, authentic photos or unique humans. Recording a Meet does not preserve its photos onchain.
 
-## Verified testnet contracts
+## Verified mainnet contracts
 
-Chain ID: **10143**. Deployment date: **24 October 2026**.
+Chain ID: **143**. Deployment date: **24 October 2026**.
+
+The Vercel frontend uses these public mainnet settings:
+
+```dotenv
+NEXT_PUBLIC_MONAD_CHAIN_ID=143
+NEXT_PUBLIC_MEET_REGISTRY_ADDRESS=0x6fcdc6f98ab1ead21ae44f1e57f1ffeb5d3a49ff
+NEXT_PUBLIC_EVENT_COLLECTION_ADDRESS=0x3d368ee46756102b0e0567f846f5ad9fcdff8a01
+```
+
+Backend RPC, signing domains, relayer roles and indexer deployment blocks must independently match this network. Updating frontend variables alone does not migrate backend state or prove a completed live transaction.
 
 | Contract | Address and verified source |
 | --- | --- |
-| MeetRegistry | [0x6fcdc6f98ab1ead21ae44f1e57f1ffeb5d3a49ff](https://testnet.monadscan.com/address/0x6fcdc6f98ab1ead21ae44f1e57f1ffeb5d3a49ff#code) |
-| EventCollection | [0x3d368ee46756102b0e0567f846f5ad9fcdff8a01](https://testnet.monadscan.com/address/0x3d368ee46756102b0e0567f846f5ad9fcdff8a01#code) |
+| MeetRegistry | [0x6fcdc6f98ab1ead21ae44f1e57f1ffeb5d3a49ff](https://monadscan.com/address/0x6fcdc6f98ab1ead21ae44f1e57f1ffeb5d3a49ff#code) |
+| EventCollection | [0x3d368ee46756102b0e0567f846f5ad9fcdff8a01](https://monadscan.com/address/0x3d368ee46756102b0e0567f846f5ad9fcdff8a01#code) |
 
-Both sources passed Monadscan verification; MonadVision returned partial matches. The [deployment record](sc/abi/deployment.monad-testnet.json) contains receipts, constructor arguments, roles and runtime bytecode hashes checked through an independent RPC. Testnet admin, relayer and issuer currently share one wallet. Deployment evidence does not establish a completed public Meet or collectible claim.
+Both sources passed Monadscan verification; MonadVision returned partial matches. The [deployment record](sc/abi/deployment.monad-mainnet.json) contains receipts, constructor arguments, roles and runtime bytecode hashes checked through an independent RPC. Mainnet admin, relayer and issuer currently share one wallet. Deployment evidence does not establish a completed public Meet or collectible claim.
 
 ## Architecture
 
@@ -105,7 +115,7 @@ flowchart TB
     end
     Workers -->|Authorized transactions| Registry["MeetRegistry"]
     Workers -->|Issuer-authorized claims| Collection["EventCollection"]
-    subgraph Monad["Monad testnet · chain 10143"]
+    subgraph Monad["Monad mainnet · chain 143"]
         Registry
         Collection
     end
@@ -214,7 +224,7 @@ npm ci
 npm run dev
 ```
 
-Open `http://localhost:3000` for the landing and `http://localhost:3000/app` for the client. Start the API and apply migrations using the [backend setup](be/README.md); the frontend defaults to `http://localhost:3001`. Configure Privy, private storage and testnet addresses for connected flows. Keep backend secrets out of frontend variables.
+Open `http://localhost:3000` for the landing and `http://localhost:3000/app` for the client. Start the API and apply migrations using the [backend setup](be/README.md); the frontend defaults to `http://localhost:3001`. Configure Privy, private storage and mainnet addresses for connected flows. Keep backend secrets out of frontend variables.
 
 For a labelled UI-only preview, see the frontend's fixture mode. Fictional fixtures do not exercise wallets, camera, GPS or backend integration and must remain disabled in deployed demos.
 
@@ -245,7 +255,7 @@ npm test
 npm run check:artifacts
 ```
 
-Use the existing verified testnet addresses for a connected demo. Running the local checks does not deploy contracts. Canonical typed data and public synthetic signing vectors are in `sc/specs/`; generated ABIs and deployment receipts are in `sc/abi/`.
+Use the existing verified mainnet addresses for a connected demo. Running the local checks does not deploy contracts. Canonical typed data and public synthetic signing vectors are in `sc/specs/`; generated ABIs and deployment receipts are in `sc/abi/`.
 
 ### Environment boundaries
 
@@ -253,7 +263,7 @@ Use the existing verified testnet addresses for a connected demo. Running the lo
 | --- | --- | --- |
 | Web | [fe/web/.env.example](fe/web/.env.example) → `.env.local` | Public API origin, Privy App ID, chain and contract addresses; optional MapTiler key |
 | Backend | [be/.env.example](be/.env.example) → `.env` | Private database/storage configuration, auth verification, allowed origins and worker settings |
-| Contracts | [Contract README](sc/README.md) and deployment record | Signing domains must match chain 10143 and the actual deployed contracts |
+| Contracts | [Contract README](sc/README.md) and deployment record | Signing domains must match chain 143 and the actual deployed contracts |
 
 Allow the exact frontend origin in both backend CORS and Privy. Use HTTPS for camera/location testing on real devices. Backend signing credentials and storage service keys must never use a `NEXT_PUBLIC_` variable.
 
@@ -276,7 +286,7 @@ Allow the exact frontend origin in both backend CORS and Privy. Use HTTPS for ca
 
 The current scope excludes a Dots currency, Shop, daily/shared payouts, streak rewards, social circles and an NFT for every photo. Either participant can hide a Dot; hidden Dots still count, and only the participant who hid one can restore it.
 
-The testnet admin, relayer and issuer roles share a wallet. Operational role separation, a completed two-device live Meet/claim demonstration and production readiness remain separate work. Module tests and source verification do not constitute a comprehensive security audit. The mobile client remains unimplemented.
+The mainnet admin, relayer and issuer roles share a wallet. Operational role separation, a completed two-device live Meet/claim demonstration and production readiness remain separate work. Module tests and source verification do not constitute a comprehensive security audit. The mobile client remains unimplemented.
 
 ## Verification commands
 
@@ -289,7 +299,7 @@ Run checks inside their owning module; use the module READMEs for environment pr
 | Backend database | `npm run test:db`, `npm run test:coverage` with a disposable PostGIS test database |
 | `sc/` | `npm test`, `npm run lint`, `npm run build`, `npm run typecheck`, `npm run check:artifacts`, `npm run smoke:local` |
 
-Contract checks require the pinned Foundry toolchain; local smoke starts its own disposable Anvil node. It does not prove a public testnet transaction. Backend migrations are explicit and never implied by starting the API. See [backend setup](be/README.md), [contract setup](sc/README.md) and the [judge walkthrough](docs/hackathon.md).
+Contract checks require the pinned Foundry toolchain; local smoke starts its own disposable Anvil node. It does not prove a public mainnet transaction. Backend migrations are explicit and never implied by starting the API. See [backend setup](be/README.md), [contract setup](sc/README.md) and the [judge walkthrough](docs/hackathon.md).
 
 The checked-in [Backend CI](.github/workflows/backend.yml) runs backend checks and deployment validations. Frontend and contract commands above must be verified separately; this README does not imply they share that CI job. Use actual check output and recorded acceptance evidence for current test totals.
 
