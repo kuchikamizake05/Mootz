@@ -23,11 +23,9 @@ export type ReadyWallet = {
  */
 export function MeetGate({
   title,
-  tone,
   children,
 }: {
   title: string;
-  tone?: "light" | "deep";
   children: (wallet: ReadyWallet) => ReactNode;
 }) {
   const router = useRouter();
@@ -58,8 +56,9 @@ export function MeetGate({
     }
   };
 
+  // Gate screens always use the light frame: StateMessage text is ink-on-light.
   const frame = (body: ReactNode) => (
-    <MeetFrame title={title} tone={tone} onClose={() => closeFlow(router)}>
+    <MeetFrame title={title} onClose={() => closeFlow(router)}>
       {body}
     </MeetFrame>
   );

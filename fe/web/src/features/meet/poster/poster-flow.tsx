@@ -34,7 +34,7 @@ export function PosterFlow() {
   if (!momentId || !UUID.test(momentId)) return <NoMoment />;
   if (env.demoFixtures) return <DemoPoster momentId={momentId} />;
   return (
-    <MeetGate title="Meet" tone="deep">
+    <MeetGate title="Meet">
       {(wallet) => <PosterSession momentId={momentId} wallet={wallet} />}
     </MeetGate>
   );
