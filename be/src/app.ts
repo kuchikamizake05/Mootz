@@ -135,6 +135,9 @@ export function createApp(options: AppOptions) {
   else {
     const unavailable = async (request: import('fastify').FastifyRequest, reply: import('fastify').FastifyReply) => reply.code(503).send(failure('AUTH_UNAVAILABLE', request.id));
     app.get('/v1/events', unavailable);
+    app.post('/v1/events', unavailable);
+    app.get('/v1/me/organizer', unavailable);
+    app.get('/v1/me/events', unavailable);
     app.get('/v1/events/:id', unavailable);
     app.get('/v1/events/:id/check-in', unavailable);
     app.post('/v1/events/:id/check-ins', unavailable);

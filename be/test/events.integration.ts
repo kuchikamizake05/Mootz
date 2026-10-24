@@ -11,7 +11,8 @@ registerEventRoutes(app,{pool,now:()=>clock,verifyToken:async token=>{if(!subjec
 const headers=(i=0)=>({authorization:'Bearer '+subjects[i]});
 const check=(i:number,target=ids[1],event=events[0])=>app.inject({method:'POST',url:`/v1/events/${event}/check-ins`,headers:headers(i),payload:{accountId:target}});
 beforeAll(async()=>{if(!process.env.TEST_DATABASE_URL)throw Error('TEST_DATABASE_URL required');await migrate(pool);for(const subject of subjects)ids.push((await pool.query<{id:string}>('INSERT INTO accounts(provider_subject) VALUES($1) RETURNING id',[subject])).rows[0]!.id);for(let n=0;n<3;n++)events.push((await pool.query<{id:string}>("INSERT INTO events(organizer_id,title,description,starts_at,ends_at,location_label) VALUES($1,$2,'Details',$3,$4,'Demo venue') RETURNING id",[ids[0],`Event ${n}`,new Date(`2026-10-${23+n}T04:00:00Z`),new Date(`2026-10-${23+n}T06:00:00Z`)])).rows[0]!.id);});
-afterAll(async()=>{await app.close();await pool.query('DELETE FROM event_checkins WHERE event_id=ANY($1::uuid[])',[events]);await pool.query('DELETE FROM events WHERE id=ANY($1::uuid[])',[events]);await pool.query('DELETE FROM accounts WHERE id=ANY($1::uuid[])',[ids]);await pool.end();});
+beforeAll(async()=>{await pool.query('INSERT INTO event_organizers(account_id) VALUES($1)',[ids[0]]);});
+afterAll(async()=>{await app.close();await pool.query('DELETE FROM event_checkins WHERE event_id=ANY($1::uuid[])',[events]);await pool.query('DELETE FROM events WHERE id=ANY($1::uuid[])',[events]);await pool.query('DELETE FROM event_organizers WHERE account_id=ANY($1::uuid[])',[ids]);await pool.query('DELETE FROM accounts WHERE id=ANY($1::uuid[])',[ids]);await pool.end();});
 it('requires auth and returns event metadata without organizer identity',async()=>{
  expect((await app.inject({url:'/v1/events'})).statusCode).toBe(401);
  expect((await app.inject({url:'/v1/events',headers:{authorization:'Bearer invalid'}})).statusCode).toBe(401);

@@ -24,7 +24,8 @@
     "test:db": "vitest run --config vitest.integration.config.ts",
     "test:deploy": "vitest run --config vitest.deploy.config.ts",
     "db:migrate": "node --env-file=.env src/db/cli.ts migrate",
-    "db:seed": "node --env-file=.env src/db/cli.ts seed"
+    "db:seed": "node --env-file=.env src/db/cli.ts seed",
+    "events:admin": "node --env-file=.env src/events/admin-cli.ts"
   },
   "dependencies": {
     "@fastify/cors": "11.3.1",

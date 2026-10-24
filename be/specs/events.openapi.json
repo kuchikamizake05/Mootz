@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Mootz Event details and organizer check-in",
-    "version": "0.1.0",
-    "description": "Authenticated backend slice only. Events/organizer are provisioned through seed/admin database process; no public creation or role assignment. Organizer identity comes from verified token account. Event detail contains no organizer provider identity. Check-ins are atomically idempotent per event/account, not collection ownership, claim authorization, or completed Meet eligibility."
+    "version": "0.2.0",
+    "description": "Authenticated events and restricted organizer management. Access is granted by an operator outside HTTP. Organizer identity comes from the verified token. Creation is idempotent per organizer/clientRequestId. Revocation disables management. Collection mapping and contract administration remain operator-only."
   },
   "security": [
     {
@@ -15,6 +15,140 @@
       "bearerAuth": {
         "type": "http",
         "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "Event": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "description",
+          "startsAt",
+          "endsAt",
+          "locationLabel"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "startsAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endsAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "locationLabel": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "CreateEvent": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "clientRequestId",
+          "title",
+          "startsAt",
+          "endsAt"
+        ],
+        "properties": {
+          "clientRequestId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 10000
+          },
+          "startsAt": {
+            "type": "string",
+            "format": "date-time",
+            "maxLength": 40
+          },
+          "endsAt": {
+            "type": "string",
+            "format": "date-time",
+            "maxLength": 40
+          },
+          "locationLabel": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 200
+          }
+        }
+      },
+      "OrganizerEvent": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "description",
+          "startsAt",
+          "endsAt",
+          "locationLabel",
+          "collectionStatus",
+          "checkInCount"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "startsAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endsAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "locationLabel": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "collectionStatus": {
+            "type": "string",
+            "enum": [
+              "not_configured",
+              "configured"
+            ],
+            "description": "Mapping status only; not claim availability or ownership."
+          },
+          "checkInCount": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
       }
     }
   },
@@ -117,6 +251,57 @@
           },
           "404": {
             "description": "Event or target account not found"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create an event as an approved organizer",
+        "description": "Trim title/location. End follows start and is in the future for new events. Timezone offsets required; stored in UTC. Matching retries return the original event, including after its end. Conflicting clientRequestId returns 409. Creates no onchain collection.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEvent"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Matching retry",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Invalid or missing bearer token"
+          },
+          "403": {
+            "description": "Account setup required or organizer permission denied"
+          },
+          "404": {
+            "description": "Event or target account not found"
+          },
+          "409": {
+            "description": "New check-in outside server event window [startsAt,endsAt). Existing successful check-in retries preserve timestamp even afterward."
           }
         }
       }
@@ -329,6 +514,110 @@
                 }
               }
             }
+          }
+        },
+        "description": "Requires an approved organizer who owns this event. Revoked organizers cannot record or retry attendance. Idempotent per event/account. New attendance is accepted only during the server event window."
+      }
+    },
+    "/v1/me/organizer": {
+      "get": {
+        "summary": "Read own operator-granted organizer access",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "enabled"
+                  ],
+                  "properties": {
+                    "enabled": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing bearer token"
+          },
+          "403": {
+            "description": "Account setup required or organizer permission denied"
+          }
+        }
+      }
+    },
+    "/v1/me/events": {
+      "get": {
+        "summary": "List only events owned by the approved organizer",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 512
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "items",
+                    "nextCursor"
+                  ],
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/OrganizerEvent"
+                      }
+                    },
+                    "nextCursor": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Invalid or missing bearer token"
+          },
+          "403": {
+            "description": "Account setup required or organizer permission denied"
+          },
+          "404": {
+            "description": "Event or target account not found"
+          },
+          "409": {
+            "description": "New check-in outside server event window [startsAt,endsAt). Existing successful check-in retries preserve timestamp even afterward."
           }
         }
       }

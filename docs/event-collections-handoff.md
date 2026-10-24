@@ -12,7 +12,7 @@ Scope: Event collection eligibility, authorization, claim queue and profile equi
 
 ## Deployment inputs still required
 
-Diaz supplies the verified chain10143 EventCollection address, collection ID/event mapping, cap/public metadata and issuer role assignment. The contract eventId uses canonical UUID-to-bytes32 padding. An operator provisions the mapping through controlled PostgreSQL access, with UTC claim timestamps and public artwork. No demo address is automatically seeded and no administrative contract function is exposed over HTTP.
+Diaz supplies the verified chain10143 EventCollection address, collection ID/event mapping, cap/public metadata and issuer role assignment. The contract eventId uses canonical UUID-to-bytes32 padding. Approved organizers create events through the API/web tools. An operator runs `events:admin map-collection` to verify finalized creation evidence and store the mapping with UTC timestamps/public artwork. See [restricted organizer setup](organizer-events.md). No demo address is automatically seeded and no administrative contract function is exposed over HTTP.
 
 Server-only settings are `EVENT_COLLECTION_RPC_URL`, `EVENT_COLLECTION_ADDRESS`, and optional `EVENT_CLAIM_ISSUER_PRIVATE_KEY`. Read-only configuration permits ownership/equip; authorization requires the dedicated issuer signer. These values never belong in FE configuration. The normal API starts no transaction sender. No live signing key, deployment, mint or blockchain transaction was used in verification.
 

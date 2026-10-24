@@ -23,6 +23,16 @@ Sumber perilaku produk: [PRD](../PRD.md). Kontrak interface: [baseline integrasi
 - Foto/Meet/consent tidak menjamin manusia unik, keaslian foto, atau kehadiran fisik pasti. Contract tidak memverifikasi lokasi.
 - Foto/lokasi/Dots privat offchain. Event tag tidak memperluas audiens. UI English; mobile-first dengan desktop, ungu tua/muda dan map terang.
 
+## Organizer terbatas — 24 Oktober 2026
+
+Pembuatan event melalui aplikasi hanya untuk akun yang diberi akses operator.
+Backend menetapkan pemilik dari token; organizer mencatat check-in hanya pada
+event miliknya. Pencabutan akses menghentikan pengelolaan tanpa menghapus event.
+Penerbitan collection tetap oleh admin contract; command operator menyimpan
+mapping setelah memverifikasi receipt finalized dan readback. Lihat
+[alur organizer](organizer-events.md). Registrasi organizer publik, tiket,
+pembayaran dan dashboard penerbit lengkap tetap di luar scope.
+
 ## Usulan yang perlu dikunci
 
 | Keputusan | Usulan saat ini | Bukti berikutnya |

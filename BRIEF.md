@@ -239,7 +239,7 @@ Contoh ilustratif: komunitas demo menerbitkan paling banyak 50 frame **Jogja Bui
 
 ### Scope acara awal
 
-Detail acara, penanda acara pada momen, eligibility, klaim, dan pemasangan frame berada di dalam Mootz. Halaman pembaca kepemilikan merupakan demonstrasi terpisah. Pembuatan acara mandiri, dashboard penerbit, tiket, pembayaran pendaftaran, penjadwalan sesi, dan campaign berbayar masuk pengembangan berikutnya. Kode/QR check-in hanya alat otorisasi prototipe.
+Detail acara, penanda acara pada momen, eligibility, klaim, dan pemasangan frame berada di dalam Mootz. Halaman pembaca kepemilikan merupakan demonstrasi terpisah. Perluasan yang disetujui 24 Oktober 2026 menambahkan pembuatan acara serta check-in dari UI untuk organizer yang diberi akses operator; lihat [alur organizer terbatas](docs/organizer-events.md). Registrasi organizer publik, dashboard penerbit lengkap, tiket, pembayaran pendaftaran, penjadwalan sesi, dan campaign berbayar masuk pengembangan berikutnya. Kode/QR check-in hanya alat otorisasi prototipe.
 
 ## 9. Narasi Zenly, mengapa blockchain, dan peran Monad
 

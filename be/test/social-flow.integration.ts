@@ -7,6 +7,7 @@ import { migrate } from '../src/db/migrate.ts';
 import { createTokenVerifier } from '../src/auth/token.ts';
 import { createProfileRepository } from '../src/profile/repository.ts';
 import { processImage } from '../src/media/image.ts';
+import { setOrganizer } from '../src/events/admin.ts';
 it('composes authenticated social modules and revokes media, comments and reactions when friendship ends',async()=>{
  const url=process.env.TEST_DATABASE_URL;if(!url)throw Error('TEST_DATABASE_URL required');
  const database=createDatabase(url);const {pool}=database;const ids:string[]=[];let eventId:string|undefined;
@@ -36,7 +37,8 @@ it('composes authenticated social modules and revokes media, comments and reacti
   expect((await app.inject({method:'DELETE',url:`/v1/friends/${ids[0]}`,headers:headers(1)})).statusCode).toBe(204);
   for(const suffix of ['','/comments','/reactions','/media/front','/media/back'])expect((await app.inject({url:`/v1/moments/${momentId}${suffix}`,headers:headers(1)})).statusCode).toBe(404);
   const ownerStreak=await app.inject({url:'/v1/me/streak',headers:headers()});expect(ownerStreak.statusCode).toBe(200);expect(ownerStreak.json()).toMatchObject({currentStreak:1,postedToday:true});expect((await app.inject({url:'/v1/me/streak',headers:headers(1)})).json()).toMatchObject({currentStreak:0,postedToday:false});
-  const now=Date.now();eventId=(await pool.query<{id:string}>("INSERT INTO events(organizer_id,title,starts_at,ends_at) VALUES($1,'Synthetic social-flow event',$2,$3) RETURNING id",[ids[0],new Date(now-60_000),new Date(now+60_000)])).rows[0]!.id;
+  await setOrganizer(pool,ids[0]!,true);
+  const now=Date.now();const event=await app.inject({method:'POST',url:'/v1/events',headers:headers(),payload:{clientRequestId:crypto.randomUUID(),title:'Synthetic social-flow event',startsAt:new Date(now-60_000).toISOString(),endsAt:new Date(now+60_000).toISOString()}});expect(event.statusCode).toBe(201);eventId=event.json().id;
   expect((await app.inject({method:'POST',url:`/v1/events/${eventId}/check-ins`,headers:headers(1),payload:{accountId:ids[1]}})).statusCode).toBe(403);
   expect((await app.inject({method:'POST',url:`/v1/events/${eventId}/check-ins`,headers:headers(),payload:{accountId:ids[1]}})).statusCode).toBe(200);
   expect((await app.inject({url:`/v1/events/${eventId}/check-in`,headers:headers(1)})).json()).toMatchObject({checkedIn:true});
@@ -50,6 +52,7 @@ it('composes authenticated social modules and revokes media, comments and reacti
   await pool.query('DELETE FROM friendships WHERE account_low=ANY($1::uuid[]) OR account_high=ANY($1::uuid[])',[ids]);
   await pool.query('DELETE FROM preference_history WHERE account_id=ANY($1::uuid[])',[ids]);
   await pool.query('DELETE FROM onchain_preferences WHERE account_id=ANY($1::uuid[])',[ids]);
+  await pool.query('DELETE FROM event_organizers WHERE account_id=ANY($1::uuid[])',[ids]);
   await pool.query('DELETE FROM accounts WHERE id=ANY($1::uuid[])',[ids]);
   await app.close();objects.clear();
  }

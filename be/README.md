@@ -1,5 +1,9 @@
 # Mootz backend
 
+Approved organizer creation/check-in and finalized collection mapping are described
+in [restricted organizer setup](../docs/organizer-events.md). Apply migration 019
+and explicitly grant existing event owners before using the updated check-in API.
+
 Status: backend, Meet/Event/frame APIs, relay workers and canonical contract exports are present. Client acceptance and public testnet deployment must be verified separately.
 
 Available backend modules: identity/wallet/preferences, friendships, private paired-photo publication and Map/Feed, reactions/comments/streak, signed Meet validation and Dots, Event organizer check-in, collection authorizations/equip, explicit relay workers and offchain achievement frames. Local tests cover these modules; actual contract deployment, live transaction receipts, FE consumer acceptance and two-device integration remain outstanding. INT-01 and BE issues remain open; the implemented slices are on main; merge does not replace consumer acceptance.
