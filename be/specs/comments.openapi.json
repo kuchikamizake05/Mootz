@@ -29,6 +29,7 @@
           "id",
           "momentId",
           "authorId",
+          "authorUsername",
           "parentId",
           "replyToId",
           "replyToAuthorId",
@@ -48,6 +49,14 @@
           "authorId": {
             "type": "string",
             "format": "uuid"
+          },
+          "authorUsername": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[a-z0-9_]{3,20}$",
+            "description": "Author @handle; null until chosen"
           },
           "parentId": {
             "type": [

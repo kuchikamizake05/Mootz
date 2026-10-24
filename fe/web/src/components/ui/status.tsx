@@ -101,7 +101,7 @@ export function SelfieTile({
       {...props}
     >
       <Photo src={src} alt="" className="absolute inset-0" />
-      <span className="absolute bottom-2 left-2 flex flex-col items-start rounded-[7px] bg-mootz-ink/80 px-1.5 py-1 text-[11px] font-bold leading-tight text-white">
+      <span className="absolute bottom-2 left-2 flex flex-col items-start rounded-[7px] bg-mootz-ink/80 px-1.5 py-1 text-xs font-bold leading-tight text-white">
         {label}
         {selected && <span>Selected</span>}
       </span>

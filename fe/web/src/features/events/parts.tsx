@@ -2,10 +2,11 @@
 
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { ArrowLeft, LoaderCircle, SearchX, TriangleAlert } from "lucide-react";
+import { ArrowLeft, LoaderCircle, RefreshCw, SearchX, TriangleAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StateMessage } from "@/components/ui/status";
-import { PageShell } from "@/features/profile/page-shell";
+import { Card as SharedCard, Page } from "@/components/ui/page";
+import { useRouter } from "next/navigation";
 import { isMissing, isUnavailable } from "./model";
 
 export function BackLink({ href, children }: { href: string; children: ReactNode }) {
@@ -18,26 +19,27 @@ export function BackLink({ href, children }: { href: string; children: ReactNode
 }
 
 export const Card = ({ children, className = "" }: { children: ReactNode; className?: string }) => (
-  <section className={`flex flex-col gap-2 rounded-[22px] border border-mootz-hairline bg-mootz-surface p-4 ${className}`}>{children}</section>
+  <SharedCard className={`flex flex-col gap-3 ${className}`}>{children}</SharedCard>
 );
 
 export function Loading({ label }: { label: string }) {
   return (
-    <PageShell title="Event">
+    <Page title="Event">
       <StateMessage icon={LoaderCircle} busy title={label} />
-    </PageShell>
+    </Page>
   );
 }
 
 /** Not found vs unavailable vs other failure for a page-level query. */
 export function LoadFailed({ error, onRetry, backHref = "/map" }: { error: unknown; onRetry: () => void; backHref?: string }) {
+  const router = useRouter();
   const missing = isMissing(error);
   return (
-    <PageShell header={<BackLink href={backHref}>Back</BackLink>}>
+    <Page title="Event" onBack={() => router.push(backHref)}>
       <StateMessage
         icon={missing ? SearchX : TriangleAlert}
         title={missing ? "Event not found" : "Couldn't load this"}
-        actions={missing ? undefined : <Button variant="secondary" onClick={onRetry}>Try again</Button>}
+        actions={missing ? undefined : <Button icon={RefreshCw} variant="secondary" onClick={onRetry}>Try again</Button>}
       >
         {missing
           ? "This event doesn't exist or isn't available to you."
@@ -45,6 +47,6 @@ export function LoadFailed({ error, onRetry, backHref = "/map" }: { error: unkno
             ? "The service is unavailable right now. Nothing here means you own or lack anything. Try again shortly."
             : "Check your connection and try again."}
       </StateMessage>
-    </PageShell>
+    </Page>
   );
 }

@@ -22,6 +22,17 @@ it('authenticates actor, validates targets and rejects forged identity',async()=
  expect((await app.inject({method:'POST',url:'/v1/friends/requests',headers:headers(),payload:{accountId:crypto.randomUUID()}})).statusCode).toBe(404);
  expect((await app.inject({method:'POST',url:'/v1/friends/requests',headers:headers(),payload:{accountId:ids[1],requestedBy:ids[2]}})).statusCode).toBe(400);
 });
+it('adds friends by case-insensitive username and exposes counterpart usernames',async()=>{
+ const handle='ft_'+crypto.randomUUID().replaceAll('-','').slice(0,12);await pool.query('UPDATE accounts SET username=$2 WHERE id=$1',[ids[4],handle]);
+ const byName=(i:number,payload:object)=>app.inject({method:'POST',url:'/v1/friends/requests',headers:headers(i),payload});
+ expect((await byName(0,{username:'no_such_user_x'})).statusCode).toBe(404);
+ expect((await byName(4,{username:handle.toUpperCase()})).statusCode).toBe(400);
+ expect((await byName(0,{username:handle,accountId:ids[4]})).statusCode).toBe(400);expect((await byName(0,{})).statusCode).toBe(400);
+ const created=await byName(0,{username:' '+handle.toUpperCase()+' '});expect(created.statusCode).toBe(201);expect(created.json()).toMatchObject({accountId:ids[4],username:handle,status:'pending'});
+ expect((await byName(0,{username:handle})).statusCode).toBe(200);
+ const listed=await app.inject({url:'/v1/friends',headers:headers(0)});expect(listed.json().items).toEqual([expect.objectContaining({accountId:ids[4],username:handle})]);
+ expect((await remove(0,4)).statusCode).toBe(204);
+});
 it('requires recipient acceptance, handles retries, declines and removes',async()=>{
  expect((await request(0,1)).statusCode).toBe(201);expect((await request(0,1)).statusCode).toBe(200);
  expect((await request(1,0)).statusCode).toBe(409);expect((await accept(0,1)).statusCode).toBe(409);

@@ -35,7 +35,8 @@ export function Avatar({
 }) {
   // Inner padding follows the source specimens: 4px at 52px, ~5–6px for deep frames at 56px.
   const pad = frame === "none" ? 0 : Math.max(2, Math.round(size * (frame === "lilac" ? 0.077 : 0.1)));
-  const initials = name.trim().charAt(0).toUpperCase() || "?";
+  // "@handle" labels use the first letter of the handle, not the "@".
+  const initials = name.trim().replace(/^@/, "").charAt(0).toUpperCase() || "?";
 
   return (
     <span

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { LockKeyhole } from "lucide-react";
+import { ArrowRight, Info, LockKeyhole } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { jsonBody } from "@/lib/api/client";
@@ -63,7 +63,7 @@ function Onboarding({ save, demo }: { save: Save; demo?: boolean }) {
       <div className="flex min-h-[88px] items-center justify-between gap-3 rounded-2xl bg-mootz-surface p-4">
         <div id="record-label">
           <p className="text-sm font-extrabold">Save my Meets onchain</p>
-          <p className="text-xs text-mootz-muted">Applies to future Meets only.</p>
+          <p className="text-[13px] text-mootz-muted">Applies to future Meets only.</p>
         </div>
         <button
           type="button"
@@ -84,17 +84,17 @@ function Onboarding({ save, demo }: { save: Save; demo?: boolean }) {
       </p>
 
       <div className="mt-auto flex flex-col gap-3">
-        <Button size="lg" block disabled={busy} onClick={onContinue}>
+        <Button icon={ArrowRight} size="lg" block disabled={busy} onClick={onContinue}>
           {busy ? "Saving…" : "Continue"}
         </Button>
-        <ButtonLink variant="secondary" size="lg" block href="/meet/whats-recorded">
+        <ButtonLink icon={Info} variant="secondary" size="lg" block href="/meet/whats-recorded">
           Learn more
         </ButtonLink>
       </div>
       <p role="alert" className="text-sm font-bold text-mootz-deep">
         {failed ? "Couldn't save your choice. Nothing was changed. Try again." : ""}
       </p>
-      <p className="text-xs font-bold text-mootz-muted">
+      <p className="text-[13px] font-bold text-mootz-muted">
         Onchain records can&apos;t be removed. You can change this choice for future Meets.
       </p>
     </MeetFrame>

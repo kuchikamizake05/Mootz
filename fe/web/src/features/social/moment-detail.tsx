@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { LoaderCircle, MapPin, TriangleAlert } from "lucide-react";
+import { Camera, LoaderCircle, MapPin, MessageCircle, Reply, TriangleAlert, type LucideIcon } from "lucide-react";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { MeetEntry, MomentByline, PairedPhoto } from "@/components/ui/moment";
 import { Photo } from "@/components/ui/photo";
@@ -9,18 +9,18 @@ import { StateMessage } from "@/components/ui/status";
 import { useMoment } from "@/features/moments/queries";
 import { canStartMeet, relativeTime } from "@/features/moments/model";
 import { CommentRow } from "./comment-row";
-import { BackButton, SocialPage } from "./page-frame";
+import { Card, Page, SectionLabel } from "@/components/ui/page";
 import { isNotFound, personLabel } from "./model";
 import { useReactions, useThread } from "./queries";
 
-function Section({ title, children, id }: { title: string; children: React.ReactNode; id: string }) {
+function Section({ title, children, id, icon }: { title: string; children: React.ReactNode; id: string; icon: LucideIcon }) {
   return (
-    <section aria-labelledby={id} className="flex flex-col gap-3">
-      <h2 id={id} className="font-display text-2xl text-mootz-deep">
+    <section aria-labelledby={id}><Card className="flex flex-col gap-3">
+      <SectionLabel id={id} icon={icon}>
         {title}
-      </h2>
+      </SectionLabel>
       {children}
-    </section>
+    </Card></section>
   );
 }
 
@@ -29,7 +29,7 @@ function Reactions({ id }: { id: string }) {
   const { items, mine, viewerId } = reactions;
   const others = items.filter((r) => r.id !== mine?.id);
   return (
-    <Section id="reactions-title" title={`Selfie reactions ${reactions.isPending ? "" : items.length}`.trim()}>
+    <Section icon={Camera} id="reactions-title" title={`Selfie reactions ${reactions.isPending ? "" : items.length}`.trim()}>
       {reactions.error ? (
         <p role="alert" className="text-sm text-mootz-muted">
           Reactions couldn&apos;t load. <button className="font-extrabold underline" onClick={() => void reactions.refetch()}>Retry</button>
@@ -43,17 +43,17 @@ function Reactions({ id }: { id: string }) {
               <Photo src={mine.thumbnailUrl} alt="Your reaction selfie" className="size-14 rounded-2xl" />
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-black text-mootz-ink">You</p>
-                <p className="text-xs text-mootz-muted">Sent selfie · {relativeTime(mine.createdAt)}</p>
+                <p className="text-[13px] text-mootz-muted">Sent selfie · {relativeTime(mine.createdAt)}</p>
               </div>
               <ButtonLink variant="soft" href={`/moments/${id}/react`}>Change</ButtonLink>
             </li>
           )}
           {others.map((r) => (
             <li key={r.id} className="flex items-center gap-3">
-              <Photo src={r.thumbnailUrl} alt={`Reaction selfie from ${personLabel(r.accountId, viewerId)}`} className="size-14 rounded-2xl" />
+              <Photo src={r.thumbnailUrl} alt={`Reaction selfie from ${personLabel(r.accountId, viewerId, r.username)}`} className="size-14 rounded-2xl" />
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-black text-mootz-ink">{personLabel(r.accountId, viewerId)}</p>
-                <p className="text-xs text-mootz-muted">Sent selfie · {relativeTime(r.createdAt)}</p>
+                <p className="text-sm font-black text-mootz-ink">{personLabel(r.accountId, viewerId, r.username)}</p>
+                <p className="text-[13px] text-mootz-muted">Sent selfie · {relativeTime(r.createdAt)}</p>
               </div>
             </li>
           ))}
@@ -62,7 +62,7 @@ function Reactions({ id }: { id: string }) {
       {!mine && !reactions.isPending && !reactions.error && (
         <div className="flex flex-col gap-2">
           {items.length === 0 && <p className="text-sm text-mootz-muted">No selfie reactions yet.</p>}
-          <ButtonLink variant="secondary" block href={`/moments/${id}/react`}>React with a selfie</ButtonLink>
+          <ButtonLink icon={Camera} variant="secondary" block href={`/moments/${id}/react`}>React with a selfie</ButtonLink>
         </div>
       )}
     </Section>
@@ -78,7 +78,7 @@ function CommentsPreview({ id }: { id: string }) {
   const countLabel = thread.isPending ? "" : `${thread.count}${thread.hasMore ? "+" : ""}`;
   const href = `/moments/${id}/comments`;
   return (
-    <Section id="comments-title" title={`Comments ${countLabel}`.trim()}>
+    <Section icon={MessageCircle} id="comments-title" title={`Comments ${countLabel}`.trim()}>
       {thread.error ? (
         <p role="alert" className="text-sm text-mootz-muted">
           Comments couldn&apos;t load. <button className="font-extrabold underline" onClick={thread.refetch}>Retry</button>
@@ -88,7 +88,7 @@ function CommentsPreview({ id }: { id: string }) {
       ) : shown ? (
         <div className="flex flex-col gap-3">
           <CommentRow comment={shown} viewerId={viewerId} />
-          <ButtonLink variant="secondary" href={href} className="self-start">Reply</ButtonLink>
+          <ButtonLink icon={Reply} variant="secondary" href={href} className="self-start">Reply</ButtonLink>
         </div>
       ) : (
         <p className="text-sm text-mootz-muted">No comments yet.</p>
@@ -98,7 +98,7 @@ function CommentsPreview({ id }: { id: string }) {
       )}
       <Link href={href} className="flex flex-col gap-3 rounded-2xl border border-mootz-hairline bg-mootz-surface p-4">
         <span className="text-[15px] text-mootz-muted">Write a comment…</span>
-        <span className="text-xs text-mootz-muted">0 / 500 · Open the thread to write a reply</span>
+        <span className="text-[13px] text-mootz-muted">0 / 500 · Open the thread to write a reply</span>
       </Link>
     </Section>
   );
@@ -111,8 +111,7 @@ export function MomentDetail({ id }: { id: string }) {
   if (!m) {
     const gone = isNotFound(moment.error);
     return (
-      <SocialPage>
-        <BackButton />
+      <Page title="Moment" backHref="/feed">
         {moment.error ? (
           <StateMessage
             icon={TriangleAlert}
@@ -124,16 +123,13 @@ export function MomentDetail({ id }: { id: string }) {
         ) : (
           <StateMessage icon={LoaderCircle} busy title="Loading moment…" />
         )}
-      </SocialPage>
+      </Page>
     );
   }
 
   return (
-    <SocialPage className="pb-10">
-      <header className="flex items-center gap-3">
-        <div className="w-28 shrink-0"><BackButton /></div>
-        <div className="min-w-0 flex-1"><MomentByline author={m.author} postedLabel={m.postedLabel} avatarSize={40} /></div>
-      </header>
+    <Page title="Moment" backHref="/feed">
+      <MomentByline author={m.author} postedLabel={m.postedLabel} avatarSize={40} />
       <PairedPhoto momentId={m.mediaId} backSrc={m.backSrc} frontSrc={m.frontSrc} authorName={m.author.name} selfie="lg" className="aspect-[4/5] w-full" />
       {m.caption && <p className="text-base font-bold text-mootz-ink">{m.caption}</p>}
       {m.place && m.location ? (
@@ -143,11 +139,11 @@ export function MomentDetail({ id }: { id: string }) {
           <ButtonLink variant="secondary" icon={MapPin} href={`/map?moment=${m.id}`} className="shrink-0 px-3">View on map</ButtonLink>
         </div>
       ) : (
-        m.own && <p className="text-xs text-mootz-muted">Location not shared</p>
+        m.own && <p className="text-[13px] text-mootz-muted">Location not shared</p>
       )}
       {canStartMeet(m) && <MeetEntry href={`/meet/offer?moment=${m.id}`} className="rounded-2xl" />}
       <Reactions id={id} />
       <CommentsPreview id={id} />
-    </SocialPage>
+    </Page>
   );
 }

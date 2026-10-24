@@ -21,7 +21,7 @@ let eventId: string;
 beforeAll(async () => {
   await admin.query(`CREATE SCHEMA ${schema}`);
   // Event tests need real SQL/locks but no PostGIS or unrelated media fixtures.
-  for (const file of ['001_identity.sql', '005_event_checkins.sql', '010_event_claims.sql', '019_event_organizers.sql']) {
+  for (const file of ['001_identity.sql', '005_event_checkins.sql', '010_event_claims.sql', '020_event_organizers.sql']) {
     await pool.query(await readFile(new URL(`../migrations/${file}`, import.meta.url), 'utf8'));
   }
   for (const subject of subjects) ids.push((await pool.query<{ id: string }>('INSERT INTO accounts(provider_subject) VALUES($1) RETURNING id', [subject])).rows[0]!.id);

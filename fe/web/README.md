@@ -4,6 +4,10 @@ Owner: [Wangsit (@wngstnr-code)](https://github.com/wngstnr-code).
 
 Responsive Next.js + TypeScript + Tailwind CSS client for the initial two-device demo. Implementation plan and phase status: [PLAN.md](PLAN.md).
 
+Production: [mootz.fun](https://mootz.fun). The existing Vercel project is connected
+to GitHub and builds pushes to `main` from `fe/web`, including the shared landing
+sources. Check deployment status after pushing; see [deployment setup](../../docs/vercel-web.md).
+
 ## Setup
 
 Requires Node 24 and npm 11. From `fe/web/`:

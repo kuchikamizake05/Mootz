@@ -666,7 +666,7 @@
   </div>
   <div class="hero__copy l-wrap">
     <div class="hero__intro">
-      <h1 class="m-text-2 hero__title" id="hero-title">Make moments.<br>Meet<br>together.</h1>
+      <h1 class="m-text-2 hero__title" id="hero-title"><span>Make moments.</span><span>Meet together.</span></h1>
       <div class="hero__lower">
         <div class="hero__actions">
           <a class="m-btn" href="/app"><span class="m-btn__label">Explore Mootz</span><span class="m-btn__wave" aria-hidden="true"><i></i><i></i><i></i></span></a>
@@ -948,8 +948,7 @@
       </div>
     </div>
     <div class="footer__brand" aria-hidden="true">
-      <svg class="footer__logo" viewBox="0 0 40 28"><path class="footer__logo-a" pathLength="1" d="M3 19C10 5 17 5 21 14s11 9 16-6"/><path class="footer__logo-b" pathLength="1" d="M3 10c7 13 14 13 18 4s11-10 16 5"/></svg>
-      <p class="footer__word m-text-2" style="--len:5">Mootz</p>
+      <img class="footer__word footer__mootz-logo" src="assets/mootz-logo-v1.svg" width="2129" height="739" alt="" loading="lazy" decoding="async">
     </div>
     <div class="footer__legal m-text-7">
       <p>© 2026 Mootz. · Design: <a href="https://8b.com/" style="color:inherit" data-8b-credit>8B</a></p>
@@ -960,6 +959,59 @@
 </footer>
 
 <style>
+/* Shared spacing and responsive compositions retain the template's scene anchors. */
+.m-text-2{letter-spacing:-.035em}
+.m-text-3{letter-spacing:-.035em;text-wrap:balance}
+.m-btn,.m-btn-3{min-height:3rem}
+.m-link{ text-underline-offset:.25em }
+#hero .hero__title{max-width:10em;font-size:clamp(3.5rem,6.4vw,6rem);line-height:1.02;letter-spacing:-.04em}
+#hero .hero__title>span{display:block}
+#hero .hero__intro{gap:1.5rem}
+#hero .hero__copy{padding-top:clamp(9rem,18vh,12rem)}
+#hero .hero__actions{margin-top:.5rem;gap:1.25rem 1.75rem}
+#hero .hero__actions .m-btn{box-shadow:0 8px 24px #16092526}
+#hero .hero__media{bottom:-1rem}
+#hero .hero__chip--2{display:none}
+#listen{padding-block:clamp(4rem,8vw,7rem)}
+#listen .listen__head{padding-left:0}
+#listen .listen__panels{width:min(100%,26rem)}
+#calls .calls__head-copy{gap:1.5rem}
+#calls .calls__lead{max-width:40ch}
+#contact .contact__inner{padding-block:clamp(2.5rem,5vw,4.5rem)}
+#footer .footer__brand{align-items:center;margin-top:clamp(3rem,7vw,6rem)}
+#footer .footer__mootz-logo{display:block;width:100%;max-width:72rem;height:auto;margin-inline:auto;padding:0;filter:brightness(0) invert(1)}
+#footer .footer__note{max-width:65ch;line-height:1.6}
+@media(min-width:48rem) and (max-width:70rem){
+  #hero .hero__title{font-size:clamp(3.5rem,6.8vw,4.75rem)}
+  #hero .hero__copy{padding-top:8rem}
+  #hero .hero__media{left:8%;bottom:-1rem}
+}
+@media(max-width:47.99rem){
+  #hero{min-height:46rem}
+  #hero .hero__copy{flex:none;padding-top:7rem;padding-bottom:0}
+  #hero .hero__title{max-width:100%;font-size:clamp(2.5rem,10.4vw,4rem);line-height:1.05;letter-spacing:-.035em}
+  #hero .hero__intro{gap:1.25rem}
+  #hero .hero__lower{max-width:none}
+  #hero .hero__actions{margin-top:0;gap:1rem}
+  #hero .hero__actions .m-btn{min-width:0;min-height:3.25rem;padding:.8rem 1.25rem;font-size:1rem}
+  #hero .hero__actions .m-link{font-size:.875rem}
+  #hero .hero__media{top:18.5rem;bottom:0;left:-30%;right:auto;width:160%;height:auto;aspect-ratio:auto;mask-image:linear-gradient(180deg,transparent,#000 12%)}
+  #hero .hero__media img{object-fit:contain;object-position:center bottom}
+  #hero .hero__shade{background:none}
+  #hero .hero__chip--3{display:none}
+  #listen{padding-block:3.5rem;row-gap:2rem}
+  #listen .listen__lead{font-size:1.25rem;line-height:1.5;max-width:26ch}
+  #listen .listen__panels{width:min(100%,22rem)}
+  #calls .calls__head,#tune .tune__head,#setup .setup__head{gap:1.5rem}
+  #footer .footer__top{gap:2.5rem}
+  #footer .footer__cols{gap:2rem}
+  #footer .footer__mootz-logo{width:100%;font-size:inherit;line-height:normal}
+}
+@media(max-width:24rem){
+  #hero .hero__actions{align-items:flex-start;flex-direction:column;gap:.875rem}
+  #hero .hero__media{top:22rem}
+}
+
 /* Mootz concept states inside the retained animated template phone. */
 #listen{padding-bottom:clamp(5rem,10vw,10rem);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:clamp(2rem,6vw,6rem);align-items:center;padding-inline:var(--gutter,clamp(1.25rem,4vw,4rem))}
 #listen .listen__head{display:flex;flex-direction:column;align-items:flex-start;gap:1.5rem;width:100%;padding-inline:clamp(1rem,3vw,3rem) 0;margin:0}
@@ -1430,11 +1482,9 @@ queueMotion(() => {
   const root = document.getElementById('footer');
   const brand = root.querySelector('.footer__brand');
   const word = root.querySelector('.footer__word');
-  const strokes = root.querySelectorAll('.footer__logo path');
   gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
     gsap.timeline({ defaults: { ease: 'none' }, scrollTrigger: { id: 'footer', trigger: brand, start: 'top bottom', end: 'bottom bottom', scrub: true } })
-      .fromTo(word, { yPercent: 70 }, { yPercent: 0 }, 0)
-      .fromTo(strokes, { strokeDasharray: 1, strokeDashoffset: 1 }, { strokeDashoffset: 0, stagger: 0.15 }, 0);
+      .fromTo(word, { yPercent: 35 }, { yPercent: 0 }, 0);
   });
 }, { near: document.getElementById('footer'), id: 'footer' });
 </script>

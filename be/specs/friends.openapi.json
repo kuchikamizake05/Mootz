@@ -19,7 +19,7 @@
     "/v1/friends/requests": {
       "post": {
         "operationId": "requestFriend",
-        "description": "Creates pending request. Same outgoing retry or accepted pair returns 200. Incoming pending request conflicts and never auto-accepts. Blocked pairs stay hidden. Pair transitions serialized transactionally.",
+        "description": "Creates pending request. Same outgoing retry or accepted pair returns 200. Incoming pending request conflicts and never auto-accepts. Blocked pairs stay hidden. Pair transitions serialized transactionally. Body is exactly one of accountId or username (case-insensitive lookup; unknown username returns the same 404 as an unknown accountId).",
         "requestBody": {
           "required": true,
           "content": {
@@ -27,15 +27,29 @@
               "schema": {
                 "type": "object",
                 "additionalProperties": false,
-                "required": [
-                  "accountId"
-                ],
                 "properties": {
                   "accountId": {
                     "type": "string",
                     "format": "uuid"
+                  },
+                  "username": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
                   }
-                }
+                },
+                "oneOf": [
+                  {
+                    "required": [
+                      "accountId"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "username"
+                    ]
+                  }
+                ]
               }
             }
           }
@@ -289,6 +303,7 @@
         "additionalProperties": false,
         "required": [
           "accountId",
+          "username",
           "status",
           "direction",
           "createdAt",
@@ -298,6 +313,14 @@
           "accountId": {
             "type": "string",
             "format": "uuid"
+          },
+          "username": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[a-z0-9_]{3,20}$",
+            "description": "Counterpart @handle; null until chosen"
           },
           "status": {
             "type": "string",

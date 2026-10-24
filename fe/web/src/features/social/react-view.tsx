@@ -1,7 +1,8 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Camera, CameraOff, LoaderCircle, ScanFace, TriangleAlert } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Camera, CameraOff, Check, LoaderCircle, RefreshCw, ScanFace, Send, Trash2, TriangleAlert, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Photo } from "@/components/ui/photo";
 import { SelfieTile, StateMessage } from "@/components/ui/status";
@@ -9,19 +10,10 @@ import { shotFromVideo, makeShot, type Shot } from "@/features/capture/image";
 import { useCamera } from "@/features/capture/use-camera";
 import { useMoment } from "@/features/moments/queries";
 import { errorCopy, isNotFound, libraryLabel } from "./model";
-import { BackLink, SocialPage } from "./page-frame";
+import { Page } from "@/components/ui/page";
 import { useReactionActions, useReactions, useSelfies } from "./queries";
 
 const PRIVACY = "Only you can see your saved selfies. A selfie you send is visible to people who can see this moment.";
-
-function Title({ children, sub }: { children: React.ReactNode; sub?: string }) {
-  return (
-    <div className="flex flex-col gap-1">
-      <h1 className="font-display text-[32px] leading-none text-mootz-ink">{children}</h1>
-      {sub && <p className="text-sm font-bold text-mootz-muted">{sub}</p>}
-    </div>
-  );
-}
 
 function SelfieCapture({ onShot, onCancel }: { onShot: (shot: Shot) => void; onCancel: () => void }) {
   const { videoRef, status } = useCamera("user");
@@ -67,12 +59,13 @@ function SelfieCapture({ onShot, onCancel }: { onShot: (shot: Shot) => void; onC
       </div>
       <p className="text-sm text-mootz-muted" aria-live="polite">{failed ? "Couldn't take that selfie. Try again." : "Center your face, then take the selfie."}</p>
       <Button size="lg" block icon={Camera} disabled={status !== "ready" || busy} onClick={() => void snap()}>Take selfie</Button>
-      <Button variant="secondary" size="lg" block onClick={onCancel}>Cancel</Button>
+      <Button variant="secondary" size="lg" block icon={X} onClick={onCancel}>Cancel</Button>
     </>
   );
 }
 
 export function ReactView({ momentId, onClose }: { momentId: string; onClose?: () => void }) {
+  const router = useRouter();
   const moment = useMoment(momentId);
   const reactions = useReactions(momentId);
   const library = useSelfies();
@@ -129,13 +122,12 @@ export function ReactView({ momentId, onClose }: { momentId: string; onClose?: (
 
   if (moment.error && isNotFound(moment.error)) {
     return (
-      <SocialPage>
-        <BackLink href="/feed" label="Back" onBack={onClose} />
+      <Page title="Selfie reaction" backHref="/feed" onBack={onClose ?? (() => router.push("/feed"))}>
         <StateMessage icon={TriangleAlert} title="Moment not available">It may have been removed, or it isn&apos;t shared with you.</StateMessage>
-      </SocialPage>
+      </Page>
     );
   }
-  const back = <BackLink href={`/moments/${momentId}`} label="Back to moment" onBack={onClose} />;
+  const pageBack = { backHref: `/moments/${momentId}`, backLabel: "Back to moment", onBack: onClose ?? (() => router.push(`/moments/${momentId}`)) };
   const live = <p className="sr-only" aria-live="polite">{notice}</p>;
 
   // Capture and review
@@ -144,12 +136,10 @@ export function ReactView({ momentId, onClose }: { momentId: string; onClose?: (
       const failed = actions.upload.isError ? actions.upload.error : actions.send.isError ? actions.send.error : null;
       const busy = actions.upload.isPending || actions.send.isPending;
       return (
-        <SocialPage className="pb-10">
-          {back}
-          <Title sub="New saved selfie">Keep this face?</Title>
+        <Page {...pageBack} title="Keep this face?" subtitle="New saved selfie">
           <Photo src={shot.url} alt="Your new selfie" className="aspect-[3/4] w-full rounded-[22px]" />
-          <Button variant="secondary" size="lg" block disabled={busy} onClick={() => { URL.revokeObjectURL(shot.url); setShot(null); uploadedId.current = null; actions.upload.reset(); actions.send.reset(); }}>Retake</Button>
-          <Button size="lg" block disabled={busy} onClick={() => void saveAndReact()}>
+          <Button variant="secondary" size="lg" block icon={RefreshCw} disabled={busy} onClick={() => { URL.revokeObjectURL(shot.url); setShot(null); uploadedId.current = null; actions.upload.reset(); actions.send.reset(); }}>Retake</Button>
+          <Button size="lg" block icon={Check} disabled={busy} onClick={() => void saveAndReact()}>
             {actions.upload.isPending ? "Saving…" : actions.send.isPending ? "Sending…" : failed ? "Retry" : "Save & react"}
           </Button>
           {failed && (
@@ -159,44 +149,38 @@ export function ReactView({ momentId, onClose }: { momentId: string; onClose?: (
             </p>
           )}
           <p className="text-sm text-mootz-muted">Save to your private library, then send to this moment. If sending fails, the saved selfie is kept. One active reaction; this replaces the old one.</p>
-        </SocialPage>
+        </Page>
       );
     }
     return (
-      <SocialPage className="pb-10">
-        {back}
-        <Title sub={forName}>Take a selfie</Title>
+      <Page {...pageBack} title="Take a selfie" subtitle={forName}>
         <SelfieCapture onShot={setShot} onCancel={closeCapture} />
-      </SocialPage>
+      </Page>
     );
   }
 
   // Sent state (04.08)
   if (mine && !changing) {
     return (
-      <SocialPage className="pb-10">
-        {back}
-        <Title sub={forName}>Reaction sent</Title>
+      <Page {...pageBack} title="Reaction sent" subtitle={forName}>
         {live}
         <figure className="flex flex-col items-center gap-3 py-4">
           <Photo src={mine.thumbnailUrl} alt="Your reaction selfie" className="h-60 w-48 rounded-[28px]" />
           <figcaption className="text-sm font-bold text-mootz-muted">Your reaction · Visible with this moment</figcaption>
         </figure>
-        <Button size="lg" block onClick={() => { setChanging(true); setNotice(""); actions.send.reset(); }}>Change reaction</Button>
-        <Button variant="secondary" size="lg" block disabled={actions.remove.isPending} onClick={() => actions.remove.mutate(undefined, { onSuccess: () => setNotice("Reaction removed. Your saved selfie is still in your library.") })}>
+        <Button size="lg" block icon={RefreshCw} onClick={() => { setChanging(true); setNotice(""); actions.send.reset(); }}>Change reaction</Button>
+        <Button variant="secondary" size="lg" block icon={Trash2} disabled={actions.remove.isPending} onClick={() => actions.remove.mutate(undefined, { onSuccess: () => setNotice("Reaction removed. Your saved selfie is still in your library.") })}>
           {actions.remove.isPending ? "Removing…" : "Remove reaction"}
         </Button>
         {actions.remove.isError && <p role="alert" className="text-sm font-bold text-mootz-ink">{errorCopy(actions.remove.error, "Removing")}</p>}
         <p className="text-sm text-mootz-muted">Remove reaction retracts it from this moment. Your private saved selfie remains reusable.</p>
-      </SocialPage>
+      </Page>
     );
   }
 
   // Library / tray
   return (
-    <SocialPage className="pb-10">
-      {back}
-      <Title sub={forName}>{items.length === 0 && !library.isPending ? "Your selfie collection" : changing ? "Change your reaction" : "A face says it better."}</Title>
+    <Page {...pageBack} title={items.length === 0 && !library.isPending ? "Your selfie collection" : changing ? "Change your reaction" : "A face says it better."} subtitle={forName}>
       {live}
       {notice && !mine && <p aria-hidden className="text-sm font-bold text-mootz-deep">{notice}</p>}
       <p className="text-sm text-mootz-muted">{PRIVACY}</p>
@@ -211,7 +195,7 @@ export function ReactView({ momentId, onClose }: { momentId: string; onClose?: (
         <>
           <StateMessage icon={ScanFace} title="No saved selfies yet." className="items-center rounded-[28px] bg-mootz-lilac px-4 py-14 text-center" />
           <p className="text-sm text-mootz-muted">Take one selfie now. Save it privately and reuse it on future moments.</p>
-          <Button size="lg" block onClick={() => setCapturing(true)}>Take a selfie</Button>
+          <Button size="lg" block icon={Camera} onClick={() => setCapturing(true)}>Take a selfie</Button>
         </>
       ) : (
         <>
@@ -225,11 +209,11 @@ export function ReactView({ momentId, onClose }: { momentId: string; onClose?: (
               {library.isFetchingNextPage ? "Loading…" : "Load more selfies"}
             </Button>
           )}
-          <Button variant="secondary" size="lg" block onClick={() => setCapturing(true)}>Take a selfie</Button>
-          <Button size="lg" block disabled={!selectedId || actions.send.isPending} onClick={sendSelected}>
+          <Button variant="secondary" size="lg" block icon={Camera} onClick={() => setCapturing(true)}>Take a selfie</Button>
+          <Button size="lg" block icon={Send} disabled={!selectedId || actions.send.isPending} onClick={sendSelected}>
             {actions.send.isPending ? "Sending…" : actions.send.isError ? "Retry reaction" : "Send reaction"}
           </Button>
-          {changing && <Button variant="secondary" size="lg" block onClick={() => { setChanging(false); actions.send.reset(); }}>Keep current reaction</Button>}
+          {changing && <Button variant="secondary" size="lg" block icon={Check} onClick={() => { setChanging(false); actions.send.reset(); }}>Keep current reaction</Button>}
           {actions.send.isError && (
             <p role="alert" className="text-sm font-bold text-mootz-ink">
               Your reaction couldn&apos;t send. {errorCopy(actions.send.error, "Sending")} {mine ? "Your previous reaction is unchanged." : "Your selection is kept."}
@@ -243,21 +227,21 @@ export function ReactView({ momentId, onClose }: { momentId: string; onClose?: (
                 Remove {selectedIndex >= 0 ? libraryLabel(selectedIndex) : "this selfie"} from your private collection only. Sent reactions are unaffected.
               </p>
               <div className="flex gap-2">
-                <Button disabled={actions.deleteSelfie.isPending} onClick={() => selectedId && actions.deleteSelfie.mutate(selectedId, { onSuccess: () => { setConfirmRemove(false); setPicked(null); setNotice("Saved selfie removed from your library."); } })}>
+                <Button icon={Trash2} disabled={actions.deleteSelfie.isPending} onClick={() => selectedId && actions.deleteSelfie.mutate(selectedId, { onSuccess: () => { setConfirmRemove(false); setPicked(null); setNotice("Saved selfie removed from your library."); } })}>
                   {actions.deleteSelfie.isPending ? "Removing…" : "Remove saved selfie"}
                 </Button>
-                <Button variant="secondary" onClick={() => setConfirmRemove(false)}>Cancel</Button>
+                <Button icon={X} variant="secondary" onClick={() => setConfirmRemove(false)}>Cancel</Button>
               </div>
               {actions.deleteSelfie.isError && <p role="alert" className="text-sm font-bold text-mootz-ink">{errorCopy(actions.deleteSelfie.error, "Removing")}</p>}
             </div>
           ) : (
             <>
-              <Button variant="secondary" size="lg" block disabled={!selectedId} onClick={() => setConfirmRemove(true)}>Remove saved selfie</Button>
+              <Button variant="secondary" size="lg" block icon={Trash2} disabled={!selectedId} onClick={() => setConfirmRemove(true)}>Remove saved selfie</Button>
               <p className="text-sm text-mootz-muted">Removing a saved selfie affects your private library only. It does not retract a sent reaction.</p>
             </>
           )}
         </>
       )}
-    </SocialPage>
+    </Page>
   );
 }

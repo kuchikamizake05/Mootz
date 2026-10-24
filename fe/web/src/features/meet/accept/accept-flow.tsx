@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import { Ban, Clock, LoaderCircle, ScanLine, ShieldAlert, TriangleAlert } from "lucide-react";
+import { Ban, Check, Clock, Info, LoaderCircle, ScanLine, ShieldAlert, TriangleAlert, X } from "lucide-react";
 import { recoverTypedDataAddress } from "viem";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { PairedPhoto } from "@/components/ui/moment";
@@ -12,7 +12,8 @@ import { useApi, useApiBytes } from "@/lib/api/use-api";
 import { OFFCHAIN_MEET, RECORD_MEET } from "@/lib/chain/generated/protocol";
 import { env } from "@/lib/env";
 import type { LocationSample, MeetPreview, MeetResult } from "../api";
-import { demoCaption, demoPhotos } from "../demo";
+import { friendRef, handleLabel } from "@/features/profile/username";
+import { demoCaption, demoPartnerUsername, demoPhotos } from "../demo";
 import { getLocationSample } from "../location";
 import {
   acceptTypedData,
@@ -367,11 +368,12 @@ function Preview({
 }) {
   const router = useRouter();
   const caption = preview?.moment.caption ?? demoCaption;
+  const poster = demo ? demoPartnerUsername : preview?.moment.authorUsername;
   return (
     <MeetFrame title="Meet preview" onBack={() => router.push("/meet/scan")}>
       {demo && <DemoBadge />}
-      <p className="text-sm font-extrabold">Your friend</p>
-      <PairedPhoto backSrc={back} frontSrc={front} authorName="your friend" className="h-[200px] w-full lg:h-[360px]" />
+      <p className="text-sm font-extrabold">{handleLabel(poster, "Your friend")}</p>
+      <PairedPhoto backSrc={back} frontSrc={front} authorName={friendRef(poster)} className="h-[200px] w-full lg:h-[360px]" />
       {caption && <p className="text-base">{caption}</p>}
       <h2 className="font-display text-[32px] leading-[1.05]">Confirm you&apos;re in this photo with your friend</h2>
       <p className="font-bold text-mootz-deep">Only this moment is shared with you.</p>
@@ -380,17 +382,17 @@ function Preview({
         {left !== undefined && left > 0 && left <= 20 ? ` This QR expires in ${left} s.` : ""}
       </p>
       <div className="flex flex-col gap-2">
-        <Button size="lg" block onClick={onApprove}>
+        <Button icon={Check} size="lg" block onClick={onApprove}>
           Approve
         </Button>
-        <Button variant="secondary" size="lg" block onClick={onDecline}>
+        <Button icon={X} variant="secondary" size="lg" block onClick={onDecline}>
           Decline
         </Button>
-        <ButtonLink variant="secondary" size="lg" block href="/meet/whats-recorded">
+        <ButtonLink icon={Info} variant="secondary" size="lg" block href="/meet/whats-recorded">
           What&apos;s recorded?
         </ButtonLink>
       </div>
-      <p className="text-xs font-bold text-mootz-muted">
+      <p className="text-[13px] font-bold text-mootz-muted">
         No friendship is created. No daily post or streak credit for scanning. A signature and a distance check don&apos;t prove you were there or that the photo is real.
       </p>
     </MeetFrame>

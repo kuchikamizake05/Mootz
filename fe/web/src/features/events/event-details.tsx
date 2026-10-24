@@ -1,6 +1,7 @@
 "use client";
 
-import { CalendarDays, CircleCheck, MapPin } from "lucide-react";
+import { Award, CalendarDays, CircleCheck, Images, MapPin, ScanLine } from "lucide-react";
+import { InfoRow, StatusChip } from "@/components/ui/page";
 import { Avatar } from "@/components/ui/avatar";
 import { ButtonLink } from "@/components/ui/button";
 import { AppShell } from "@/features/shell/app-shell";
@@ -40,36 +41,25 @@ export function EventDetails({ id }: { id: string }) {
     <AppShell>
       <div className="absolute inset-0 lg:right-[416px]"><MapView /></div>
       <section aria-label="Event details" className="absolute inset-x-0 bottom-0 z-40 flex max-h-[calc(100dvh-190px)] flex-col gap-2 overflow-y-auto rounded-t-[32px] bg-white px-4 pb-5 pt-3 shadow-float lg:inset-x-auto lg:bottom-4 lg:right-4 lg:top-[104px] lg:w-[384px] lg:max-h-none lg:rounded-[32px]">
-      <header className="flex min-h-11 items-center gap-2"><BackLink href="/map"> </BackLink><p className="text-xs font-extrabold uppercase tracking-wide text-mootz-muted">Event</p></header>
+      <header className="flex min-h-11 items-center gap-2"><BackLink href="/map"> </BackLink><p className="text-[13px] font-extrabold uppercase tracking-wide text-mootz-muted">Event</p></header>
       <h1 className="font-display text-[32px] font-extrabold leading-none text-mootz-ink">{e.title}</h1>
-      <div className="flex flex-col gap-1.5 text-sm font-semibold text-mootz-muted">
-        <p className="flex items-start gap-2">
-          <CalendarDays aria-hidden size={18} className="mt-0.5 shrink-0" />
-          <span>
-            {formatWindow(e.startsAt, e.endsAt)}
-            {phase === "live" && <b className="ml-2 text-mootz-deep">Happening now</b>}
-            {phase === "ended" && <b className="ml-2 text-mootz-deep">Ended</b>}
-          </span>
-        </p>
-        {e.locationLabel && (
-          <p className="flex items-start gap-2">
-            <MapPin aria-hidden size={18} className="mt-0.5 shrink-0" />
-            <span>{e.locationLabel} · Venue label only</span>
-          </p>
-        )}
+      <div className="flex flex-col gap-3 py-2 font-semibold text-mootz-muted">
+        <InfoRow icon={CalendarDays} label="When">{formatWindow(e.startsAt, e.endsAt)}</InfoRow>
+        {phase !== "upcoming" && <StatusChip tone={phase === "live" ? "success" : "muted"}>{phase === "live" ? "Happening now" : "Ended"}</StatusChip>}
+        {e.locationLabel && <InfoRow icon={MapPin} label="Where">{e.locationLabel} · Venue label only</InfoRow>}
       </div>
       {e.description && <p className="whitespace-pre-line text-[15px] text-mootz-ink">{e.description}</p>}
 
       <div className="flex flex-col gap-1 py-1">
         <p className="text-sm font-bold text-mootz-deep">Event information is readable independently</p>
-        <p className="text-xs font-semibold text-mootz-muted">Photo audience unchanged. Claim approval separate.</p>
+        <p className="text-[13px] font-semibold text-mootz-muted">Photo audience unchanged. Claim approval separate.</p>
       </div>
 
       <div className="flex flex-col gap-2">
-        <ButtonLink href="/feed?filter=events" variant="secondary" block>
+        <ButtonLink icon={Images} href="/feed?filter=events" variant="secondary" block>
           View moments
         </ButtonLink>
-        <ButtonLink href={`/events/${id}/check-in`} variant="secondary" block>
+        <ButtonLink icon={ScanLine} href={`/events/${id}/check-in`} variant="secondary" block>
           {checkIn.data?.checkedIn ? "Check-in details" : "Check in"}
         </ButtonLink>
       </div>
@@ -80,18 +70,18 @@ export function EventDetails({ id }: { id: string }) {
             <Avatar name={col?.collection.displayName ?? "Event frame"} src={col?.collection.artworkUrl ?? viewer.avatarSrc} frame="event" size={56} />
             <div className="min-w-0">
               <p className="font-display text-xl leading-tight text-mootz-ink">{col?.collection.displayName ?? `${e.title} frame`}</p>
-              <p className="text-xs font-semibold text-mootz-muted">
+              <p className="text-[13px] font-semibold text-mootz-muted">
                 {owned(col) ? "You own this · " : ""}Organizer-authorized · Free to claim
               </p>
             </div>
           </div>
-          <ButtonLink href={`/events/${id}/collection`} block>
+          <ButtonLink icon={Award} href={`/events/${id}/collection`} block>
             View collectible
           </ButtonLink>
         </div>
       )}
-      <p role="status" className="flex items-center gap-2 text-xs text-mootz-muted">{checkIn.data?.checkedIn && <CircleCheck aria-hidden size={16} />}{checkInLabel}</p>
-      <p className="text-xs font-semibold text-mootz-muted">
+      <p role="status" className="flex items-center gap-2 text-[13px] text-mootz-muted">{checkIn.data?.checkedIn && <CircleCheck aria-hidden size={16} />}{checkInLabel}</p>
+      <p className="text-[13px] font-semibold text-mootz-muted">
         Viewing an event does not prove attendance or grant a claim. The collectible is issued by the organizer.
       </p>
       </section>

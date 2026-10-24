@@ -48,6 +48,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/me/username": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** @description Server trims and lowercases, then validates ^[a-z0-9_]{3,20}$ and rejects reserved names (admin, mootz, support, root, system, me, api, help). Repeating the current username is idempotent; changing to another free username is allowed. */
+        put: operations["setOwnUsername"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/me/wallet-challenges": {
         parameters: {
             query?: never;
@@ -95,6 +112,8 @@ export interface components {
             onboardingCompletedAt: string | null;
             /** @description Verified address in server-configured chain namespace; null before binding */
             wallet: string | null;
+            /** @description Unique lowercase @handle; null until chosen */
+            username: string | null;
         };
     };
     responses: {
@@ -207,6 +226,48 @@ export interface operations {
                 content?: never;
             };
             401: components["responses"]["Unauthorized"];
+            503: components["responses"]["Unavailable"];
+        };
+    };
+    setOwnUsername: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    username: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Updated own profile */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Profile"];
+                };
+            };
+            /** @description INVALID_USERNAME (format or reserved) or invalid body (INVALID_REQUEST) */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            /** @description USERNAME_TAKEN */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
             503: components["responses"]["Unavailable"];
         };
     };

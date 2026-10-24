@@ -19,7 +19,7 @@ The account must first sign in and load its profile. Its UUID is shown on the
 organizer access screen and attendee check-in page. Grants use the operator's
 database access; no role assignment or contract admin endpoint is exposed.
 Both commands are idempotent. Existing event owners are **not automatically
-approved** by migration `019_event_organizers.sql`; grant them access so they can
+approved** by migration `020_event_organizers.sql`; grant them access so they can
 continue recording attendance. Revocation blocks creation, management and even
 check-in retries. It does not delete events, attendance or collectibles.
 

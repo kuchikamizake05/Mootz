@@ -9,6 +9,7 @@ import { ViewSwitch } from "@/components/ui/view-switch";
 import { FilterSheet } from "@/features/events/filter-sheet";
 import { avatarFrame } from "@/features/frames/model";
 import { useActiveFrame } from "@/features/frames/queries";
+import { UsernamePrompt } from "@/features/profile/username-prompt";
 import { useViewerIdentity } from "@/features/profile/viewer";
 import { env } from "@/lib/env";
 import { useViewState } from "./view-state";
@@ -23,7 +24,9 @@ import { cn } from "@/lib/cn";
 export function AppShell({ children }: { children: ReactNode }) {
   const router = useRouter();
   const { pathname, filter, href } = useViewState();
-  const panel = useSearchParams().get("panel");
+  const params = useSearchParams();
+  const panel = params.get("panel");
+  const search = params.toString();
   const overlayOpen = pathname.startsWith("/feed") && (panel === "react" || panel === "comments");
   const active = pathname.startsWith("/feed") ? "feed" : "map";
   const [filterOpen, setFilterOpen] = useState(false);
@@ -47,9 +50,11 @@ export function AppShell({ children }: { children: ReactNode }) {
         />
         </div>
         <Link href="/profile" onClick={rememberBrowseOrigin} aria-label="Your profile" className="pointer-events-auto rounded-full">
-          <Avatar name={viewer.name} src={viewer.avatarSrc} frame={avatarFrame(frame.data ?? undefined)} size={44} />
+          <Avatar name={viewer.avatarName} src={viewer.avatarSrc} frame={avatarFrame(frame.data ?? undefined)} size={44} />
         </Link>
       </header>
+
+      {!overlayOpen && <UsernamePrompt next={search ? `${pathname}?${search}` : pathname} />}
 
       {env.demoFixtures && (
         <p className="sr-only lg:not-sr-only lg:absolute lg:right-[92px] lg:top-8 lg:z-30 lg:text-xs lg:text-mootz-muted">

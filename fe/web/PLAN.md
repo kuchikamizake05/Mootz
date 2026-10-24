@@ -167,3 +167,19 @@ Fase 0–1 dikerjakan berurutan oleh satu agent karena semua layar bergantung pa
 - Wallet yang didukung hanya undelegated EOA; smart/passkey wallet belum kompatibel.
 - iOS Safari: pergantian kamera depan/belakang dan `BarcodeDetector` perlu fallback; buktikan di perangkat nyata.
 - Klaim privasi dan status (bukan bukti kehadiran, foto atau manusia unik) harus tetap akurat di copy UI.
+
+
+## 10. Layout polish follow-up (2026-10-24)
+
+Shared page headers, cards, info rows, status chips and action icons now cover the non-map screens. Signing, API contracts and location checks are unchanged. Screenshot evidence stays local in `.design-export/e2e/`; original references are preserved in `.design-export/layout-before/`.
+
+Open deployment items, outside this layout task (reported, not resolved):
+
+- Set Production `NEXT_PUBLIC_API_BASE_URL=https://api.mootz.fun` and redeploy without cache; the reported www.mootz.fun bundle still used localhost:3001.
+- Run VPS migrations 017–019 manually following `be/deploy/vps/README.md`.
+- Backend owner: add retry/backoff around startup `createRegistryAccess` when Monad RPC is unstable.
+- Dependency audit: 31 findings (18 high, 13 moderate) in the existing production dependency tree; suggested forced fixes include a breaking Privy change. Dependency remediation needs a separate change.
+
+Verification for this layout change: `npm run lint`, `npm run typecheck`, `npm test` (39 tests), `npm run check:generated`, `npm run build`, and `npm run e2e` (132 tests across 390/360/768/1440 px, including axe and overflow) passed. The first E2E run had one Settings navigation timeout; the complete rerun passed without changing the test assertions. E2E uses demo fixtures; real camera, wallet signing, backend permissions and two-device Meet are not verified by this run.
+
+After rebasing onto `f6b5ed8`, profile ordering/privacy sections and centered empty states from the team were retained. Lint, typecheck, 39 unit tests, generated checks and the production-build E2E suite passed again (124 tests; the separately edited local landing suite contained one test per viewport in this run).

@@ -18,6 +18,8 @@ export type OfferSession = {
 export type MeetPreview = {
   moment: {
     id: string;
+    /** Poster @handle; null when they haven't picked one. */
+    authorUsername?: string | null;
     caption: string;
     images: Array<{ side: "front" | "back"; path: string; method: "POST"; sha256: string }>;
   };

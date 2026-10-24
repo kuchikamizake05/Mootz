@@ -1,12 +1,12 @@
 "use client";
 
-import { Check, LoaderCircle, TriangleAlert } from "lucide-react";
+import { Check, LoaderCircle, TriangleAlert, LockKeyhole, X, RotateCcw } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { StateMessage } from "@/components/ui/status";
 import { ApiError } from "@/lib/api/client";
 import { cn } from "@/lib/cn";
-import { PageShell } from "@/features/profile/page-shell";
+import { Page as PageShell, Card, StatusChip } from "@/components/ui/page";
 import { useViewerIdentity } from "@/features/profile/viewer";
 import { avatarFrame, frameName, requirementLabel, type FrameId, type FrameItem } from "./model";
 import { useActiveFrame, useFrames, useSetFrame } from "./queries";
@@ -45,7 +45,7 @@ export function FramesView() {
     body = <StateMessage icon={LoaderCircle} busy title="Loading frames…" />;
   } else if (frames.error || !frames.data) {
     body = (
-      <StateMessage icon={TriangleAlert} title="Couldn't load frames" actions={<Button onClick={() => void frames.refetch()}>Retry</Button>}>
+      <StateMessage icon={TriangleAlert} title="Couldn't load frames" actions={<Button icon={RotateCcw} onClick={() => void frames.refetch()}>Retry</Button>}>
         Check your connection and try again. Your frames are not affected.
       </StateMessage>
     );
@@ -58,23 +58,21 @@ export function FramesView() {
           return (
             <li key={item.id} className={cn("rounded-[22px] border border-mootz-hairline p-4", item.id === "first_meet" ? "bg-mootz-canvas" : "bg-white")}>
               <div className="flex items-center gap-3">
-                <Avatar name={viewer.name} src={viewer.avatarSrc} size={56} frame={item.unlocked ? "achievement" : "lilac"} className={cn(!item.unlocked && "opacity-60")} />
+                <Avatar name={viewer.avatarName} src={viewer.avatarSrc} size={56} frame={item.unlocked ? "achievement" : "lilac"} className={cn(!item.unlocked && "opacity-60")} />
                 <div className="min-w-0 flex-1">
                   <h2 className="font-display text-2xl leading-tight text-mootz-ink">{item.name}</h2>
                   <p className="text-sm font-semibold text-mootz-muted">{requirementLabel(item)}</p>
                 </div>
                 {item.unlocked ? (
                   wearing ? (
-                    <span className="inline-flex min-h-11 items-center gap-1 rounded-2xl bg-mootz-lilac px-4 text-sm font-extrabold text-mootz-deep">
-                      <Check aria-hidden size={16} /> Wearing
-                    </span>
+                    <StatusChip tone="success" icon={Check}>Wearing</StatusChip>
                   ) : (
-                    <Button aria-label={`Wear ${item.name}`} disabled={setFrame.isPending} onClick={() => setFrame.mutate(item.id)}>
+                    <Button icon={Check} aria-label={`Wear ${item.name}`} disabled={setFrame.isPending} onClick={() => setFrame.mutate(item.id)}>
                       {pending ? "Wearing…" : "Wear"}
                     </Button>
                   )
                 ) : (
-                  <span className="text-sm font-extrabold text-mootz-muted">Locked</span>
+                  <StatusChip tone="muted" icon={LockKeyhole}>Locked</StatusChip>
                 )}
               </div>
               {!item.unlocked && <Progress item={item} />}
@@ -94,7 +92,7 @@ export function FramesView() {
 
   return (
     <PageShell title="Your frames">
-      <p className="text-sm font-semibold text-mootz-muted">
+      <p className="text-[15px] font-semibold text-mootz-muted">
         Frames unlock automatically from your Meets. They are free, cosmetic and stay offchain. Nothing here can be bought.
       </p>
       <div aria-live="polite" className="sr-only">
@@ -106,21 +104,21 @@ export function FramesView() {
         </p>
       )}
       {active.data && (
-        <div className="flex items-center gap-3 rounded-[28px] bg-mootz-surface p-4 shadow-float">
-          <Avatar name={viewer.name} src={viewer.avatarSrc} size={56} frame={avatarFrame(active.data)} />
+        <Card className="flex flex-wrap items-center gap-3">
+          <Avatar name={viewer.avatarName} src={viewer.avatarSrc} size={56} frame={avatarFrame(active.data)} />
           <p className="flex-1 text-sm font-semibold text-mootz-muted">
             Wearing <span className="font-extrabold text-mootz-ink">{frameName(active.data)}</span>
           </p>
-          <Button variant="secondary" disabled={setFrame.isPending} onClick={() => setFrame.mutate(null)}>
+          <Button icon={X} variant="secondary" disabled={setFrame.isPending} onClick={() => setFrame.mutate(null)}>
             Remove frame
           </Button>
-        </div>
+        </Card>
       )}
       {active.error && <p role="alert" className="text-sm text-mootz-muted">Couldn&apos;t check your current frame right now. Showing what we know.</p>}
       {body}
       {eventFrame && (
         <div className="flex items-center gap-3 rounded-[24px] bg-mootz-lilac p-4 text-sm font-bold text-mootz-deep">
-          <Avatar name={viewer.name} src={viewer.avatarSrc} size={52} frame="event" />
+          <Avatar name={viewer.avatarName} src={viewer.avatarSrc} size={52} frame="event" />
           <span>
             {eventFrame.displayName}
             <br />

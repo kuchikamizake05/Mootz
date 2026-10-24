@@ -16,6 +16,10 @@
       "200": { "description": "Own profile with idempotent completion timestamp", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Profile" } } } },
       "400": { "description": "Invalid body" }, "401": { "$ref": "#/components/responses/Unauthorized" }, "503": { "$ref": "#/components/responses/Unavailable" }
     } } },
+    "/v1/me/username": { "put": { "operationId": "setOwnUsername", "description": "Server trims and lowercases, then validates ^[a-z0-9_]{3,20}$ and rejects reserved names (admin, mootz, support, root, system, me, api, help). Repeating the current username is idempotent; changing to another free username is allowed.", "requestBody": { "required": true, "content": { "application/json": { "schema": { "type": "object", "additionalProperties": false, "required": ["username"], "properties": { "username": { "type": "string" } } } } } }, "responses": {
+      "200": { "description": "Updated own profile", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Profile" } } } },
+      "400": { "description": "INVALID_USERNAME (format or reserved) or invalid body (INVALID_REQUEST)" }, "401": { "$ref": "#/components/responses/Unauthorized" }, "409": { "description": "USERNAME_TAKEN" }, "503": { "$ref": "#/components/responses/Unavailable" }
+    } } },
     "/v1/me/wallet-challenges": { "post": { "operationId": "issueWalletChallenge", "requestBody": { "required": true, "content": { "application/json": { "schema": { "type": "object", "additionalProperties": false, "required": ["wallet"], "properties": { "wallet": { "$ref": "#/components/schemas/Address" } } } } } }, "responses": {
       "200": { "description": "Account/domain-scoped EOA proof; expires after five minutes", "content": { "application/json": { "schema": { "type": "object", "required": ["challengeId", "wallet", "message", "expiresAt"], "properties": { "challengeId": { "type": "string", "format": "uuid" }, "wallet": { "$ref": "#/components/schemas/Address" }, "message": { "type": "string" }, "expiresAt": { "type": "string", "format": "date-time" } } } } } },
       "400": { "description": "Invalid body or address" }, "401": { "$ref": "#/components/responses/Unauthorized" }, "429": { "description": "Five challenges per minute or five outstanding reached" }, "503": { "$ref": "#/components/responses/Unavailable" }
@@ -33,11 +37,12 @@
     },
     "schemas": {
       "Address": { "type": "string", "pattern": "^0x[0-9a-fA-F]{40}$" },
-      "Profile": { "type": "object", "additionalProperties": false, "required": ["id", "recordMeet", "onboardingCompletedAt", "wallet"], "properties": {
+      "Profile": { "type": "object", "additionalProperties": false, "required": ["id", "recordMeet", "onboardingCompletedAt", "wallet", "username"], "properties": {
         "id": { "type": "string", "format": "uuid" }, "recordMeet": { "type": "boolean" },
         "avatarUrl": { "type": ["string", "null"], "description": "Short-lived private avatar URL, refreshed through authenticated own profile reads" },
         "onboardingCompletedAt": { "type": ["string", "null"], "format": "date-time" },
-        "wallet": { "type": ["string", "null"], "description": "Verified address in server-configured chain namespace; null before binding" }
+        "wallet": { "type": ["string", "null"], "description": "Verified address in server-configured chain namespace; null before binding" },
+        "username": { "type": ["string", "null"], "pattern": "^[a-z0-9_]{3,20}$", "description": "Unique lowercase @handle; null until chosen" }
       } }
     }
   }

@@ -293,6 +293,8 @@ export interface components {
             momentId: string;
             /** @description Poster account then scanner account */
             participants: string[];
+            /** @description @handles in the same order as participants; null when not set */
+            participantUsernames: (string | null)[];
             /** Format: date-time */
             createdAt: string;
             /** @enum {string} */

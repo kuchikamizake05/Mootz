@@ -241,6 +241,8 @@ export interface components {
             momentId: string;
             /** Format: uuid */
             authorId: string;
+            /** @description Author @handle; null until chosen */
+            authorUsername: string | null;
             /** Format: uuid */
             parentId: string | null;
             /** Format: uuid */

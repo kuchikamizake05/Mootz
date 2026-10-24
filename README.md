@@ -1,33 +1,23 @@
-<p align="center"><img src="assets/brand/mootz/mootz-logo-v1.svg" alt="Mootz" width="360"></p>
-<h1 align="center">Share your day. Meet in person.</h1>
-<p align="center">A social Map + Feed with shared memories on Monad.</p>
+<p align="center">
+  <img src="assets/brand/mootz/mootz-logo-v1.svg" width="360" alt="Mootz logo">
+</p>
+
+<p align="center"><strong>Share your day. Meet in person.</strong><br>A social Map + Feed with shared memories on Monad.</p>
 <p align="center"><a href="https://mootz-red.vercel.app">Website</a> · <a href="https://mootz-red.vercel.app/app">Open app</a> · <a href="docs/hackathon.md">Judge guide</a> · <a href="sc/abi/deployment.monad-testnet.json">Deployment evidence</a></p>
 
-## Tech stack
-
-![Monad](https://img.shields.io/badge/Monad-Testnet-836EF9?style=for-the-badge)
-![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)
-![React](https://img.shields.io/badge/React-19-149ECA?style=for-the-badge&logo=react&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-![Solidity](https://img.shields.io/badge/Solidity-0.8.30-363636?style=for-the-badge&logo=solidity&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-PostGIS-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
-
-| Layer | Technologies | Role in Mootz |
-| --- | --- | --- |
-| Web interface | Next.js 16.4, React 19.3, TypeScript 5.9, Tailwind CSS 4.3, Lucide | Responsive Map/Feed, paired-photo capture, Meet, profiles and Event screens |
-| Client data | TanStack Query 5, generated OpenAPI types | API state, caching and typed client interfaces |
-| Identity and wallets | Privy, viem 2 | Login, wallet connection, signing and contract reads |
-| Maps and location | MapLibre GL 6, OpenFreeMap, MapTiler Satellite | Default street map, optional satellite view and authorized location overlays |
-| QR exchange | qrcode, jsQR | Display and scan the short-lived signed Meet Offer |
-| Backend | Node.js 24, Fastify 5, TypeScript, jose | Authenticated API, audience checks, Meet validation and Event eligibility |
-| Database | PostgreSQL + PostGIS, node-postgres | Private application state, distance checks and migrations |
-| Media | Supabase private storage, Sharp | Audience-controlled paired photos and server-side image processing |
-| Onchain | Monad testnet, Solidity 0.8.30, OpenZeppelin, Foundry | MeetRegistry, nontransferable EventCollection, signature and replay checks |
-| Relay and finality | viem, backend relay/indexer/reconciliation workers | Submit authorized transactions and track inclusion, finality and failure |
-| Delivery | Vercel web hosting; Linux VPS, Docker Compose and Caddy backend setup | Web delivery, HTTPS API and private database deployment |
-| Verification | Vitest, Playwright, axe-core, ESLint, TypeScript, Foundry | Unit, database integration, browser, accessibility and contract checks |
-
-Versions above follow the module manifests and contract configuration. Exact dependency pins remain in the module-local lockfiles. The separate mobile client is planned; no mobile framework has been selected.
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-000000?style=flat-square" alt="Next.js">
+  <img src="https://img.shields.io/badge/React-149ECA?style=flat-square" alt="React">
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat-square" alt="TypeScript">
+  <img src="https://img.shields.io/badge/Tailwind_CSS-0891B2?style=flat-square" alt="Tailwind CSS">
+  <img src="https://img.shields.io/badge/Node.js-339933?style=flat-square" alt="Node.js">
+  <img src="https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square" alt="PostgreSQL">
+  <img src="https://img.shields.io/badge/Supabase-167D5A?style=flat-square" alt="Supabase">
+  <img src="https://img.shields.io/badge/Solidity-363636?style=flat-square" alt="Solidity">
+  <img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square" alt="Docker">
+  <img src="https://img.shields.io/badge/Vercel-000000?style=flat-square" alt="Vercel">
+  <a href="sc/abi/deployment.monad-testnet.json"><img src="https://img.shields.io/badge/Monad-Testnet-6D28D9?style=flat-square" alt="Monad Testnet"></a>
+</p>
 
 Mootz brings everyday moments and real-world meetups into one place. Post a front-and-back photo, discover what friends share on Map or Feed, and scan a short-lived QR to create a shared **Dot**. When both people opt in, a signed Meet record can be stored on Monad. Event organizers can also issue nontransferable collectibles to eligible attendees.
 

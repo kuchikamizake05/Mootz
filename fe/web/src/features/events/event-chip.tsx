@@ -1,5 +1,6 @@
 "use client";
 
+import { CalendarDays } from "lucide-react";
 import { buttonClass } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 import Link from "next/link";
@@ -13,7 +14,7 @@ export function EventChip({ eventId, className }: { eventId: string; className?:
   const name = event.data?.title;
   return (
     <Link href={`/events/${eventId}`} className={cn(buttonClass({ variant: "secondary", block: true }), className)}>
-      {name ? `${name} · Event details` : "Event details"}
+      <CalendarDays aria-hidden size={18} />{name ? `${name} · Event details` : "Event details"}
     </Link>
   );
 }

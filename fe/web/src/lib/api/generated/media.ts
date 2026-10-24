@@ -144,6 +144,8 @@ export interface components {
             id: string;
             /** Format: uuid */
             authorId: string;
+            /** @description Author @handle; null until chosen */
+            authorUsername: string | null;
             /** @enum {unknown} */
             source: "capture" | "upload";
             caption: string;

@@ -63,7 +63,22 @@ verified testnet contract addresses from `fe/web/.env.example`.
 
 The deployment was uploaded directly without pushing Git. The CLI upload used
 an isolated source staging folder to exclude local archives, private references,
-backend files, and environment files. Git automatic deployment is not connected.
+backend files, and environment files. That initial deployment used a manual upload.
+
+## Git-based deployment
+
+The existing Vercel project is connected to `kuchikamizake05/Mootz` on GitHub.
+Its production branch is `main`, its Root Directory is `fe/web`, and source files
+outside that root are enabled so the build can copy `landing/`.
+
+Push changes to `main` to request a production build. Confirm the deployment's
+status is **Ready** before treating it as live; a successful Git push alone does
+not prove a successful build. The production domains include `mootz.fun`,
+`www.mootz.fun`, and `mootz-red.vercel.app`.
+
+Only committed repository content participates in Git deployments. Keep local
+environment files, private photos and archives out of Git. Runtime configuration
+continues to come from the existing Vercel project settings.
 
 The backend health endpoint returned HTTP 200. Its CORS preflight from
 `https://mootz-red.vercel.app` returned HTTP 403, so that origin must be allowed

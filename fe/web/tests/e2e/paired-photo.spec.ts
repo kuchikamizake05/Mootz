@@ -27,13 +27,13 @@ test("Feed photo switches both ways with tap and keyboard", async ({ page }) => 
 
 test("Map preview swaps photos without leaving Map", async ({ page }) => {
   await page.goto("/map");
-  await page.getByRole("button", { name: "Moment by Demo friend A" }).click();
-  const sheet = page.getByRole("region", { name: "Moment by Demo friend A" });
+  await page.getByRole("button", { name: "Moment by @demo_a" }).click();
+  const sheet = page.getByRole("region", { name: "Moment by @demo_a" });
   const swap = sheet.getByRole("button", { name: /Swap front and back photos/ });
   await swap.click();
   await expect(swap).toHaveAttribute("aria-pressed", "true");
   await expect(page).toHaveURL(/\/map\?/);
   await expect(sheet.locator("button button")).toHaveCount(0);
-  await sheet.getByRole("button", { name: "Open Demo friend A's moment in Feed" }).click();
+  await sheet.getByRole("button", { name: "Open @demo_a's moment in Feed" }).click();
   await expect(page).toHaveURL(/\/feed\?/);
 });
