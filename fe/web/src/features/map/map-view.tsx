@@ -156,7 +156,7 @@ export function MapView() {
   return (
     <div className="absolute inset-0 overflow-hidden bg-mootz-canvas">
       {/* size-full, not absolute: maplibre-gl.css forces position: relative on this node. */}
-      <div ref={containerRef} className="size-full [&_.maplibregl-ctrl-top-left]:mt-[84px] [&_.maplibregl-ctrl-top-left_.maplibregl-ctrl]:ml-2" />
+      <div ref={containerRef} className="size-full [&_.maplibregl-ctrl-top-left]:z-30 [&_.maplibregl-ctrl-top-left]:mt-[calc(92px+var(--friend-panel-height,48px))] [&_.maplibregl-ctrl-top-left_.maplibregl-ctrl]:ml-4" />
       <FriendLocationLayer map={map} />
 
       {/* Dot areas sit under moment markers (zIndex 0); a Dot area is never anyone's live position. */}
