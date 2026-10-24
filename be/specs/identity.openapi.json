@@ -1,0 +1,43 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "Mootz identity API", "version": "0.1.0", "description": "Implemented backend identity slice; real Privy login and wallet binding verified locally. Pending product FE/SC handoff review." },
+  "servers": [{ "url": "http://localhost:3001" }],
+  "security": [{ "bearerAuth": [] }],
+  "paths": {
+    "/v1/me": { "get": { "operationId": "getOwnProfile", "responses": {
+      "200": { "description": "Authenticated own profile", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Profile" } } } },
+      "401": { "$ref": "#/components/responses/Unauthorized" }, "503": { "$ref": "#/components/responses/Unavailable" }
+    } } },
+    "/v1/me/preferences": { "patch": { "operationId": "updateOwnPreferences", "requestBody": { "required": true, "content": { "application/json": { "schema": { "type": "object", "additionalProperties": false, "required": ["recordMeet"], "properties": { "recordMeet": { "type": "boolean" } } } } } }, "responses": {
+      "200": { "description": "Persisted own profile", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Profile" } } } },
+      "400": { "description": "Invalid or unknown fields" }, "401": { "$ref": "#/components/responses/Unauthorized" }, "503": { "$ref": "#/components/responses/Unavailable" }
+    } } },
+    "/v1/me/onboarding": { "post": { "operationId": "completeOwnOnboarding", "requestBody": { "required": true, "content": { "application/json": { "schema": { "type": "object", "additionalProperties": false } } } }, "responses": {
+      "200": { "description": "Own profile with idempotent completion timestamp", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Profile" } } } },
+      "400": { "description": "Invalid body" }, "401": { "$ref": "#/components/responses/Unauthorized" }, "503": { "$ref": "#/components/responses/Unavailable" }
+    } } },
+    "/v1/me/wallet-challenges": { "post": { "operationId": "issueWalletChallenge", "requestBody": { "required": true, "content": { "application/json": { "schema": { "type": "object", "additionalProperties": false, "required": ["wallet"], "properties": { "wallet": { "$ref": "#/components/schemas/Address" } } } } } }, "responses": {
+      "200": { "description": "Account/domain-scoped EOA proof; expires after five minutes", "content": { "application/json": { "schema": { "type": "object", "required": ["challengeId", "wallet", "message", "expiresAt"], "properties": { "challengeId": { "type": "string", "format": "uuid" }, "wallet": { "$ref": "#/components/schemas/Address" }, "message": { "type": "string" }, "expiresAt": { "type": "string", "format": "date-time" } } } } } },
+      "400": { "description": "Invalid body or address" }, "401": { "$ref": "#/components/responses/Unauthorized" }, "429": { "description": "Five challenges per minute or five outstanding reached" }, "503": { "$ref": "#/components/responses/Unavailable" }
+    } } },
+    "/v1/me/wallet-bindings": { "post": { "operationId": "bindVerifiedWallet", "requestBody": { "required": true, "content": { "application/json": { "schema": { "type": "object", "additionalProperties": false, "required": ["challengeId", "wallet", "signature"], "properties": { "challengeId": { "type": "string", "format": "uuid" }, "wallet": { "$ref": "#/components/schemas/Address" }, "signature": { "type": "string", "pattern": "^0x[0-9a-fA-F]{130}$" } } } } } }, "responses": {
+      "200": { "description": "Proof consumed atomically with binding", "content": { "application/json": { "schema": { "type": "object", "required": ["wallet", "chainId"], "properties": { "wallet": { "$ref": "#/components/schemas/Address" }, "chainId": { "type": "integer", "minimum": 1 } } } } } },
+      "400": { "description": "Invalid, expired, replayed or mismatched proof" }, "401": { "$ref": "#/components/responses/Unauthorized" }, "409": { "description": "Wallet belongs to another account or rotation was attempted" }, "503": { "$ref": "#/components/responses/Unavailable" }
+    } } }
+  },
+  "components": {
+    "securitySchemes": { "bearerAuth": { "type": "http", "scheme": "bearer", "bearerFormat": "JWT" } },
+    "responses": {
+      "Unauthorized": { "description": "Missing or invalid Privy access token" },
+      "Unavailable": { "description": "Privy configuration unavailable; no auth bypass" }
+    },
+    "schemas": {
+      "Address": { "type": "string", "pattern": "^0x[0-9a-fA-F]{40}$" },
+      "Profile": { "type": "object", "additionalProperties": false, "required": ["id", "recordMeet", "onboardingCompletedAt", "wallet"], "properties": {
+        "id": { "type": "string", "format": "uuid" }, "recordMeet": { "type": "boolean" },
+        "onboardingCompletedAt": { "type": ["string", "null"], "format": "date-time" },
+        "wallet": { "type": ["string", "null"], "description": "Verified address in server-configured chain namespace; null before binding" }
+      } }
+    }
+  }
+}

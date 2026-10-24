@@ -1,0 +1,6 @@
+{
+ "openapi":"3.1.0",
+ "info":{"title":"Mootz posting streak","version":"0.1.0","description":"Derived from published capture moments with both media sides. Source is client declared and does not prove capture authenticity. Publication timestamps and calendar use server time. No rewards, Dots, freeze or chain dependency."},
+ "paths":{"/v1/me/streak":{"get":{"security":[{"bearerAuth":[]}],"description":"Returns own posting history. One eligible publication day counts once in Asia/Jakarta. A run ending yesterday remains current until today ends; older runs yield zero. No query parameters accepted.","responses":{"200":{"description":"Posting streak","content":{"application/json":{"schema":{"type":"object","additionalProperties":false,"required":["currentStreak","longestStreak","postedToday","lastPublicationDay","timeZone"],"properties":{"currentStreak":{"type":"integer","minimum":0},"longestStreak":{"type":"integer","minimum":0},"postedToday":{"type":"boolean"},"lastPublicationDay":{"type":["string","null"],"format":"date"},"timeZone":{"type":"string","const":"Asia/Jakarta"}}}}}},"400":{"description":"Unexpected query parameter"},"401":{"description":"Missing or invalid token"},"403":{"description":"Account setup required"}}}}},
+ "components":{"securitySchemes":{"bearerAuth":{"type":"http","scheme":"bearer","bearerFormat":"JWT"}}}
+}

@@ -1,0 +1,13 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "Mootz backend foundation", "version": "0.1.0", "description": "Implemented operational endpoints only. Product APIs and signing interfaces are not frozen." },
+  "servers": [{ "url": "http://localhost:3001" }],
+  "paths": {
+    "/health": { "get": { "operationId": "health", "responses": { "200": { "description": "Process alive; no database check", "content": { "application/json": { "schema": { "type": "object", "required": ["status"], "properties": { "status": { "const": "ok" } }, "additionalProperties": false } } } } } } },
+    "/ready": { "get": { "operationId": "readiness", "responses": {
+      "200": { "description": "PostgreSQL responds and PostGIS function is available", "content": { "application/json": { "schema": { "type": "object", "required": ["status"], "properties": { "status": { "const": "ready" } }, "additionalProperties": false } } } },
+      "503": { "description": "Database or PostGIS unavailable", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+    } } }
+  },
+  "components": { "schemas": { "Error": { "type": "object", "additionalProperties": false, "required": ["error"], "properties": { "error": { "type": "object", "additionalProperties": false, "required": ["code", "requestId"], "properties": { "code": { "type": "string" }, "requestId": { "type": "string", "format": "uuid" } } } } } } }
+}

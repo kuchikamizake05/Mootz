@@ -1,0 +1,47 @@
+{
+  "name": "@mootz/backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.13.0 <25",
+    "npm": ">=11 <12"
+  },
+  "packageManager": "npm@11.6.2",
+  "scripts": {
+    "check:protocol": "node scripts/check-protocol.mjs",
+    "relay:once": "node --env-file=.env dist/relay/cli.js",
+    "claim-relay:once": "node --env-file=.env dist/claim-relay/cli.js",
+    "chain-sync:once": "node --env-file=.env dist/chain-sync/cli.js",
+    "relay:inspect": "node --env-file=.env dist/relay/inspect-cli.js",
+    "dev": "node --env-file=.env --experimental-strip-types src/server.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node --env-file=.env dist/server.js",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src test",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage --config vitest.coverage.config.ts",
+    "test:db": "vitest run --config vitest.integration.config.ts",
+    "test:deploy": "vitest run --config vitest.deploy.config.ts",
+    "db:migrate": "node --env-file=.env src/db/cli.ts migrate",
+    "db:seed": "node --env-file=.env src/db/cli.ts seed"
+  },
+  "dependencies": {
+    "@fastify/cors": "11.3.1",
+    "@supabase/supabase-js": "2.118.0",
+    "fastify": "5.12.7",
+    "jose": "6.2.13",
+    "pg": "8.23.1",
+    "sharp": "0.35.5",
+    "viem": "2.57.10"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "@types/pg": "8.23.1",
+    "@vitest/coverage-v8": "5.0.5",
+    "eslint": "10.13.0",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.72.0",
+    "vitest": "5.0.5"
+  }
+}

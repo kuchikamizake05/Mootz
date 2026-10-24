@@ -1,0 +1,328 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Mootz friendship API",
+    "version": "0.1.0",
+    "description": "Direct friends only. Known account IDs; no public search. Provision caller with GET /v1/me. Signed media URLs already issued may remain valid up to 60 seconds after removal; new audience checks immediately reject. Direction describes original request author even after acceptance. Lists contain no provider subject, email or wallet."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3001"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/v1/friends/requests": {
+      "post": {
+        "operationId": "requestFriend",
+        "description": "Creates pending request. Same outgoing retry or accepted pair returns 200. Incoming pending request conflicts and never auto-accepts. Blocked pairs stay hidden. Pair transitions serialized transactionally.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "accountId"
+                ],
+                "properties": {
+                  "accountId": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Invalid body, query, cursor or self-target"
+          },
+          "401": {
+            "description": "Missing or invalid bearer token"
+          },
+          "403": {
+            "description": "Provision account using GET /v1/me"
+          },
+          "404": {
+            "description": "Unavailable account or relationship; includes blocked records"
+          },
+          "503": {
+            "description": "Authentication unavailable"
+          },
+          "200": {
+            "description": "Relationship relative to authenticated viewer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Relationship"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Relationship relative to authenticated viewer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Relationship"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Incoming pending request must explicitly be accepted"
+          }
+        }
+      }
+    },
+    "/v1/friends/{accountId}/accept": {
+      "post": {
+        "operationId": "acceptFriend",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Invalid body, query, cursor or self-target"
+          },
+          "401": {
+            "description": "Missing or invalid bearer token"
+          },
+          "403": {
+            "description": "Provision account using GET /v1/me"
+          },
+          "404": {
+            "description": "Unavailable account or relationship; includes blocked records"
+          },
+          "503": {
+            "description": "Authentication unavailable"
+          },
+          "200": {
+            "description": "Relationship relative to authenticated viewer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Relationship"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Only recipient may accept pending request"
+          }
+        }
+      }
+    },
+    "/v1/friends/{accountId}": {
+      "delete": {
+        "operationId": "removeFriend",
+        "description": "Removes accepted friendship, cancels outgoing pending or declines incoming pending. Absent pair is idempotent 204; blocked pair remains hidden 404 and untouched.",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Invalid body, query, cursor or self-target"
+          },
+          "401": {
+            "description": "Missing or invalid bearer token"
+          },
+          "403": {
+            "description": "Provision account using GET /v1/me"
+          },
+          "404": {
+            "description": "Unavailable account or relationship; includes blocked records"
+          },
+          "503": {
+            "description": "Authentication unavailable"
+          },
+          "204": {
+            "description": "Relationship removed or absent"
+          }
+        }
+      }
+    },
+    "/v1/friends": {
+      "get": {
+        "operationId": "listFriends",
+        "description": "Keyset ordered by counterpart account ID ascending. Opaque cursor binds viewer and filters. Blocked records never returned. Concurrent mutations can affect subsequent pages.",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "all",
+                "pending",
+                "accepted"
+              ],
+              "default": "all"
+            }
+          },
+          {
+            "name": "direction",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "all",
+                "incoming",
+                "outgoing"
+              ],
+              "default": "all"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 1024
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Invalid body, query, cursor or self-target"
+          },
+          "401": {
+            "description": "Missing or invalid bearer token"
+          },
+          "403": {
+            "description": "Provision account using GET /v1/me"
+          },
+          "404": {
+            "description": "Unavailable account or relationship; includes blocked records"
+          },
+          "503": {
+            "description": "Authentication unavailable"
+          },
+          "200": {
+            "description": "Authorized relationships",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "items",
+                    "nextCursor"
+                  ],
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "maxItems": 50,
+                      "items": {
+                        "$ref": "#/components/schemas/Relationship"
+                      }
+                    },
+                    "nextCursor": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Relationship": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "accountId",
+          "status",
+          "direction",
+          "createdAt",
+          "updatedAt"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "accepted"
+            ]
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "incoming",
+              "outgoing"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    }
+  }
+}

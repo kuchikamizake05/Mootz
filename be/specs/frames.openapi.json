@@ -1,0 +1,21 @@
+{
+ "openapi":"3.1.0",
+ "info":{"title":"Mootz achievement frames","version":"0.1.0","description":"Offchain achievement policy demo-v1: First Meet 1 Dot, Together 10 Dots, Social Butterfly 5 distinct currently accepted friend partners. Hidden Dots and offchain/failed-chain Meets count. Unlocks persist after unfriend. Historical unlock time is first reconciliation, not inferred achievement time. assetKey is an identifier for FE-provided artwork; artwork delivery is not implemented here. One active frame shared with Event collection equip."},
+ "security":[{"bearerAuth":[]}],
+ "components":{
+  "securitySchemes":{"bearerAuth":{"type":"http","scheme":"bearer"}},
+  "schemas":{
+   "Achievement":{"type":"object","required":["kind","id","name","assetKey","equippedAt"],"properties":{"kind":{"const":"achievement"},"id":{"enum":["first_meet","together","social_butterfly"]},"name":{"type":"string"},"assetKey":{"type":"string"},"equippedAt":{"type":"string","format":"date-time"}}},
+   "Collection":{"type":"object","required":["kind","collectionRef","eventId","collectionId","chainId","contractAddress","displayName","artworkUrl","equippedAt"],"properties":{"kind":{"const":"collection"},"collectionRef":{"type":"string","format":"uuid"},"eventId":{"type":"string","format":"uuid"},"collectionId":{"type":"string","pattern":"^[0-9]+$"},"chainId":{"type":"integer"},"contractAddress":{"type":"string"},"displayName":{"type":"string"},"artworkUrl":{"type":["string","null"]},"equippedAt":{"type":"string","format":"date-time"}}},
+   "FrameResponse":{"type":"object","required":["frame"],"properties":{"frame":{"oneOf":[{"type":"null"},{"$ref":"#/components/schemas/Achievement"},{"$ref":"#/components/schemas/Collection"}]}}}
+  }
+ },
+ "paths":{
+  "/v1/me/frames":{"get":{"summary":"Reconcile achievement inventory for authenticated account","description":"Returns policy {version:demo-v1,status:demo}, metrics {dotCount,distinctFriendPartners}, and items {id,name,assetKey,requirement:{metric,target},progress,unlocked,unlockedAt}. Progress is capped at requirement target. Unlock timestamps use database clock and remain immutable.","responses":{"200":{"description":"Own inventory"},"401":{"description":"Invalid authentication"},"403":{"description":"Account required"}}}},
+  "/v1/me/frame":{
+   "get":{"summary":"Read own active frame","description":"Event frame ownership is rechecked against current wallet and contract. Confirmed ownership loss clears own slot. RPC/configuration uncertainty returns 503 and preserves it.","responses":{"200":{"description":"Active frame or null","content":{"application/json":{"schema":{"$ref":"#/components/schemas/FrameResponse"}}}},"401":{"description":"Unauthorized"},"503":{"description":"CHAIN_UNAVAILABLE"}}},
+   "put":{"summary":"Equip unlocked achievement frame","requestBody":{"required":true,"content":{"application/json":{"schema":{"type":"object","additionalProperties":false,"required":["frameId"],"properties":{"frameId":{"enum":["first_meet","together","social_butterfly"]}}}}}},"responses":{"200":{"description":"Equipped; same frame preserves equippedAt","content":{"application/json":{"schema":{"$ref":"#/components/schemas/FrameResponse"}}}},"400":{"description":"Invalid input"},"401":{"description":"Unauthorized"},"403":{"description":"FRAME_LOCKED or ACCOUNT_REQUIRED"}}},
+   "delete":{"summary":"Clear own frame of either source without RPC","responses":{"204":{"description":"Cleared idempotently"},"401":{"description":"Unauthorized"}}}
+  }
+ }
+}

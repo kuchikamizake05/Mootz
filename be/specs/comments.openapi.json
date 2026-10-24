@@ -1,0 +1,293 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Mootz one-level comments",
+    "version": "0.1.0",
+    "description": "Only published moment author and current accepted friends can read, post or delete. All retained records count toward rate limit. Root/reply lists are chronological by createdAt and ID. Replies to replies normalize parentId to root and retain replyToId/replyToAuthorId for display context. Deleted replies cannot be targeted; deleted roots may receive replies. Deleted leaves are omitted; root with active replies is a body-null tombstone. No reward or streak effects. Deleted keyed comments retain an offchain request fingerprint for retry comparisons; original plaintext is erased. Fingerprints and client request IDs are never returned."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3001"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "Comment": {
+        "type": "object",
+        "required": [
+          "id",
+          "momentId",
+          "authorId",
+          "parentId",
+          "replyToId",
+          "replyToAuthorId",
+          "body",
+          "createdAt",
+          "deleted"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "momentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "authorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "parentId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "replyToId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "replyToAuthorId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "body": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 500
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "deleted": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/v1/moments/{id}/comments": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "body"
+                ],
+                "properties": {
+                  "body": {
+                    "type": "string",
+                    "description": "Trimmed, 1 to 500 Unicode code points, plain text"
+                  },
+                  "parentId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "clientRequestId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "Optional canonical UUID. Clients MUST reuse the same ID and normalized payload on retries. Omitting the key creates a distinct comment on each POST. Reused key with changed moment/body/target returns 409."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Comment"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid text, parent, cursor or request"
+          },
+          "401": {
+            "description": "Invalid bearer token"
+          },
+          "403": {
+            "description": "Account setup required"
+          },
+          "404": {
+            "description": "Published moment outside current audience or owned comment unavailable"
+          },
+          "429": {
+            "description": "At most 20 comments per account in rolling minute, including deleted comments"
+          },
+          "200": {
+            "description": "Idempotent retry, including deleted tombstone; does not consume rate allowance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Comment"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Request key already used for a different payload"
+          }
+        }
+      },
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "schema": {
+              "type": "string",
+              "maxLength": 300
+            },
+            "description": "Opaque nextCursor from previous page. Preserve moment and parent selection."
+          },
+          {
+            "in": "query",
+            "name": "parentId",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Root ID to list replies; omit to list roots."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current authorized comments",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "items",
+                    "nextCursor"
+                  ],
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Comment"
+                      }
+                    },
+                    "nextCursor": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid text, parent, cursor or request"
+          },
+          "401": {
+            "description": "Invalid bearer token"
+          },
+          "403": {
+            "description": "Account setup required"
+          },
+          "404": {
+            "description": "Published moment outside current audience or owned comment unavailable"
+          }
+        }
+      }
+    },
+    "/v1/moments/{id}/comments/{commentId}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "in": "path",
+          "name": "commentId",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "delete": {
+        "description": "Only comment author may delete. Idempotent while the author retains moment audience. Body erased, record retained for threading and rate accounting.",
+        "responses": {
+          "204": {
+            "description": "Deleted or already deleted"
+          },
+          "400": {
+            "description": "Invalid text, parent, cursor or request"
+          },
+          "401": {
+            "description": "Invalid bearer token"
+          },
+          "403": {
+            "description": "Account setup required"
+          },
+          "404": {
+            "description": "Published moment outside current audience or owned comment unavailable"
+          }
+        }
+      }
+    }
+  }
+}

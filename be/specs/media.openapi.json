@@ -1,0 +1,57 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "Mootz private moment API", "version": "0.1.0", "description": "Real Privy/Supabase synthetic publication and owner/friend/outsider access verified locally; pending product consumer review. Supabase credentials stay server-only; bearer identity is Privy." },
+  "servers": [{ "url": "http://localhost:3001" }],
+  "security": [{ "bearerAuth": [] }],
+  "paths": {
+    "/v1/moments/{id}/media/{side}/retake": {
+      "parameters": [{ "$ref": "#/components/parameters/Id" }, { "$ref": "#/components/parameters/Side" }],
+      "put": { "operationId": "retakeOwnedDraftSide", "requestBody": { "required": true, "description": "Explicit replacement of one existing unpublished side. Raw JPEG/PNG, maximum8MiB; other side unchanged.", "content": { "image/jpeg": { "schema": { "type": "string", "format": "binary" } }, "image/png": { "schema": { "type": "string", "format": "binary" } } } }, "responses": {
+        "200": { "description": "Replacement ready; old assets cleaned after durable replacement where possible", "content": { "application/json": { "schema": { "type": "object", "required": ["side", "status"], "properties": { "side": { "enum": ["front", "back"] }, "status": { "const": "ready" } } } } } },
+        "400": { "description": "Invalid image" }, "401": { "description": "Invalid bearer token" }, "404": { "description": "Not the owner or side missing" }, "409": { "description": "Moment already published" }, "413": { "description": "Image exceeds byte limit" }, "503": { "$ref": "#/components/responses/Unavailable" }
+      } }
+    },
+    "/v1/moments": { "post": { "operationId": "createMomentDraft", "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Draft" } } } }, "responses": {
+      "201": { "description": "Own private draft", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Moment" } } } }, "400": { "description": "Invalid metadata or unknown event" }, "401": { "description": "Invalid bearer token" }, "403": { "description": "Call own profile endpoint to provision account first" }, "503": { "$ref": "#/components/responses/Unavailable" }
+    } } },
+    "/v1/moments/{id}": { "parameters": [{ "$ref": "#/components/parameters/Id" }], "get": { "operationId": "readAuthorizedMoment", "responses": {
+      "200": { "description": "Author-only draft or authorized published moment", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Moment" } } } }, "404": { "description": "Moment absent or outside audience" }, "503": { "$ref": "#/components/responses/Unavailable" }
+    } } },
+    "/v1/moments/{id}/media/{side}": {
+      "parameters": [{ "$ref": "#/components/parameters/Id" }, { "$ref": "#/components/parameters/Side" }],
+      "put": { "operationId": "uploadOwnedMomentSide", "requestBody": { "required": true, "description": "Raw JPEG/PNG bytes, maximum 8 MiB, not multipart. Stored immutable normalized JPEG plus thumbnail.", "content": { "image/jpeg": { "schema": { "type": "string", "format": "binary" } }, "image/png": { "schema": { "type": "string", "format": "binary" } } } }, "responses": {
+        "200": { "description": "Stored side", "content": { "application/json": { "schema": { "type": "object", "required": ["side", "status"], "properties": { "side": { "enum": ["front", "back"] }, "status": { "const": "ready" } } } } } }, "400": { "description": "Invalid image" }, "404": { "description": "Not the draft owner" }, "409": { "description": "Side already exists or moment published" }, "413": { "description": "Image exceeds byte limit" }, "503": { "$ref": "#/components/responses/Unavailable" }
+      } },
+      "get": { "operationId": "signAuthorizedMomentImage", "responses": {
+        "200": { "description": "Private image URL after audience check; valid for anyone possessing it until expiry", "content": { "application/json": { "schema": { "type": "object", "required": ["url", "expiresIn"], "properties": { "url": { "type": "string", "format": "uri" }, "expiresIn": { "const": 60 } } } } } }, "404": { "description": "Media absent or outside audience" }, "503": { "$ref": "#/components/responses/Unavailable" }
+      } }
+    },
+    "/v1/moments/{id}/publish": { "parameters": [{ "$ref": "#/components/parameters/Id" }], "post": { "operationId": "publishCompletePair", "requestBody": { "required": true, "content": { "application/json": { "schema": { "type": "object", "additionalProperties": false } } } }, "responses": {
+      "200": { "description": "Published; idempotent repeat preserves snapshot", "content": { "application/json": { "schema": { "type": "object", "required": ["id", "status"], "properties": { "id": { "type": "string", "format": "uuid" }, "status": { "const": "published" } } } } } }, "404": { "description": "Moment absent or not owned" }, "409": { "description": "Both uploaded sides required" }, "503": { "$ref": "#/components/responses/Unavailable" }
+    } } },
+    "/v1/feed": { "get": { "operationId": "readAuthorizedFeed", "parameters": [{ "$ref": "#/components/parameters/Limit" }, { "$ref": "#/components/parameters/Cursor" }, { "$ref": "#/components/parameters/Filter" }, { "$ref": "#/components/parameters/Event" }], "responses": { "200": { "$ref": "#/components/responses/Page" }, "400": { "description": "Invalid query or cursor" }, "503": { "$ref": "#/components/responses/Unavailable" } } } },
+    "/v1/map": { "get": { "operationId": "readAuthorizedMap", "description": "Same IDs as Feed; excludes items without generalized display location. No Meet verification coordinates exist in this payload.", "parameters": [{ "$ref": "#/components/parameters/Limit" }, { "$ref": "#/components/parameters/Cursor" }, { "$ref": "#/components/parameters/Filter" }, { "$ref": "#/components/parameters/Event" }], "responses": { "200": { "$ref": "#/components/responses/Page" }, "400": { "description": "Invalid query or cursor" }, "503": { "$ref": "#/components/responses/Unavailable" } } } }
+  },
+  "components": {
+    "securitySchemes": { "bearerAuth": { "type": "http", "scheme": "bearer", "bearerFormat": "JWT" } },
+    "parameters": {
+      "Id": { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } },
+      "Side": { "name": "side", "in": "path", "required": true, "schema": { "type": "string", "enum": ["front", "back"] } },
+      "Limit": { "name": "limit", "in": "query", "schema": { "type": "integer", "minimum": 1, "maximum": 50, "default": 20 } },
+      "Cursor": { "name": "cursor", "in": "query", "schema": { "type": "string", "maxLength": 300 }, "description": "Opaque nextCursor from a prior response" },
+      "Filter": { "name": "filter", "in": "query", "schema": { "type": "string", "enum": ["all", "friends", "events"], "default": "all" } },
+      "Event": { "name": "eventId", "in": "query", "schema": { "type": "string", "format": "uuid" } }
+    },
+    "responses": {
+      "Unavailable": { "description": "Missing provider configuration or storage unavailable/public; no public fallback" },
+      "Page": { "description": "Audience-authorized published moments; event tags never expand access", "content": { "application/json": { "schema": { "type": "object", "required": ["items", "nextCursor"], "properties": { "items": { "type": "array", "items": { "$ref": "#/components/schemas/Moment" } }, "nextCursor": { "type": ["string", "null"] } } } } } }
+    },
+    "schemas": {
+      "Location": { "type": "object", "additionalProperties": false, "required": ["latitude", "longitude"], "properties": { "latitude": { "type": "number", "minimum": -90, "maximum": 90 }, "longitude": { "type": "number", "minimum": -180, "maximum": 180 } } },
+      "Draft": { "type": "object", "additionalProperties": false, "required": ["source"], "properties": { "source": { "enum": ["capture", "upload"] }, "caption": { "type": "string", "maxLength": 2000 }, "eventId": { "type": "string", "format": "uuid" }, "location": { "$ref": "#/components/schemas/Location" } } },
+      "Moment": { "type": "object", "additionalProperties": false, "required": ["id", "authorId", "source", "caption", "eventId", "publishedAt", "createdAt", "location", "thumbnails"], "properties": {
+        "id": { "type": "string", "format": "uuid" }, "authorId": { "type": "string", "format": "uuid" }, "source": { "enum": ["capture", "upload"] }, "caption": { "type": "string" }, "eventId": { "type": ["string", "null"], "format": "uuid" }, "publishedAt": { "type": ["string", "null"], "format": "date-time" }, "createdAt": { "type": "string", "format": "date-time" }, "location": { "anyOf": [{ "$ref": "#/components/schemas/Location" }, { "type": "null" }] }, "thumbnails": { "type": "object", "additionalProperties": false, "properties": { "front": { "type": "string", "format": "uri" }, "back": { "type": "string", "format": "uri" } } }
+      } }
+    }
+  }
+}
