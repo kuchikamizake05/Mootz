@@ -3,7 +3,7 @@
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AttributionControl, Map as MapLibreMap, setWorkerUrl } from "maplibre-gl";
+import { Map as MapLibreMap, setWorkerUrl } from "maplibre-gl";
 import { Layers, LoaderCircle, LocateFixed, LocateOff, Map as MapIcon, MapPinOff, Users, X } from "lucide-react";
 import { Button, ButtonLink, IconButton } from "@/components/ui/button";
 import { AvatarMomentMarker, MeetDotMarker, PhotoMomentMarker, YourLocationDot } from "@/components/ui/map-markers";
@@ -17,6 +17,7 @@ import { useViewState } from "@/features/shell/view-state";
 import { cn } from "@/lib/cn";
 import { env } from "@/lib/env";
 import { getBasemap, getCamera, saveBasemap, saveCamera, type BasemapKind } from "./camera-store";
+import { addCollapsedAttribution } from "./attribution";
 import { MapMarker } from "./map-marker";
 
 const MAP_STYLE = "https://tiles.openfreemap.org/styles/positron";
@@ -69,7 +70,7 @@ export function MapView() {
         attributionControl: false,
         pitchWithRotate: false,
       });
-      instance.addControl(new AttributionControl({ compact: window.innerWidth < 640 }), "top-left");
+      addCollapsedAttribution(instance, "top-left");
       instance.on("style.load", () => setPhaseBoth("ready"));
       instance.on("error", (event) => {
         const status = (event.error as { status?: number } | undefined)?.status;
@@ -255,19 +256,6 @@ export function MapView() {
         {moments.error && (
           <div className={card} role="alert">
             <StateMessage icon={MapPinOff} title="Your moments couldn’t load." actions={<Button onClick={() => void moments.refetch()}>Retry</Button>} />
-          </div>
-        )}
-        {!moments.error && !moments.isPending && moments.items.length === 0 && !open && (
-          <div className={card}>
-            <StateMessage
-              icon={MapPinOff}
-              title="No moments on the map yet."
-              actions={
-                <ButtonLink href={href("/feed", { moment: null })}>Open feed</ButtonLink>
-              }
-            >
-              Shared locations will appear here.
-            </StateMessage>
           </div>
         )}
       </div>
