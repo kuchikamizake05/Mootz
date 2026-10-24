@@ -158,7 +158,7 @@ sequenceDiagram
         R->>DB: Persist transaction evidence
         Note over DB,M: Reconciliation distinguishes inclusion, finality and failure
     else Either signed OFFCHAIN_MEET
-        Note over DB,M: Keep the Dot; no onchain Meet record
+        Note over DB,M: Keep the Dot, no onchain Meet record
     end
 ```
 
