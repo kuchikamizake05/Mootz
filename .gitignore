@@ -1,0 +1,40 @@
+# Local authoring exports and private source/reference screenshots
+/Rove_Product_Brief*.md
+/Rove_Design_Pack*/
+/Rove_Design_Pack*.zip
+/Rove_Previous_Files_*/
+
+# Credentials, sessions and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.keystore
+*.log
+*.tsbuildinfo
+.codex/
+.agent-reach/
+
+# Future application/runtime output
+node_modules/
+.next/
+out/
+dist/
+build/
+coverage/
+playwright-report/
+test-results/
+.vercel/
+cache/
+broadcast/
+__pycache__/
+.venv/
+
+# Editor and OS state
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
