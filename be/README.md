@@ -1,7 +1,7 @@
 # Mootz backend
 
 Approved organizer creation/check-in and finalized collection mapping are described
-in [restricted organizer setup](../docs/organizer-events.md). Apply migration 019
+in [restricted organizer setup](../docs/organizer-events.md). Apply migration 020
 and explicitly grant existing event owners before using the updated check-in API.
 
 Status: backend, Meet/Event/frame APIs, relay workers and canonical contract exports are present. Client acceptance and public testnet deployment must be verified separately.
