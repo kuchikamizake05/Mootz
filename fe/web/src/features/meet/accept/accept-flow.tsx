@@ -370,12 +370,16 @@ function Preview({
   const caption = preview?.moment.caption ?? demoCaption;
   const poster = demo ? demoPartnerUsername : preview?.moment.authorUsername;
   return (
-    <MeetFrame title="Meet preview" onBack={() => router.push("/meet/scan")}>
+    <MeetFrame title="Meet preview" wide onBack={() => router.push("/meet/scan")}>
       {demo && <DemoBadge />}
-      <p className="text-sm font-extrabold">{handleLabel(poster, "Your friend")}</p>
-      <PairedPhoto backSrc={back} frontSrc={front} authorName={friendRef(poster)} className="h-[200px] w-full lg:h-[360px]" />
-      {caption && <p className="text-base">{caption}</p>}
-      <h2 className="font-display text-[32px] leading-[1.05]">Confirm you&apos;re in this photo with your friend</h2>
+      <div className="grid min-w-0 gap-5 lg:grid-cols-2 lg:items-start lg:gap-8">
+      <div className="flex min-w-0 flex-col gap-3">
+      <p className="break-words text-sm font-extrabold">{handleLabel(poster, "Your friend")}</p>
+      <PairedPhoto backSrc={back} frontSrc={front} authorName={friendRef(poster)} className="aspect-[4/3] w-full" />
+      {caption && <p className="break-words text-base leading-relaxed">{caption}</p>}
+      </div>
+      <div className="flex min-w-0 flex-col gap-4">
+      <h2 className="text-balance font-display text-[30px] leading-tight sm:text-[32px]">Confirm you&apos;re in this photo with your friend</h2>
       <p className="font-bold text-mootz-deep">Only this moment is shared with you.</p>
       <p className="text-sm text-mootz-muted">
         Approving adds your confirmation to this Meet.
@@ -392,7 +396,9 @@ function Preview({
           What&apos;s recorded?
         </ButtonLink>
       </div>
-      <p className="text-[13px] font-bold text-mootz-muted">
+      </div>
+      </div>
+      <p className="border-t border-mootz-hairline pt-4 text-[13px] leading-relaxed text-mootz-muted">
         No friendship is created. No daily post or streak credit for scanning. A signature and a distance check don&apos;t prove you were there or that the photo is real.
       </p>
     </MeetFrame>

@@ -4,6 +4,7 @@
 
 <p align="center"><strong>Share your day. Meet in person.</strong><br>A social Map + Feed with shared memories on Monad.</p>
 <p align="center"><a href="https://mootz-red.vercel.app">Website</a> · <a href="https://mootz-red.vercel.app/app">Open app</a> · <a href="docs/hackathon.md">Judge guide</a> · <a href="sc/abi/deployment.monad-mainnet.json">Mainnet deployment evidence</a></p>
+<p align="center"><a href="https://drive.google.com/file/d/1NhzpRG1vZxdORsf6gGhnkeBOaRpNs-Ms/view?usp=sharing">Watch demo</a> · <a href="https://x.com/mootzfun/status/2113922226622009563?s=20">Build in public on X</a></p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Next.js-000000?style=flat-square" alt="Next.js">
@@ -21,7 +22,7 @@
 
 Mootz brings everyday moments and real-world meetups into one place. Post a front-and-back photo, discover what friends share on Map or Feed, and scan a short-lived QR to create a shared **Dot**. When both people opt in, a signed Meet record can be stored on Monad. Event organizers can also issue nontransferable collectibles to eligible attendees.
 
-**Deployed on Monad mainnet (chain 143):** MeetRegistry and EventCollection. [Verified contracts and deployment transactions](#verified-mainnet-contracts) are available below. The application integration in this checkout still targets testnet; a complete mainnet Meet/claim walkthrough remains unverified.
+**Deployed on Monad mainnet (chain 143):** MeetRegistry and EventCollection. [Verified contracts and deployment transactions](#verified-mainnet-contracts) are available below. The application source now supports mainnet configuration; a complete mainnet Meet/claim walkthrough remains unverified.
 
 Built for [Monad Blitz Jogja V2](https://monad-foundation.notion.site/Monad-Blitz-Jogja-V2-4026367594f280e2b069efefb4fb6389), 24 October 2026. This repository contains the implemented web client, backend and Solidity contracts; the separate mobile client remains planned.
 
@@ -52,6 +53,8 @@ These interfaces and service modules are present in source. Their availability i
 
 | Entry point | What to inspect |
 | --- | --- |
+| [Demo video](https://drive.google.com/file/d/1NhzpRG1vZxdORsf6gGhnkeBOaRpNs-Ms/view?usp=sharing) | Product demonstration |
+| [Build in public on X](https://x.com/mootzfun/status/2113922226622009563?s=20) | Mootz project post |
 | [Website](https://mootz-red.vercel.app) | Product introduction; landing phone previews are illustrative |
 | [Web app](https://mootz-red.vercel.app/app) | Map, Feed, capture, friends, Meet, profile and Event interfaces |
 | [Organizer demo](https://mootz-red.vercel.app/organizer) | Contract ownership and event Meet-count reads |
@@ -70,7 +73,7 @@ These interfaces and service modules are present in source. Their availability i
 
 ## Why Monad?
 
-Monad provides a shared settlement layer for consented Meet records and Event collectibles. A separate organizer can read those records without querying Mootz's private inventory database. The contracts are deployed on Monad mainnet. The application integration currently uses Monad testnet, EIP-712 signatures, a backend relayer and explicit transaction-finality reconciliation.
+Monad provides a shared settlement layer for consented Meet records and Event collectibles. A separate organizer can read those records without querying Mootz's private inventory database. The contracts are deployed on Monad mainnet. The application supports configured Monad mainnet or testnet networks, EIP-712 signatures, a backend relayer and explicit transaction-finality reconciliation.
 
 Photos, precise location and Dots stay offchain behind audience checks. Public Meet records reveal which wallets met. Signatures and distance checks do not prove physical presence, authentic photos or unique humans. Recording a Meet does not preserve its photos onchain.
 
@@ -85,7 +88,7 @@ Network: **Monad mainnet · chain ID 143**. Deployment date: **24 October 2026**
 
 The [mainnet deployment record](sc/abi/deployment.monad-mainnet.json) contains receipts, constructor arguments, roles, runtime bytecode hashes and explorer verification responses: Monadscan passed source verification; MonadVision returned partial matches. Both successful deployment receipts and current runtime hashes were independently rechecked on chain 143 for this update. Admin, relayer and issuer currently share one wallet.
 
-**Deployment and application integration are separate.** The backend and relay paths in this checkout still enforce testnet chain **10143**. Mainnet deployment does not migrate those paths or prove a completed two-wallet Meet or collectible claim; both mainnet smoke receipts remain absent from the deployment record. Mainnet migration and live acceptance remain pending.
+**Deployment and application integration are separate.** Backend and relay paths now support configured chain **143** or **10143**, with chain-scoped jobs and signature checks. Follow the [mainnet migration guide](docs/mainnet-migration.md) for required environment settings, database migrations and wallet rebinding. A completed two-wallet Meet or collectible claim remains unverified; both mainnet smoke receipts remain absent from the deployment record.
 
 The earlier [testnet deployment](sc/abi/deployment.monad-testnet.json) uses the same contract addresses on chain 10143. Always check the network: identical addresses do not share records, balances or signing domains across chains.
 
@@ -108,7 +111,7 @@ flowchart TB
     end
     Workers -->|Authorized transactions| Registry["MeetRegistry"]
     Workers -->|Issuer-authorized claims| Collection["EventCollection"]
-    subgraph Monad["Monad testnet · chain 10143"]
+    subgraph Monad["Monad · configured chain 143 or 10143"]
         Registry
         Collection
     end

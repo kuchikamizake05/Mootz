@@ -54,11 +54,13 @@ function Onboarding({ save, demo }: { save: Save; demo?: boolean }) {
   return (
     <MeetFrame title="Your Meets, your choice" onClose={() => closeFlow(router)}>
       {demo && <DemoBadge />}
-      <LockKeyhole aria-hidden size={48} strokeWidth={2} className="text-mootz-deep" />
-      <h2 className="font-display whitespace-pre-line font-extrabold text-[38px] leading-[1.05]">{"Save your Meets\nonchain forever?"}</h2>
-      <p className="text-[16px] leading-[1.4] text-mootz-muted">
+      <div className="flex flex-col gap-3">
+      <LockKeyhole aria-hidden size={40} strokeWidth={2} className="text-mootz-deep" />
+      <h2 className="text-balance font-display text-[34px] font-extrabold leading-tight sm:text-[38px]">Save your Meets onchain forever?</h2>
+      <p className="text-base leading-relaxed text-mootz-muted">
         Anyone can see which wallets met and when. Photos and location stay private.
       </p>
+      </div>
 
       <div className="flex min-h-[88px] items-center justify-between gap-3 rounded-2xl bg-mootz-surface p-4">
         <div id="record-label">
@@ -83,7 +85,7 @@ function Onboarding({ save, demo }: { save: Save; demo?: boolean }) {
           : "Saving is off. Meets still create a Dot, and nothing is saved onchain."}
       </p>
 
-      <div className="mt-auto flex flex-col gap-3">
+      <div className="mt-auto flex flex-col gap-3 pt-4">
         <Button icon={ArrowRight} size="lg" block disabled={busy} onClick={onContinue}>
           {busy ? "Saving…" : "Continue"}
         </Button>
@@ -91,9 +93,7 @@ function Onboarding({ save, demo }: { save: Save; demo?: boolean }) {
           Learn more
         </ButtonLink>
       </div>
-      <p role="alert" className="text-sm font-bold text-mootz-deep">
-        {failed ? "Couldn't save your choice. Nothing was changed. Try again." : ""}
-      </p>
+      {failed && <p role="alert" className="text-sm font-bold text-mootz-deep">Couldn&apos;t save your choice. Nothing was changed. Try again.</p>}
       <p className="text-[13px] font-bold text-mootz-muted">
         Onchain records can&apos;t be removed. You can change this choice for future Meets.
       </p>
