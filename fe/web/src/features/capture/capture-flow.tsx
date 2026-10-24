@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Camera, CameraOff, Flame, ImagePlus, LoaderCircle, MapPin, RefreshCw, ScanLine, X } from "lucide-react";
+import { ArrowRight, Check, Send, Camera, CameraOff, Flame, ImagePlus, LoaderCircle, MapPin, RefreshCw, ScanLine, X } from "lucide-react";
 import { BackButton, Button, IconButton } from "@/components/ui/button";
 import { PairedPhoto } from "@/components/ui/moment";
 import { Photo } from "@/components/ui/photo";
@@ -344,7 +344,7 @@ function Viewfinder({
       </p>
       <div className="flex flex-col-reverse items-center gap-3">
         {onRetakeBack && (
-          <Button variant="secondary" block onClick={onRetakeBack}>
+          <Button icon={RefreshCw} variant="secondary" block onClick={onRetakeBack}>
             Retake back
           </Button>
         )}
@@ -352,8 +352,8 @@ function Viewfinder({
           {facing === "user" && shutter}
         </Button>
       </div>
-      <button type="button" onClick={onFallback} className="raised min-h-12 rounded-2xl bg-white px-3 text-[15px] font-extrabold text-mootz-deep">
-        Upload photos instead
+      <button type="button" onClick={onFallback} className="raised inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-white px-3 text-[15px] font-extrabold text-mootz-deep">
+        <ImagePlus aria-hidden size={19} />Upload photos instead
       </button>
       <p className="text-sm font-bold leading-[1.4] text-mootz-muted">{facing === "environment" ? "Post any time. A completed camera pair can extend your daily streak and start an optional Meet." : "If this stage fails, keep the back capture. Never publish an incomplete pair."}</p>
     </div>
@@ -384,12 +384,12 @@ function UploadPick({
         <Picker label="Selfie" shot={front} onFile={(f) => onPick("front", f)} />
       </div>
       {error && <p role="alert" className="text-sm font-bold text-mootz-deep">{error}</p>}
-      <Button size="lg" block disabled={!ready} onClick={onContinue}>
+      <Button icon={ArrowRight} size="lg" block disabled={!ready} onClick={onContinue}>
         Continue
       </Button>
       {!ready && <p className="text-sm text-mootz-muted">Choose both photos to continue.</p>}
-      <button type="button" onClick={onCamera} className="min-h-11 text-sm font-extrabold text-mootz-deep underline">
-        Use the camera instead
+      <button type="button" onClick={onCamera} className="inline-flex min-h-11 items-center justify-center gap-2 text-sm font-extrabold text-mootz-deep underline">
+        <Camera aria-hidden size={19} />Use the camera instead
       </button>
     </div>
   );
@@ -445,11 +445,11 @@ function Review({
       <PairedPhoto backSrc={back.url} frontSrc={front.url} authorName="you" className="h-[260px] w-full lg:aspect-[3/4]" />
       <div className="flex flex-col gap-3">
         <div className="flex gap-2">
-          <Button variant="secondary" block onClick={() => onRetake("back")}>
+          <Button icon={mode === "upload" ? ImagePlus : RefreshCw} variant="secondary" block onClick={() => onRetake("back")}>
             {mode === "upload" ? "Change photos" : "Retake back"}
           </Button>
           {mode === "capture" && (
-            <Button variant="secondary" block onClick={() => onRetake("front")}>
+            <Button icon={RefreshCw} variant="secondary" block onClick={() => onRetake("front")}>
               Retake selfie
             </Button>
           )}
@@ -475,12 +475,12 @@ function Review({
           <MapPin aria-hidden size={18} className="text-mootz-deep" />
           Share posting location
         </label>
-        <p className="text-xs text-mootz-muted" aria-live="polite">
+        <p className="text-[13px] text-mootz-muted" aria-live="polite">
           {locState === "locating" && "Finding your location…"}
           {locState === "denied" && "Location is unavailable, so this moment will post without it. "}
           This is where you posted, not your live location. Location is optional. Shared directly with friends.
         </p>
-        <Button size="lg" block disabled={locState === "locating"} onClick={onPost}>
+        <Button icon={Send} size="lg" block disabled={locState === "locating"} onClick={onPost}>
           Post moment
         </Button>
       </div>
@@ -533,7 +533,7 @@ function Progress({
             <Button block icon={RefreshCw} onClick={onRetry}>
               Retry
             </Button>
-            <Button variant="secondary" block onClick={onCancel}>
+            <Button icon={X} variant="secondary" block onClick={onCancel}>
               Cancel
             </Button>
           </div>
@@ -573,12 +573,12 @@ function Posted({ result, mode, back, front }: { result: Result; mode: Mode; bac
           >
             <span>
               Meet · Photographed a friend?
-              <span className="block text-xs font-bold text-mootz-muted">Optional. Your moment is already posted.</span>
+              <span className="block text-[13px] font-bold text-mootz-muted">Optional. Your moment is already posted.</span>
             </span>
             <ScanLine aria-hidden size={20} />
           </Link>
         )}
-        <Button size="lg" block onClick={() => router.push(getBrowseOrigin())}>
+        <Button icon={Check} size="lg" block onClick={() => router.push(getBrowseOrigin())}>
           Done
         </Button>
       </div>

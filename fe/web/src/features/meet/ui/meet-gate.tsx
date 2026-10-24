@@ -74,7 +74,7 @@ export function MeetGate({
         icon={WalletMinimal}
         title={none ? "Set up your wallet" : "Reconnect your wallet"}
         actions={
-          <Button disabled={busy} onClick={() => run(none ? wallet.linkWallet : async () => wallet.reconnect())}>
+          <Button icon={WalletMinimal} disabled={busy} onClick={() => run(none ? wallet.linkWallet : async () => wallet.reconnect())}>
             {busy ? "Working…" : none ? "Set up wallet" : "Reconnect wallet"}
           </Button>
         }

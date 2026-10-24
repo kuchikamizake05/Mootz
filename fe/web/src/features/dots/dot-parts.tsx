@@ -4,11 +4,11 @@ import type { ReactNode } from "react";
 import { Avatar } from "@/components/ui/avatar";
 import type { Dot } from "./model";
 import { personName } from "@/features/profile/username";
-import { PageShell } from "@/features/profile/page-shell";
+import { Page } from "@/components/ui/page";
 
 /** Centered column on desktop; full-width on phones. */
 export function DotsPage({ title, children }: { title: string; children: ReactNode }) {
-  return <PageShell title={title}>{children}</PageShell>;
+  return <Page title={title}>{children}</Page>;
 }
 
 /** The participant who is not the viewer; the label is their @username or "Friend". */

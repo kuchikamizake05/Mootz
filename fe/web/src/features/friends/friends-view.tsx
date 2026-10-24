@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { AtSign, Check, Copy, LoaderCircle, TriangleAlert, UserPlus, Users } from "lucide-react";
+import { AtSign, Check, Copy, LoaderCircle, TriangleAlert, UserPlus, Users, UserMinus, X, Send, RotateCcw } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { StateMessage } from "@/components/ui/status";
 import { ApiError } from "@/lib/api/client";
-import { PageShell } from "@/features/profile/page-shell";
+import { Page as PageShell, SectionLabel } from "@/components/ui/page";
 import { handleLabel, normalizeUsername, parseFriendTarget } from "@/features/profile/username";
 import { useOwnUsername } from "@/features/profile/queries";
 import { groupFriends, shortCode, type Relationship } from "./model";
@@ -15,11 +15,11 @@ import { useFriendAction, useFriends, useOwnCode, useSendRequest } from "./queri
 
 function Row({ rel, children, note }: { rel: Relationship; children: React.ReactNode; note?: string }) {
   return (
-    <li className="flex items-center gap-3 border-b border-mootz-hairline py-3">
+    <li className="flex flex-wrap items-center gap-3 rounded-3xl border border-mootz-hairline bg-white p-4">
       <Avatar name={handleLabel(rel.username)} size={44} />
       <div className="min-w-0 flex-1">
         <p className="truncate text-base font-extrabold leading-tight text-mootz-ink">{handleLabel(rel.username)}</p>
-        <p className="text-xs font-semibold text-mootz-muted">
+        <p className="text-[13px] font-semibold text-mootz-muted">
           {[note, rel.username ? null : `Code ${shortCode(rel.accountId)}`].filter(Boolean).join(" · ") || "\u00a0"}
         </p>
       </div>
@@ -65,13 +65,13 @@ function AddFriend() {
           : "Couldn't send the request. Your entry is kept; retrying won't send duplicates.";
 
   return (
-    <section aria-label="Add friend" className="flex flex-col gap-4 rounded-[28px] bg-mootz-surface p-4 shadow-float">
+    <section aria-label="Add friend" className="flex flex-col gap-4 rounded-3xl border border-mootz-hairline bg-mootz-surface p-4 sm:p-5">
       <div>
         <h2 className="font-display text-2xl text-mootz-ink">Add friend</h2>
-        <p className="mt-1 text-sm text-mootz-muted">Share your @username or enter a friend&apos;s @username to send a request. No contact import or chat is included. Scanning a Meet QR never adds a friend.</p>
+        <p className="mt-1 text-[15px] text-mootz-muted">Share your @username or enter a friend&apos;s @username to send a request. No contact import or chat is included. Scanning a Meet QR never adds a friend.</p>
       </div>
       <div>
-        <p className="text-xs font-bold text-mootz-muted">{ownUsername ? "Your username" : "Your friend code"}</p>
+        <p className="text-[13px] font-bold text-mootz-muted">{ownUsername ? "Your username" : "Your friend code"}</p>
         <div className="mt-1 flex items-center gap-2">
           <code className="min-w-0 flex-1 break-all rounded-2xl bg-mootz-canvas px-3 py-2 text-sm font-bold text-mootz-deep">{shareText ?? "Loading…"}</code>
           <Button variant="secondary" icon={copied === "yes" ? Check : Copy} disabled={!shareText} onClick={() => void copy()}>
@@ -79,11 +79,11 @@ function AddFriend() {
           </Button>
         </div>
         {ownUsername === null && (
-          <p className="mt-1 text-xs text-mootz-muted">
+          <p className="mt-1 text-[13px] text-mootz-muted">
             <Link href="/profile/username?next=/friends" className="font-bold text-mootz-deep underline">Choose a username</Link> so friends can find you.
           </p>
         )}
-        <p aria-live="polite" className="mt-1 min-h-4 text-xs text-mootz-muted">
+        <p aria-live="polite" className="mt-1 min-h-4 text-[13px] text-mootz-muted">
           {copied === "no" ? "Couldn't copy. Select the code and copy it manually." : ""}
         </p>
       </div>
@@ -96,7 +96,7 @@ function AddFriend() {
           send.mutate(target, { onSuccess: () => { setInput(""); setTouched(false); } });
         }}
       >
-        <label className="flex flex-col gap-1 text-xs font-bold text-mootz-muted">
+        <label className="flex flex-col gap-1 text-[13px] font-bold text-mootz-muted">
           Friend&apos;s username
           <span className="flex min-h-12 items-center gap-1 rounded-2xl border border-mootz-hairline bg-white px-4 text-mootz-deep focus-within:outline-2 focus-within:outline-mootz-deep">
             <AtSign aria-hidden size={16} />
@@ -146,7 +146,7 @@ export function FriendsView() {
     body = <StateMessage icon={LoaderCircle} busy title="Loading friends…" />;
   } else if (friends.error) {
     body = (
-      <StateMessage icon={TriangleAlert} title="Couldn't load friends" actions={<Button onClick={() => void friends.refetch()}>Retry</Button>}>
+      <StateMessage icon={TriangleAlert} title="Couldn't load friends" actions={<Button icon={RotateCcw} onClick={() => void friends.refetch()}>Retry</Button>}>
         Check your connection and try again.
       </StateMessage>
     );
@@ -166,14 +166,14 @@ export function FriendsView() {
       <div className="flex flex-col gap-5">
         {g.incoming.length > 0 && (
           <section aria-label="Requests" className="flex flex-col gap-2">
-            <h2 className="text-sm font-extrabold text-mootz-deep">Requests</h2>
+            <SectionLabel icon={UserPlus}>Requests</SectionLabel>
             <ul className="flex flex-col gap-2">
               {g.incoming.map((r) => (
                 <Row key={r.accountId} rel={r} note="Wants to be friends">
-                  <Button disabled={act.isPending} aria-label="Accept friend request" onClick={() => act.mutate({ kind: "accept", accountId: r.accountId })}>
+                  <Button icon={Check} disabled={act.isPending} aria-label="Accept friend request" onClick={() => act.mutate({ kind: "accept", accountId: r.accountId })}>
                     {busy(r.accountId) ? "…" : "Accept"}
                   </Button>
-                  <Button variant="secondary" disabled={act.isPending} aria-label="Decline friend request" onClick={() => act.mutate({ kind: "remove", accountId: r.accountId })}>
+                  <Button icon={X} variant="secondary" disabled={act.isPending} aria-label="Decline friend request" onClick={() => act.mutate({ kind: "remove", accountId: r.accountId })}>
                     Decline
                   </Button>
                 </Row>
@@ -183,11 +183,11 @@ export function FriendsView() {
         )}
         {g.outgoing.length > 0 && (
           <section aria-label="Sent requests" className="flex flex-col gap-2">
-            <h2 className="text-sm font-extrabold text-mootz-deep">Sent</h2>
+            <SectionLabel icon={Send}>Sent</SectionLabel>
             <ul className="flex flex-col gap-2">
               {g.outgoing.map((r) => (
                 <Row key={r.accountId} rel={r} note="Waiting for them">
-                  <Button variant="secondary" disabled={act.isPending} aria-label="Cancel friend request" onClick={() => act.mutate({ kind: "remove", accountId: r.accountId })}>
+                  <Button icon={X} variant="secondary" disabled={act.isPending} aria-label="Cancel friend request" onClick={() => act.mutate({ kind: "remove", accountId: r.accountId })}>
                     Cancel
                   </Button>
                 </Row>
@@ -203,20 +203,20 @@ export function FriendsView() {
             <ul className="flex flex-col gap-2">
               {g.friends.map((r) =>
                 confirm === r.accountId ? (
-                  <li key={r.accountId} className="flex flex-col gap-2 rounded-[28px] bg-mootz-surface p-4 shadow-float">
+                  <li key={r.accountId} className="flex flex-col gap-2 rounded-3xl border border-mootz-hairline bg-mootz-surface p-4 sm:p-5">
                     <p className="text-sm font-semibold text-mootz-ink">Remove this friend? You can send a new request later. Your Dots stay.</p>
                     <div className="flex gap-2">
-                      <Button disabled={act.isPending} onClick={() => act.mutate({ kind: "remove", accountId: r.accountId }, { onSuccess: () => setConfirm(null) })}>
+                      <Button icon={UserMinus} disabled={act.isPending} onClick={() => act.mutate({ kind: "remove", accountId: r.accountId }, { onSuccess: () => setConfirm(null) })}>
                         {busy(r.accountId) ? "Removing…" : "Remove"}
                       </Button>
-                      <Button variant="secondary" onClick={() => setConfirm(null)}>
+                      <Button icon={Check} variant="secondary" onClick={() => setConfirm(null)}>
                         Keep friend
                       </Button>
                     </div>
                   </li>
                 ) : (
                   <Row key={r.accountId} rel={r}>
-                    <Button variant="secondary" aria-label={`Remove friend ${shortCode(r.accountId)}`} onClick={() => setConfirm(r.accountId)}>
+                    <Button icon={UserMinus} variant="secondary" aria-label={`Remove friend ${shortCode(r.accountId)}`} onClick={() => setConfirm(r.accountId)}>
                       Remove
                     </Button>
                   </Row>

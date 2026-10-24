@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { AtSign } from "lucide-react";
+import { AtSign, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ApiError } from "@/lib/api/client";
-import { PageShell } from "./page-shell";
+import { Page as PageShell } from "@/components/ui/page";
 import { useOwnUsername, useSetUsername } from "./queries";
 import { USERNAME_RULES, normalizeUsername, safeNext, usernameProblem } from "./username";
 
@@ -35,15 +35,15 @@ export function UsernameView() {
   return (
     <PageShell title={current ? "Change username" : "Choose username"} onBack={() => router.push(next)}>
       <form
-        className="flex flex-col gap-3"
+        className="flex flex-col gap-4 rounded-3xl border border-mootz-hairline bg-white p-5"
         onSubmit={(e) => {
           e.preventDefault();
           if (problem || save.isPending) return;
           save.mutate(normalizeUsername(value), { onSuccess: () => router.push(next) });
         }}
       >
-        <p className="text-sm text-mootz-muted">Friends find you by your @username. You can change it later.</p>
-        <label className="flex flex-col gap-1 text-xs font-bold text-mootz-muted">
+        <p className="text-[15px] text-mootz-muted">Friends find you by your @username. You can change it later.</p>
+        <label className="flex flex-col gap-1 text-[13px] font-bold text-mootz-muted">
           Username
           <span className="flex min-h-12 items-center gap-1 rounded-2xl border border-mootz-hairline bg-white px-4 text-mootz-deep focus-within:outline-2 focus-within:outline-mootz-deep">
             <AtSign aria-hidden size={16} />
@@ -66,11 +66,11 @@ export function UsernameView() {
             />
           </span>
         </label>
-        <p id="username-rules" className="text-xs text-mootz-muted">{USERNAME_RULES}</p>
+        <p id="username-rules" className="text-[13px] text-mootz-muted">{USERNAME_RULES}</p>
         <p id="username-msg" role="alert" className="min-h-4 text-sm font-semibold text-mootz-ink">
           {save.isError ? errorText(save.error) : showProblem || ""}
         </p>
-        <Button type="submit" size="lg" block disabled={!!problem || unchanged || save.isPending}>
+        <Button icon={Check} type="submit" size="lg" block disabled={!!problem || unchanged || save.isPending}>
           {save.isPending ? "Saving…" : "Save"}
         </Button>
       </form>

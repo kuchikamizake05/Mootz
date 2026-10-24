@@ -1,6 +1,6 @@
 "use client";
 
-import { Clock } from "lucide-react";
+import { Clock, RotateCcw, ScanLine } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Photo } from "@/components/ui/photo";
 import { useMoment } from "@/features/moments/queries";
@@ -80,7 +80,7 @@ export function QrScreen({
         ) : (
           <QrImage text={text} label={demo ? "Demo QR, not scannable" : "Meet QR for your friend to scan"} className="rounded-2xl" />
         )}
-        {demo && <p className="mx-auto mt-2 w-fit rounded-full bg-white px-2.5 py-0.5 text-center text-xs font-bold text-mootz-muted">Demo QR · Not scannable</p>}
+        {demo && <p className="mx-auto mt-2 w-fit rounded-full bg-white px-2.5 py-0.5 text-center text-[13px] font-bold text-mootz-muted">Demo QR · Not scannable</p>}
       </div>
       <div className="hidden lg:flex lg:flex-col lg:gap-4">
         <Countdown left={left} total={total} />
@@ -104,13 +104,13 @@ export function QrScreen({
       </p>
       <div className="flex flex-col gap-2">
         {expired ? (
-          <Button variant="secondary" size="lg" block onClick={onNewQr}>
+          <Button icon={RotateCcw} variant="secondary" size="lg" block onClick={onNewQr}>
             New QR
           </Button>
         ) : (
           <>
             {onSimulate && (
-              <Button variant="secondary" size="lg" block onClick={onSimulate}>
+              <Button icon={ScanLine} variant="secondary" size="lg" block onClick={onSimulate}>
                 Simulate scan
               </Button>
             )}
@@ -118,7 +118,7 @@ export function QrScreen({
         )}
       </div>
       </div>
-      <p className="mt-auto text-xs font-bold text-white/80">
+      <p className="mt-auto text-[13px] font-bold text-white/80">
         Scanning doesn&apos;t create a friendship. Signatures and a distance check don&apos;t prove presence or that a photo is real.
       </p>
     </>

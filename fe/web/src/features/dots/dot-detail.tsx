@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { LoaderCircle, TriangleAlert } from "lucide-react";
+import { CalendarDays, Eye, EyeOff, LoaderCircle, MapPin, RotateCcw, TriangleAlert } from "lucide-react";
+import { Card, InfoRow, SectionLabel } from "@/components/ui/page";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { MeetDotMarker } from "@/components/ui/map-markers";
 import { Photo } from "@/components/ui/photo";
@@ -47,6 +48,7 @@ function Visibility({ dot, isParticipant }: { dot: Dot; isParticipant: boolean }
           This hides the Dot from the map for everyone. It still counts in your profile. Only you can show it again. Onchain records can&apos;t be removed.
         </p>
         <Button
+          icon={EyeOff}
           size="lg"
           block
           disabled={mutation.isPending}
@@ -54,7 +56,7 @@ function Visibility({ dot, isParticipant }: { dot: Dot; isParticipant: boolean }
         >
           {mutation.isPending ? "Hiding…" : "Hide from map"}
         </Button>
-        <Button variant="secondary" size="lg" block disabled={mutation.isPending} onClick={() => setConfirming(false)}>
+        <Button icon={MapPin} variant="secondary" size="lg" block disabled={mutation.isPending} onClick={() => setConfirming(false)}>
           Keep on map
         </Button>
       </section>
@@ -62,8 +64,8 @@ function Visibility({ dot, isParticipant }: { dot: Dot; isParticipant: boolean }
   }
 
   return (
-    <section aria-labelledby="visibility-title" className="flex flex-col gap-3">
-      <h2 id="visibility-title" className="font-display text-2xl text-mootz-deep">{dot.hidden ? "Hidden" : "Visibility"}</h2>
+    <Card role="region" aria-labelledby="visibility-title" className="flex flex-col gap-3">
+      <SectionLabel icon={dot.hidden ? EyeOff : Eye} id="visibility-title">{dot.hidden ? "Hidden" : "Visibility"}</SectionLabel>
       <div aria-live="polite" className="flex flex-col gap-3">
         {dot.hidden ? (
           otherHid ? (
@@ -74,7 +76,7 @@ function Visibility({ dot, isParticipant }: { dot: Dot; isParticipant: boolean }
           ) : isParticipant ? (
             <>
               <p className="text-sm text-mootz-muted">This Dot is hidden from the map. Only the participant who hid it can show it again.</p>
-              <Button variant="secondary" size="lg" block disabled={mutation.isPending} onClick={() => mutation.mutate(false)}>
+              <Button icon={Eye} variant="secondary" size="lg" block disabled={mutation.isPending} onClick={() => mutation.mutate(false)}>
                 {mutation.isPending ? "Showing…" : "Show on map"}
               </Button>
             </>
@@ -82,13 +84,13 @@ function Visibility({ dot, isParticipant }: { dot: Dot; isParticipant: boolean }
             <p className="text-sm text-mootz-muted">This Dot is hidden from the map.</p>
           )
         ) : isParticipant ? (
-          <Button variant="secondary" size="lg" block onClick={() => setConfirming(true)}>Hide from map</Button>
+          <Button icon={EyeOff} variant="secondary" size="lg" block onClick={() => setConfirming(true)}>Hide from map</Button>
         ) : null}
         {conflict && !dot.hidden && <p className="text-sm text-mootz-muted">Hidden by the other participant. Only the person who hid it can restore it.</p>}
         {failed && <p role="alert" className="text-sm font-bold text-mootz-ink">Couldn&apos;t update visibility. Try again.</p>}
       </div>
       <p className="text-sm text-mootz-muted">Hiding and the onchain record are separate. Hiding affects the map, not the count or onchain history. Onchain records can&apos;t be removed.</p>
-    </section>
+    </Card>
   );
 }
 
@@ -106,20 +108,20 @@ function DotBody({ dot }: { dot: Dot }) {
       </div>
       <div>
         <h2 className="font-display text-[34px] leading-tight text-mootz-ink">You and {friendRef(otherUsername)} were here</h2>
-        <p className="mt-1 text-sm font-semibold text-mootz-muted">{formatDotWhen(dot.createdAt)}</p>
+        <InfoRow icon={CalendarDays} className="mt-2 text-mootz-muted">{formatDotWhen(dot.createdAt)}</InfoRow>
       </div>
       {dot.location ? (
         <>
           <div className="grid h-40 place-items-center overflow-hidden rounded-3xl bg-mootz-surface">
             <MeetDotMarker savedOnchain={status === "saved"} label="Approximate Dot area" tabIndex={-1} disabled className={dot.hidden ? "opacity-50" : undefined} size={136} />
           </div>
-          <p className="text-xs font-bold text-mootz-muted">Approx. 200 m area · not a verification location</p>
+          <p className="text-[13px] font-bold text-mootz-muted">Approx. 200 m area · not a verification location</p>
         </>
       ) : (
         <p className="grid min-h-28 place-items-center rounded-3xl bg-mootz-surface px-4 text-center text-sm font-bold text-mootz-muted">No display location</p>
       )}
       <RecordingStatusRow status={status} />
-      {status === "saved" && <p className="-mt-2 text-xs font-semibold text-mootz-muted">{isFinal(dot) ? "Final onchain record." : "Recorded; not yet final."}</p>}
+      {status === "saved" && <p className="-mt-2 text-[13px] font-semibold text-mootz-muted">{isFinal(dot) ? "Final onchain record." : "Recorded; not yet final."}</p>}
       <LinkedMoment momentId={dot.momentId} />
       <Visibility dot={dot} isParticipant={isParticipant} />
     </>
@@ -138,7 +140,7 @@ export function DotDetail({ id }: { id: string }) {
     );
   } else if (error || !dot) {
     body = (
-      <StateMessage icon={TriangleAlert} title="Couldn't load this Dot" actions={<Button onClick={() => void refetch()}>Retry</Button>}>
+        <StateMessage icon={TriangleAlert} title="Couldn't load this Dot" actions={<Button icon={RotateCcw} onClick={() => void refetch()}>Retry</Button>}>
         Check your connection and try again.
       </StateMessage>
     );

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import { Ban, Clock, LoaderCircle, ScanLine, ShieldAlert, TriangleAlert } from "lucide-react";
+import { Ban, Check, Clock, Info, LoaderCircle, ScanLine, ShieldAlert, TriangleAlert, X } from "lucide-react";
 import { recoverTypedDataAddress } from "viem";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { PairedPhoto } from "@/components/ui/moment";
@@ -382,17 +382,17 @@ function Preview({
         {left !== undefined && left > 0 && left <= 20 ? ` This QR expires in ${left} s.` : ""}
       </p>
       <div className="flex flex-col gap-2">
-        <Button size="lg" block onClick={onApprove}>
+        <Button icon={Check} size="lg" block onClick={onApprove}>
           Approve
         </Button>
-        <Button variant="secondary" size="lg" block onClick={onDecline}>
+        <Button icon={X} variant="secondary" size="lg" block onClick={onDecline}>
           Decline
         </Button>
-        <ButtonLink variant="secondary" size="lg" block href="/meet/whats-recorded">
+        <ButtonLink icon={Info} variant="secondary" size="lg" block href="/meet/whats-recorded">
           What&apos;s recorded?
         </ButtonLink>
       </div>
-      <p className="text-xs font-bold text-mootz-muted">
+      <p className="text-[13px] font-bold text-mootz-muted">
         No friendship is created. No daily post or streak credit for scanning. A signature and a distance check don&apos;t prove you were there or that the photo is real.
       </p>
     </MeetFrame>

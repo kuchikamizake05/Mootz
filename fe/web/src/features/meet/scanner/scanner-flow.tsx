@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CameraOff, ScanLine } from "lucide-react";
+import { ArrowLeft, CameraOff, CircleHelp, RotateCcw, ScanLine } from "lucide-react";
 import jsQR from "jsqr";
 import { Button } from "@/components/ui/button";
 import { StateMessage } from "@/components/ui/status";
@@ -33,7 +33,7 @@ export function ScannerFlow() {
           Demo viewfinder · Camera not connected
         </div>
         <p className="text-mootz-muted">Open Meet on your phone to scan a friend&apos;s QR. For a preview of the next step, open the demo preview.</p>
-        <Button variant="secondary" block onClick={() => router.push("/meet/accept")}>
+        <Button icon={ScanLine} variant="secondary" block onClick={() => router.push("/meet/accept")}>
           Open demo preview
         </Button>
       </MeetFrame>
@@ -146,8 +146,8 @@ function Scanner({ onClose }: { onClose: () => void }) {
           title={denied ? "Camera access is off. Allow the camera to scan your friend's Mootz QR." : "This device can't scan here."}
           actions={
             <>
-              {denied && <Button onClick={retry}>Try again</Button>}
-              <Button variant="secondary" onClick={onClose}>Back to moment</Button>
+              {denied && <Button icon={RotateCcw} onClick={retry}>Try again</Button>}
+              <Button icon={ArrowLeft} variant="secondary" onClick={onClose}>Back to moment</Button>
             </>
           }
         >
@@ -169,7 +169,7 @@ function Scanner({ onClose }: { onClose: () => void }) {
           {invalid ? "That's not a Mootz Meet QR." : ""}
         </p>
         <p className="text-mootz-muted">A scan shows a preview of one moment only. It doesn&apos;t add a friend or open their other posts.</p>
-        <Button variant="secondary" block aria-expanded={help} onClick={() => setHelp(!help)}>
+        <Button icon={CircleHelp} variant="secondary" block aria-expanded={help} onClick={() => setHelp(!help)}>
           Camera help
         </Button>
         {help && (
