@@ -17,7 +17,8 @@ The official [faucet and submission portal](https://blitz.devnads.com/events/mon
 ## Evidence and acceptance
 
 - Website, API `/health` and `/ready` returned HTTP 200 on 24 October 2026. This does not verify authentication, CORS or user flows.
-- [Public deployment evidence](../sc/abi/deployment.monad-testnet.json) records both verified contracts on chain 10143.
+- [Mainnet deployment evidence](../sc/abi/deployment.monad-mainnet.json) records both contracts on Monad mainnet, chain **143**, including deployment transactions and explorer verification results. Successful receipts and runtime bytecode hashes were rechecked through the public mainnet RPC for the README update on 24 October 2026.
+- [Testnet deployment evidence](../sc/abi/deployment.monad-testnet.json) remains available for chain **10143**. Current backend/relay paths still enforce testnet; mainnet application migration and a live two-wallet Meet/claim acceptance run remain pending. The contract addresses are identical across these chains; verify the network when presenting receipts.
 - Reproducible checks are documented in the [web](../fe/web/README.md), [backend](../be/README.md) and [contract](../sc/README.md) READMEs. See [verification](verification.md) for acceptance status.
 - Before claiming a complete connected demo, verify allowed frontend origins in the API and Privy, login/wallet binding, private media, camera/GPS, a two-device Meet, a finalized receipt, event eligibility and organizer reads.
 
@@ -25,4 +26,4 @@ The official [faucet and submission portal](https://blitz.devnads.com/events/mon
 
 Dots are offchain Meet markers, not tokens or currency. Failed or skipped chain records never remove them. Photos and precise location remain offchain; public Meet records expose participating wallets. Both distinct signers must consent to `RECORD_MEET`. Signatures and distance checks do not prove unique humans or physical attendance.
 
-Landing phone previews and optional UI fixtures are illustrative; fixture mode must stay disabled in deployed demos. The separate mobile client remains planned. Testnet deployment is not production readiness.
+Landing phone previews and optional UI fixtures are illustrative; fixture mode must stay disabled in deployed demos. The separate mobile client remains planned. Mainnet contract deployment does not establish application migration, live acceptance or production readiness.

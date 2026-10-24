@@ -2,6 +2,13 @@
 
 Run each module's actual scripts from its directory. Record results for the current checkout; do not infer deployment or end-to-end readiness from unit tests.
 
+## Mainnet deployment documentation — 24 October 2026
+
+- PASS: public RPC reported chain 143; both deployment receipts had successful status and the expected contract addresses; current runtime bytecode hashes matched [the mainnet deployment record](../sc/abi/deployment.monad-mainnet.json).
+- Explorer source verification is recorded in that artifact (Monadscan verified; MonadVision partial matches). Explorer pages could not be opened by the browsing tool during this update; explorer verification was not rerun.
+- PENDING: application migration from testnet chain 10143, INT-01 consumer approval and a live two-wallet mainnet Meet/claim run. Deployment evidence has no Meet/claim smoke receipts. Current backend and relay guards still enforce 10143.
+- Scope: README and judge-guide consistency. Website/API availability and module test suites were not rerun for this documentation-only update.
+
 ## Foreground friend location — 24 October 2026
 
 Avatar follow-up: profile JPEG/PNG upload/removal and authenticated own-avatar reads are connected to the friend-location marker. Latest combined backend run: 329 tests PASS. Targeted presence+avatar coverage: lines 97.77%, branches 82.6%, functions 92.3%, statements 94.06% (80% aggregate gates PASS). Frontend unit tests (30), generated API check, typecheck/lint and production build PASS; four Map/profile Playwright+axe checks at 390/1440 PASS. Avatar tests cover invalid/unauthenticated uploads, normalization/private storage, stranger denial, authorized signing, replacement/removal and failed-upload preservation. Production cloud storage and two-phone avatar display remain UNVERIFIED. Deployment also requires migration `018_profile_avatar.sql`.
