@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+/* Mootz tokens. Source: Mootz.pen variables (formerly rove-*), board A.01. */
+@theme {
+  --color-mootz-deep: #4c1d95;
+  --color-mootz-purple: #6d28d9;
+  --color-mootz-light: #c4b5fd;
+  --color-mootz-canvas: #f4f0ff;
+  --color-mootz-ink: #21152f;
+  --color-mootz-muted: #62566f;
+  --color-mootz-surface: #ffffff;
+  --color-mootz-depth: #35116f;
+
+  /* Supporting neutrals used across A.01–A.05. */
+  --color-mootz-lilac: #eee7ff;    /* switch track, chips, photo placeholder */
+  --color-mootz-hairline: #ddd2eb; /* soft borders */
+  --color-mootz-handle: #d7cfdf;   /* sheet drag handle */
+  --color-mootz-disabled: #e7e1ee;
+  --color-mootz-violet: #a78bfa;   /* lilac frame gradient end */
+  --color-mootz-select: #2563eb;   /* selection ring, distinct from frames */
+
+  --font-display: var(--font-barlow-condensed), "Arial Narrow", sans-serif;
+  --font-sans: var(--font-nunito-sans), ui-sans-serif, system-ui, sans-serif;
+
+  --shadow-float: 0 5px 14px #35116f20;
+  --shadow-soft: 0 3px 10px #35116f20;
+}
+
+/*
+ * "Button feel" from A.01: 1px depth border (2px bottom), a solid drop of the
+ * depth colour and a faint inner highlight. Pressed removes the drop.
+ */
+@utility raised {
+  border: 1px solid var(--color-mootz-depth);
+  border-bottom-width: 2px;
+  box-shadow: 0 3px 0 var(--color-mootz-depth), inset 0 1px 0 #ffffff66;
+  transition: transform 80ms ease-out, box-shadow 80ms ease-out;
+  &:active:not(:disabled) {
+    transform: translateY(3px);
+    box-shadow: 0 0 0 var(--color-mootz-depth), inset 0 1px 0 #ffffff66;
+  }
+}
+
+@utility raised-strong {
+  border: 1px solid var(--color-mootz-depth);
+  border-bottom-width: 3px;
+  box-shadow: 0 4px 0 var(--color-mootz-depth), inset 0 1px 0 #ffffff66;
+  transition: transform 80ms ease-out, box-shadow 80ms ease-out;
+  &:active:not(:disabled) {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 var(--color-mootz-depth), inset 0 1px 0 #ffffff66;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  background: var(--color-mootz-surface);
+  color: var(--color-mootz-ink);
+  font-family: var(--font-sans);
+  font-weight: 700;
+}
+
+/* A.01: "Focus: 3px blue / 4px offset" — distinct from purple frames. */
+:focus-visible {
+  outline: 3px solid var(--color-mootz-select);
+  outline-offset: 4px;
+}
