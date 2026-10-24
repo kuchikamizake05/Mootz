@@ -31,3 +31,21 @@ Loaded from images.unsplash.com. Free to use under the [Unsplash License](https:
 Approved Mootz SVG marks are copied from assets/brand/mootz in the parent repository. The dual-photo panels and concept Feed reuse the credited Unsplash hero and outdoor conversation photographs above; the photos illustrate the concept and are not actual Mootz user posts.
 
 The hero uses the approved AI-generated group illustration from `../assets/pitch/visuals/team-lifestyle-3-slide-version.png`. See `../assets/pitch/README.md` for asset provenance.
+
+## App previews
+
+The `app-*.webp` files show local Mootz UI with fictional demo data, captured at 390 × 844 with 2× device scale. Photo requests use approved generated Mootz photos; private fixture photos are excluded. Map previews use MapLibre, OpenFreeMap and © OpenStreetMap contributors. Capture script: `fe/web/scripts/capture-landing.mjs`.
+
+## Dual-camera moment gallery
+
+`mootz-cafe-{rear,front}-v1.webp`, `mootz-dinner-{rear,front}-v1.webp`, and `mootz-meetup-{rear,front}-v1.webp` were generated with the built-in imagegen tool for this landing. They depict fictional adults and illustrative activity, not real app users or actual event attendance. Each paired image was exported into separate front and rear WebP files. These replace the Unsplash gallery photos; their historical credits above are retained for provenance.
+
+Prompt set: candid smartphone front/rear pairs at a Yogyakarta cafe at dusk, dinner at a warung, and a student prototype meetup in a coworking space. Each generation requested matching locations, natural lighting, fictional Indonesian adults, and no text, UI, borders or watermarks.
+
+## Team closing photo
+
+`mootz-team-courtyard-v1.webp` is an AI-generated lifestyle adaptation of the existing approved `mootz-hero-group.png` team reference, made with the built-in imagegen tool. Exported at 1600 × 1067, matching the replaced closing image dimensions. Prompt: preserve the same three team members, blue clothing, hair and glasses; create a new courtyard cafe scene in Yogyakarta, sharing one phone, with the group on the right and space for text on the left; natural afternoon light, no text or watermark. This is a generated scene, not documentary evidence of attendance.
+
+## Additional dual-camera moments
+
+`mootz-park-{rear,front}-v1.webp`, `mootz-badminton-{rear,front}-v1.webp`, and `mootz-market-{rear,front}-v1.webp` were generated using the built-in imagegen tool and exported to 887 × 887 per view. They depict fictional adults. Prompt set: coherent rear/front smartphone photo pairs of a Yogyakarta park picnic, friends after badminton, and an evening night-market walk; natural skin, matching environments, no UI, captions, borders or watermark.
