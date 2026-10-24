@@ -1,0 +1,104 @@
+{
+  "status": "DEPLOYED_VERIFIED",
+  "network": "Monad testnet",
+  "chainId": 10143,
+  "protocolStatus": "candidate-int-01-not-approved",
+  "deployer": "0x1B6A8259fB8aB197ee27F45788f14D77B35301f9",
+  "roles": {
+    "admin": "0x1B6A8259fB8aB197ee27F45788f14D77B35301f9",
+    "relayer": "0x1B6A8259fB8aB197ee27F45788f14D77B35301f9",
+    "issuer": "0x1B6A8259fB8aB197ee27F45788f14D77B35301f9"
+  },
+  "rpcVerifiedAt": "2026-10-24T04:29:16.280Z",
+  "contracts": {
+    "MeetRegistry": {
+      "deploymentTx": "0x936ca90f380c71a685f50660b5341fecdedf51664f74f8d3d18e641940a838eb",
+      "gasLimit": "1611300",
+      "maxFeePerGas": "122000000000",
+      "constructorArgs": "0000000000000000000000001b6a8259fb8ab197ee27f45788f14d77b35301f90000000000000000000000001b6a8259fb8ab197ee27f45788f14d77b35301f9",
+      "address": "0x6fcdc6f98ab1ead21ae44f1e57f1ffeb5d3a49ff",
+      "blockNumber": "73719545",
+      "bytecodeHash": "0x74b71e3af06ab4e6b212328d97c93182141c7ab29f5c40154fadd4231db733f7",
+      "gasUsed": "1611300",
+      "effectiveGasPrice": "102000000000",
+      "verification": {
+        "api": "https://agents.devnads.com/v1/verify",
+        "checkedAt": "2026-10-24T04:29:41.904Z",
+        "httpStatus": 200,
+        "result": {
+          "success": true,
+          "verified": 2,
+          "total": 2,
+          "results": {
+            "monadvision": {
+              "status": "success",
+              "message": "Verified with partial match",
+              "url": "https://testnet.monadvision.com/address/0x6fcdc6f98ab1ead21ae44f1e57f1ffeb5d3a49ff"
+            },
+            "monadscan": {
+              "status": "success",
+              "message": "Pass - Verified",
+              "guid": "sekbfqfmmwvijc2cruvfrqnsbbjs4uikmeseg6w81ahrqb4wte",
+              "url": "https://testnet.monadscan.com/address/0x6fcdc6f98ab1ead21ae44f1e57f1ffeb5d3a49ff"
+            }
+          }
+        }
+      }
+    },
+    "EventCollection": {
+      "deploymentTx": "0xbc12cf8f79b7713261f14519ef557bdbe02e48ee58880e4d5f3017828667778d",
+      "gasLimit": "2387720",
+      "maxFeePerGas": "122000000000",
+      "constructorArgs": "0000000000000000000000001b6a8259fb8ab197ee27f45788f14d77b35301f90000000000000000000000001b6a8259fb8ab197ee27f45788f14d77b35301f9",
+      "address": "0x3d368ee46756102b0e0567f846f5ad9fcdff8a01",
+      "blockNumber": "73719549",
+      "bytecodeHash": "0xb12068c5c27bb44f3a5f7faaa51cfaf8afb7597011d0e859d6c08c0c7d879ede",
+      "gasUsed": "2387720",
+      "effectiveGasPrice": "102000000000",
+      "verification": {
+        "api": "https://agents.devnads.com/v1/verify",
+        "checkedAt": "2026-10-24T04:29:48.184Z",
+        "httpStatus": 200,
+        "result": {
+          "success": true,
+          "verified": 2,
+          "total": 2,
+          "results": {
+            "monadvision": {
+              "status": "success",
+              "message": "Verified with partial match",
+              "url": "https://testnet.monadvision.com/address/0x3d368ee46756102b0e0567f846f5ad9fcdff8a01"
+            },
+            "monadscan": {
+              "status": "success",
+              "message": "Pass - Verified",
+              "guid": "uff7r3st1ugnjtebv5anxkxmfryv3q7mzqze6gpqld6tteqqcf",
+              "url": "https://testnet.monadscan.com/address/0x3d368ee46756102b0e0567f846f5ad9fcdff8a01"
+            }
+          }
+        }
+      }
+    }
+  },
+  "explorerVerification": {
+    "monadscan": "VERIFIED",
+    "monadvision": "PARTIAL_MATCH"
+  },
+  "readbackVerifiedAt": "2026-10-24T04:29:20.786Z",
+  "commit": "f0a966dfe9adbfb8f4a8f59b742e9f53f3cdfe27",
+  "independentReadback": {
+    "rpc": "https://testnet-rpc.monad.xyz",
+    "checkedAt": "2026-10-24T04:30:13.782Z",
+    "status": "PASS"
+  },
+  "totalDeploymentCostMon": "0.40790004",
+  "smokeReceipts": {
+    "meet": null,
+    "claim": null
+  },
+  "limitations": [
+    "Admin, relayer and issuer share the approved testnet deployer wallet",
+    "INT-01 consumer approval remains pending",
+    "Public two-wallet Meet/claim end-to-end smoke has not been run"
+  ]
+}
