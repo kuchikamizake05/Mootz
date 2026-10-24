@@ -1,11 +1,19 @@
-<p align="center"><img src="assets/brand/mootz/mootz-logo-v1.svg" alt="Mootz" width="360"></p>
-<h1 align="center">Share your day. Meet in person.</h1>
-<p align="center">A social Map + Feed with shared memories on Monad.</p>
+<h1 align="center">Mootz</h1>
+<p align="center"><strong>Share your day. Meet in person.</strong><br>A social Map + Feed with shared memories on Monad.</p>
 <p align="center"><a href="https://mootz-red.vercel.app">Website</a> · <a href="https://mootz-red.vercel.app/app">Open app</a> · <a href="docs/hackathon.md">Judge guide</a> · <a href="sc/abi/deployment.monad-testnet.json">Deployment evidence</a></p>
 
-<h2 align="center">Tech stack</h2>
 <p align="center">
-  <img src="https://skillicons.dev/icons?i=nextjs,react,ts,tailwind,nodejs,postgres,supabase,solidity,docker,vercel&amp;perline=10" alt="Next.js, React, TypeScript, Tailwind CSS, Node.js, PostgreSQL, Supabase, Solidity, Docker, Vercel" height="48">
+  <img src="https://img.shields.io/badge/Next.js-000000?style=flat-square" alt="Next.js">
+  <img src="https://img.shields.io/badge/React-149ECA?style=flat-square" alt="React">
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat-square" alt="TypeScript">
+  <img src="https://img.shields.io/badge/Tailwind_CSS-0891B2?style=flat-square" alt="Tailwind CSS">
+  <img src="https://img.shields.io/badge/Node.js-339933?style=flat-square" alt="Node.js">
+  <img src="https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square" alt="PostgreSQL">
+  <img src="https://img.shields.io/badge/Supabase-167D5A?style=flat-square" alt="Supabase">
+  <img src="https://img.shields.io/badge/Solidity-363636?style=flat-square" alt="Solidity">
+  <img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square" alt="Docker">
+  <img src="https://img.shields.io/badge/Vercel-000000?style=flat-square" alt="Vercel">
+  <a href="sc/abi/deployment.monad-testnet.json"><img src="https://img.shields.io/badge/Monad-Testnet-6D28D9?style=flat-square" alt="Monad Testnet"></a>
 </p>
 
 Mootz brings everyday moments and real-world meetups into one place. Post a front-and-back photo, discover what friends share on Map or Feed, and scan a short-lived QR to create a shared **Dot**. When both people opt in, a signed Meet record can be stored on Monad. Event organizers can also issue nontransferable collectibles to eligible attendees.
