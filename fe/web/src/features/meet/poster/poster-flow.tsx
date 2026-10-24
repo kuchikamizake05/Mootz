@@ -192,14 +192,14 @@ function PosterSession({ momentId, wallet }: { momentId: string; wallet: ReadyWa
 
   const close = () => closeFlow(router);
   return (
-    <MeetFrame title="Meet" tone="deep" onClose={close}>
+    <MeetFrame title={phase.name === "active" ? "Show this to your friend" : "Meet"} tone="deep" wide={phase.name === "active"} onClose={close}>
       {phase.name === "active" ? (
         <QrScreen momentId={momentId} text={phase.text} left={left} locationNote={locationNote} onNewQr={() => void start(true)} onClose={close} />
       ) : phase.name === "error" ? (
         <StateMessage
           icon={TriangleAlert}
           title={phase.title}
-          className="[&_h2]:text-white [&_svg]:text-white [&>div:not(:last-child)]:text-white/80"
+          className="my-auto w-full py-6 [&_h2]:text-white [&_svg]:text-white [&>div:not(:last-child)]:text-white/80 [&>div:last-child]:w-full [&>div:last-child]:flex-col"
           actions={
             <>
               {phase.retry && (
@@ -216,7 +216,7 @@ function PosterSession({ momentId, wallet }: { momentId: string; wallet: ReadyWa
           {phase.body}
         </StateMessage>
       ) : (
-        <StateMessage icon={LoaderCircle} busy className="[&_h2]:text-white [&_svg]:text-white" title={phase.name === "signing" ? "Confirm in your wallet" : "Opening your QR…"}>
+        <StateMessage icon={LoaderCircle} busy className="my-auto w-full py-6 [&_h2]:text-white [&_svg]:text-white" title={phase.name === "signing" ? "Confirm in your wallet" : "Opening your QR…"}>
           <span className="text-white/80">
             {phase.name === "signing" ? "You're signing a Meet Offer for this one moment. Signing doesn't save anything onchain." : "Preparing your Meet."}
           </span>
@@ -243,7 +243,7 @@ function DemoPoster({ momentId }: { momentId: string }) {
     );
   }
   return (
-    <MeetFrame title="Meet" tone="deep" onClose={close}>
+    <MeetFrame title="Show this to your friend" tone="deep" wide onClose={close}>
       <QrScreen
         demo
         momentId={momentId}

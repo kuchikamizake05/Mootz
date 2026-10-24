@@ -13,7 +13,7 @@ function Countdown({ left, total }: { left: number; total: number }) {
   const urgent = left > 0 && left <= 10;
   const mm = `${Math.floor(left / 60)}:${String(left % 60).padStart(2, "0")}`;
   return (
-    <div className="flex h-11 items-center justify-center gap-2 rounded-2xl bg-white/10 lg:h-auto lg:justify-start lg:bg-transparent">
+    <div className="flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-white/10 px-3 py-2 lg:justify-start">
       <svg aria-hidden viewBox="0 0 60 60" className={cn("size-5 -rotate-90", urgent && "motion-safe:animate-pulse")}>
         <circle cx="30" cy="30" r="26" fill="none" strokeWidth="5" className="stroke-white/25" />
         <circle
@@ -28,7 +28,7 @@ function Countdown({ left, total }: { left: number; total: number }) {
           strokeDashoffset={RING * (1 - left / total)}
         />
       </svg>
-      <span aria-hidden className={cn("font-display text-[30px] lg:text-[60px] leading-none tabular-nums", urgent && "text-white")}>
+      <span aria-hidden className={cn("font-display text-[32px] leading-none tabular-nums sm:text-[40px]", urgent && "text-white")}>
         {mm}
       </span>
     </div>
@@ -67,10 +67,9 @@ export function QrScreen({
       <p className="sr-only" role="status" aria-live="polite">
         {expired ? "This QR expired." : urgent ? "Less than 10 seconds left." : ""}
       </p>
-      <h2 className="font-display text-[32px] leading-none lg:hidden">Show this to your friend</h2>
-      <div className="contents lg:grid lg:grid-cols-[388px_1fr] lg:gap-7">
-      <div className="lg:hidden"><Countdown left={left} total={total} /></div>
-      <div className="mx-auto flex h-[264px] w-full max-w-[342px] flex-col items-center justify-center rounded-[28px] bg-white p-5 text-mootz-ink [&_svg]:size-[192px] lg:row-span-5 lg:flex lg:h-[430px] lg:max-w-none lg:flex-col lg:justify-center lg:p-8 lg:[&_svg]:size-[294px]">
+      <div className="grid min-w-0 gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-start lg:gap-8">
+      <div className="flex min-w-0 flex-col gap-2">
+      <figure aria-label="Meet QR code" className="mx-auto w-full max-w-[360px] rounded-3xl bg-white p-4 text-mootz-ink sm:p-5 lg:max-w-none lg:p-6">
         {expired ? (
           <div className="grid aspect-square w-full place-items-center rounded-2xl bg-mootz-lilac text-mootz-deep">
             <p className="flex items-center gap-2 text-lg font-extrabold">
@@ -80,45 +79,33 @@ export function QrScreen({
         ) : (
           <QrImage text={text} label={demo ? "Demo QR, not scannable" : "Meet QR for your friend to scan"} className="rounded-2xl" />
         )}
-        {demo && <p className="mx-auto mt-2 w-fit rounded-full bg-white px-2.5 py-0.5 text-center text-[13px] font-bold text-mootz-muted">Demo QR · Not scannable</p>}
+      </figure>
+        {demo && <p className="text-center text-[13px] font-bold text-white/80">Demo QR · Not scannable</p>}
+        {expired && <Button icon={RotateCcw} variant="secondary" size="lg" block onClick={onNewQr}>New QR</Button>}
       </div>
-      <div className="hidden lg:flex lg:flex-col lg:gap-4">
+      <div className="flex min-w-0 flex-col gap-4">
         <Countdown left={left} total={total} />
-        <p className="text-[15px] font-bold">60-second signed Offer · One scanner</p>
-      </div>
-      <div className="flex items-center gap-3 lg:flex-col lg:items-start">
-        <Photo src={moment?.backSrc} alt="" className="h-[60px] w-[68px] shrink-0 rounded-2xl lg:h-[182px] lg:w-full lg:rounded-[20px]" />
-        <div className="min-w-0 text-sm font-extrabold lg:hidden">
-          <p>You · {moment?.postedLabel ?? "Your moment"}</p>
-          {moment?.caption && <p className="truncate font-normal text-white/80">{moment.caption}</p>}
+        <p className="hidden text-sm font-bold lg:block">60-second signed Offer · One scanner</p>
+      <div className="flex min-w-0 items-center gap-3">
+        <Photo src={moment?.backSrc} alt="" className="size-16 shrink-0 rounded-2xl" />
+        <div className="min-w-0 text-sm font-extrabold">
+          <p className="break-words">You · {moment?.postedLabel ?? "Your moment"}</p>
+          {moment?.caption && <p className="line-clamp-2 break-words font-normal text-white/80">{moment.caption}</p>}
         </div>
       </div>
-      <p className="text-sm leading-[1.4] lg:text-lg">Your friend scans this in Mootz. Stay within 100 m of each other.</p>
+      <p className="text-sm leading-relaxed">Your friend scans this in Mootz. Stay within 100 m of each other.</p>
       {locationNote && (
         <p role="alert" className="rounded-2xl bg-white/15 p-3 text-sm font-bold">
           {locationNote}
         </p>
       )}
-      <p className="rounded-2xl bg-white/10 px-3 py-3 text-center text-[13px] font-bold lg:bg-transparent lg:p-0 lg:text-left lg:text-base">
+      <p className="rounded-2xl bg-white/10 px-3 py-3 text-center text-sm font-bold">
         {expired ? "This QR expired. Generate a new one." : urgent ? `${left} seconds left` : "Waiting for your friend…"}
       </p>
-      <div className="flex flex-col gap-2">
-        {expired ? (
-          <Button icon={RotateCcw} variant="secondary" size="lg" block onClick={onNewQr}>
-            New QR
-          </Button>
-        ) : (
-          <>
-            {onSimulate && (
-              <Button icon={ScanLine} variant="secondary" size="lg" block onClick={onSimulate}>
-                Simulate scan
-              </Button>
-            )}
-          </>
-        )}
+      {!expired && onSimulate && <Button icon={ScanLine} variant="secondary" size="lg" block onClick={onSimulate}>Simulate scan</Button>}
       </div>
       </div>
-      <p className="mt-auto text-[13px] font-bold text-white/80">
+      <p className="mt-auto border-t border-white/15 pt-4 text-[13px] leading-relaxed text-white/80">
         Scanning doesn&apos;t create a friendship. Signatures and a distance check don&apos;t prove presence or that a photo is real.
       </p>
     </>

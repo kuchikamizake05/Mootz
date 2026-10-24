@@ -23,6 +23,7 @@ export function MeetFrame({
   onBack,
   centeredTitle = false,
   tone = "light",
+  wide = false,
   children,
 }: {
   title: string;
@@ -30,6 +31,7 @@ export function MeetFrame({
   onBack?: () => void;
   centeredTitle?: boolean;
   tone?: "light" | "deep";
+  wide?: boolean;
   children: ReactNode;
 }) {
   const deep = tone === "deep";
@@ -41,7 +43,7 @@ export function MeetFrame({
     if (!deep || !desktop) return;
     const panel = panelRef.current;
     const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    panel?.focus({ preventScroll: true });
+    (panel?.querySelector<HTMLElement>("button, a[href]") ?? panel)?.focus({ preventScroll: true });
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape" && closeRef.current) {
         event.preventDefault();
@@ -71,17 +73,18 @@ export function MeetFrame({
         tabIndex={deep && desktop ? -1 : undefined}
         role={deep && desktop ? "dialog" : undefined}
         aria-modal={deep && desktop ? true : undefined}
-        aria-label={deep && desktop ? "Show this to your friend" : undefined}
+        aria-label={deep && desktop ? title : undefined}
         className={cn(
-          "mx-auto flex w-full min-h-dvh max-w-[430px] flex-col gap-4 p-6",
-          "lg:min-h-[744px] lg:max-w-[560px] lg:rounded-[32px] lg:p-8 lg:shadow-float",
-          deep ? "lg:w-[900px] lg:max-w-[900px] lg:min-h-[744px] lg:bg-mootz-deep" : "lg:bg-mootz-canvas",
+          "mx-auto flex min-h-svh w-full min-w-0 max-w-[560px] flex-col gap-5 px-4 pb-[max(24px,env(safe-area-inset-bottom))] pt-[max(20px,env(safe-area-inset-top))] sm:px-6",
+          "lg:min-h-0 lg:rounded-3xl lg:p-8 lg:shadow-float",
+          wide ? "lg:max-w-[880px]" : "lg:max-w-[560px]",
+          deep ? "lg:bg-mootz-deep" : "lg:bg-mootz-surface",
         )}
       >
         <header className="flex min-h-11 items-center justify-between gap-3">
           <div className={cn("flex min-w-0 flex-1 items-center gap-2", centeredTitle && "relative justify-center")} >
-            {onBack && <BackButton onClick={onBack} className={centeredTitle ? "absolute left-0" : undefined} />}
-            <h1 className={cn("font-display text-[28px] leading-none", centeredTitle && "px-11 text-center")}>{deep && title === "Meet" ? <><span className="lg:hidden">Meet</span><span className="hidden text-[36px] lg:inline">Show this to your friend</span></> : title}</h1>
+            {onBack && <BackButton onClick={onBack} className={cn(centeredTitle && "absolute left-0", deep && "text-white")} />}
+            <h1 className={cn("min-w-0 text-balance font-display text-[28px] leading-tight sm:text-[30px]", centeredTitle && "px-11 text-center")}>{title}</h1>
           </div>
           {onClose && <IconButton icon={X} label="Close" onClick={onClose} />}
         </header>

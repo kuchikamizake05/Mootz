@@ -80,15 +80,16 @@ export function MeetResultView({ meetId, initial, demo }: { meetId: string; init
   return (
     <MeetFrame title="You made a Dot">
       {demo && <DemoBadge />}
+      <div className="flex flex-1 flex-col items-center justify-center gap-4 py-6">
       <Bloom />
-      <h2 className="font-display text-center text-[36px] leading-[1.1]">{noLocation ? `You and ${partner} met` : `You and ${partner} were here`}</h2>
+      <h2 className="max-w-full break-words text-balance text-center font-display text-[32px] leading-tight sm:text-[36px]">{noLocation ? `You and ${partner} met` : `You and ${partner} were here`}</h2>
       <div className="text-center text-[14px] leading-[1.4] text-mootz-muted">
         {accepted && <p>{accepted}</p>}
         {location && <a href={`/map?dot=${dotId ?? ""}`} onClick={leave} className="font-bold text-mootz-deep">Approx. 200 m area</a>}
         {noLocation && <p>No map area · Location not shared</p>}
       </div>
 
-      <div aria-live="polite">
+      <div aria-live="polite" className="w-full">
         <RecordingStatusRow status={rowStatus[onchain]} />
       </div>
       {onchain === "not_saved" && (
@@ -98,8 +99,9 @@ export function MeetResultView({ meetId, initial, demo }: { meetId: string; init
         <p className="text-sm text-mootz-muted">Couldn&apos;t refresh the onchain status. The Dot already exists.</p>
       )}
       {noLocation && <p className="text-sm text-mootz-muted">The Dot stays on the moment, not on the map.</p>}
+      </div>
 
-      <div className="mt-auto flex flex-col gap-3">
+      <div className="mt-auto flex flex-col gap-3 pt-4">
         <Button icon={Check} size="lg" block onClick={() => { leave(); router.push(getBrowseOrigin()); }}>
           Done
         </Button>
@@ -111,7 +113,7 @@ export function MeetResultView({ meetId, initial, demo }: { meetId: string; init
 
 function Bloom({ className }: { className?: string }) {
   return (
-    <div aria-hidden className={cn("relative mx-auto grid size-[184px] place-items-center rounded-full bg-mootz-lilac", className)}>
+    <div aria-hidden className={cn("relative mx-auto grid size-36 shrink-0 place-items-center rounded-full bg-mootz-lilac", className)}>
       <span className="size-20 rounded-full border-[3px] border-white bg-mootz-purple motion-safe:animate-pulse" />
       <span className="absolute bottom-3 left-8 size-14 rounded-full border-[3px] border-white bg-mootz-light" />
       <span className="absolute bottom-3 right-8 size-14 rounded-full border-[3px] border-white bg-mootz-deep" />
