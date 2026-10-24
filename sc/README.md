@@ -11,6 +11,17 @@ Owner: Diaz (@amantajatii).
 
 No Dots token. Photo/location/audience/eligibility remain backend responsibilities. Signatures do not prove GPS, authenticity, signing time or unique humans. Public records expose wallet pairs; opt-out and failed chain records must not remove Dots.
 
+## Public mainnet deployment
+
+Deployed 2026-10-24 on **Monad mainnet (chain 143)** using the existing contract source. Receipts, constructor arguments, runtime hashes, roles and explorer verification responses are in [deployment.monad-mainnet.json](abi/deployment.monad-mainnet.json).
+
+| Contract | Monadscan verified source |
+| --- | --- |
+| MeetRegistry | [0x6fcdc6f98ab1ead21ae44f1e57f1ffeb5d3a49ff](https://monadscan.com/address/0x6fcdc6f98ab1ead21ae44f1e57f1ffeb5d3a49ff#code) |
+| EventCollection | [0x3d368ee46756102b0e0567f846f5ad9fcdff8a01](https://monadscan.com/address/0x3d368ee46756102b0e0567f846f5ad9fcdff8a01#code) |
+
+Both passed Monadscan source verification; MonadVision returned partial matches. Mainnet admin, relayer and issuer share deployer `0x1B6A8259fB8aB197ee27F45788f14D77B35301f9`. The addresses also exist on testnet: always select the correct chain and signing domain. This deployment does not migrate the application, create collections or establish a live Meet/claim acceptance run. The existing Foundry deployment script remains testnet-only; mainnet deployment used RPC gas estimates with a 10% buffer and a total maximum fee guard of 1 MON. Private keys stayed in memory and were not passed in command arguments or uploaded.
+
 ## Public testnet deployment
 
 Deployed 2026-10-24 from commit `f0a966dfe9adbfb8f4a8f59b742e9f53f3cdfe27`. Public receipts, constructor arguments, runtime hashes and verification responses are recorded in [deployment.monad-testnet.json](abi/deployment.monad-testnet.json).
