@@ -4,6 +4,7 @@
 
 <p align="center"><strong>Share your day. Meet in person.</strong><br>A social Map + Feed with shared memories on Monad.</p>
 <p align="center"><a href="https://mootz-red.vercel.app">Website</a> · <a href="https://mootz-red.vercel.app/app">Open app</a> · <a href="docs/hackathon.md">Judge guide</a> · <a href="sc/abi/deployment.monad-testnet.json">Deployment evidence</a></p>
+<p align="center"><a href="https://drive.google.com/file/d/1NhzpRG1vZxdORsf6gGhnkeBOaRpNs-Ms/view?usp=sharing">Watch demo</a> · <a href="https://x.com/mootzfun/status/2113922226622009563?s=20">Build in public on X</a></p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Next.js-000000?style=flat-square" alt="Next.js">
@@ -50,6 +51,8 @@ These interfaces and service modules are present in source. Their availability i
 
 | Entry point | What to inspect |
 | --- | --- |
+| [Demo video](https://drive.google.com/file/d/1NhzpRG1vZxdORsf6gGhnkeBOaRpNs-Ms/view?usp=sharing) | Product demonstration |
+| [Build in public on X](https://x.com/mootzfun/status/2113922226622009563?s=20) | Mootz project post |
 | [Website](https://mootz-red.vercel.app) | Product introduction; landing phone previews are illustrative |
 | [Web app](https://mootz-red.vercel.app/app) | Map, Feed, capture, friends, Meet, profile and Event interfaces |
 | [Organizer demo](https://mootz-red.vercel.app/organizer) | Contract ownership and event Meet-count reads |
