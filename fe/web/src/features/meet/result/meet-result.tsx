@@ -8,11 +8,15 @@ import { Button } from "@/components/ui/button";
 import { RecordingStatusRow, type RecordingStatus } from "@/components/ui/status";
 import { useApi } from "@/lib/api/use-api";
 import { cn } from "@/lib/cn";
+import { otherParticipant } from "@/features/dots/dot-parts";
+import { useViewerId } from "@/features/dots/queries";
+import { friendRef } from "@/features/profile/username";
+import { demoPartnerUsername } from "../demo";
 import type { MeetResult, OnchainStatus } from "../api";
 import { DemoBadge, MeetFrame } from "../ui/meet-frame";
 import { clearPayload } from "../ui/nav";
 
-type DotView = { location: { latitude: number; longitude: number } | null };
+type DotView = { location: { latitude: number; longitude: number } | null; participants: string[]; participantUsernames: (string | null)[] };
 
 const dateFormat = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Jakarta", day: "numeric", month: "short", year: "numeric" });
 const timeFormat = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
@@ -54,6 +58,7 @@ export function MeetResultView({ meetId, initial, demo }: { meetId: string; init
     enabled: !demo && !!dotId,
   });
 
+  const viewerId = useViewerId();
   const [demoSaved, setDemoSaved] = useState(false);
   useEffect(() => {
     if (!demo) return;
@@ -67,6 +72,7 @@ export function MeetResultView({ meetId, initial, demo }: { meetId: string; init
   // null while unknown; the area line and map button appear only for a Dot with a location.
   const location = demo ? { latitude: -7.7713, longitude: 110.3775 } : dot.data ? dot.data.location : undefined;
   const noLocation = location === null;
+  const partner = friendRef(demo ? demoPartnerUsername : dot.data ? otherParticipant(dot.data, viewerId).username : null);
 
   const leave = () => clearPayload();
 
@@ -74,7 +80,7 @@ export function MeetResultView({ meetId, initial, demo }: { meetId: string; init
     <MeetFrame title="You made a Dot">
       {demo && <DemoBadge />}
       <Bloom />
-      <h2 className="font-display text-center text-[36px] leading-[1.1]">{noLocation ? "You and your friend met" : "You and your friend were here"}</h2>
+      <h2 className="font-display text-center text-[36px] leading-[1.1]">{noLocation ? `You and ${partner} met` : `You and ${partner} were here`}</h2>
       <div className="text-center text-[14px] leading-[1.4] text-mootz-muted">
         {accepted && <p>{accepted}</p>}
         {location && <a href={`/map?dot=${dotId ?? ""}`} onClick={leave} className="font-bold text-mootz-deep">Approx. 200 m area</a>}

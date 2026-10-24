@@ -24,7 +24,7 @@ it('uses signed identity for persisted preferences and rejects account spoofing'
     expect((await app.inject('/v1/me')).statusCode).toBe(401);
     const first = await app.inject({ url: '/v1/me', headers });
     expect(first.statusCode).toBe(200);
-    expect(first.json()).toMatchObject({ recordMeet: true, onboardingCompletedAt: null, wallet: null });
+    expect(first.json()).toMatchObject({ recordMeet: true, onboardingCompletedAt: null, wallet: null, username: null });
     const spoof = await app.inject({ method: 'PATCH', url: '/v1/me/preferences', headers, payload: { recordMeet: false, accountId: randomUUID() } });
     expect(spoof.statusCode).toBe(400);
     expect((await app.inject({ method: 'PATCH', url: '/v1/me/preferences', headers, payload: { recordMeet: 'false' } })).statusCode).toBe(400);
@@ -32,6 +32,31 @@ it('uses signed identity for persisted preferences and rejects account spoofing'
     const second = await app.inject({ url: '/v1/me', headers });
     expect(second.json()).toMatchObject({ id: first.json().id, recordMeet: false });
     expect((await app.inject({ method: 'POST', url: '/v1/me/onboarding', headers, payload: {} })).json().onboardingCompletedAt).toBeTruthy();
+    const handle = `it_${randomUUID().replaceAll('-', '').slice(0, 12)}`;
+    const put = (payload: unknown, h: Record<string, string> = headers) => app.inject({ method: 'PUT', url: '/v1/me/username', headers: h, payload: payload as object });
+    expect((await put({ username: handle }, {})).statusCode).toBe(401);
+    for (const username of ['ab', 'bad name', 'a'.repeat(21), 'admin', 'Support']) { const bad = await put({ username }); expect(bad.statusCode).toBe(400); expect(bad.json().error.code).toBe('INVALID_USERNAME'); }
+    const set = await put({ username: `  ${handle.toUpperCase()} ` });
+    expect(set.statusCode).toBe(200); expect(set.json()).toMatchObject({ id: first.json().id, username: handle });
+    expect((await put({ username: handle })).statusCode).toBe(200);
+    expect((await app.inject({ url: '/v1/me', headers })).json().username).toBe(handle);
+    expect((await app.inject({ method: 'PATCH', url: '/v1/me/preferences', headers, payload: { recordMeet: false } })).json().username).toBe(handle);
+    expect((await app.inject({ method: 'POST', url: '/v1/me/onboarding', headers, payload: {} })).json().username).toBe(handle);
+    const other = `did:privy:integration-${randomUUID()}`;
+    const otherToken = await new SignJWT({}).setProtectedHeader({ alg: 'ES256' }).setSubject(other).setIssuer('privy.io').setAudience('integration-app').setIssuedAt().setExpirationTime('5m').sign(keys.privateKey);
+    const otherHeaders = { authorization: `Bearer ${otherToken}` };
+    try {
+      const taken = await put({ username: handle.toUpperCase() }, otherHeaders);
+      expect(taken.statusCode).toBe(409); expect(taken.json().error).toMatchObject({ code: 'USERNAME_TAKEN' });
+      expect((await app.inject({ url: '/v1/me', headers: otherHeaders })).json().username).toBeNull();
+      const changed = `${handle.slice(0, 15)}_2`;
+      expect((await put({ username: changed })).json().username).toBe(changed);
+      expect((await put({ username: handle }, otherHeaders)).statusCode).toBe(200);
+      expect((await put({ username: handle })).statusCode).toBe(409);
+    } finally {
+      for (const table of ['preference_history', 'onchain_preferences']) await pool.query(`DELETE FROM ${table} WHERE account_id IN (SELECT id FROM accounts WHERE provider_subject=$1)`, [other]);
+      await pool.query('DELETE FROM accounts WHERE provider_subject=$1', [other]);
+    }
     const signer = privateKeyToAccount(generatePrivateKey());
     const issued = await app.inject({ method: 'POST', url: '/v1/me/wallet-challenges', headers, payload: { wallet: signer.address } });
     expect(issued.statusCode).toBe(200);

@@ -21,19 +21,25 @@ it('composes authenticated social modules and revokes media, comments and reacti
   const headers=(i=0)=>({authorization:'Bearer '+tokens[i]});
   for(let i=0;i<2;i++){const result=await app.inject({url:'/v1/me',headers:headers(i)});expect(result.statusCode).toBe(200);ids.push(result.json().id);}
   expect(ids[0]).not.toBe(ids[1]);
+  const names=[0,1].map(()=>'sf_'+crypto.randomUUID().replaceAll('-','').slice(0,12));
+  for(let i=0;i<2;i++)expect((await app.inject({method:'PUT',url:'/v1/me/username',headers:headers(i),payload:{username:names[i]}})).json().username).toBe(names[i]);
   const image=await sharp({create:{width:2,height:2,channels:3,background:'#a020f0'}}).png().toBuffer();
-  const draft=await app.inject({method:'POST',url:'/v1/moments',headers:headers(),payload:{source:'capture'}});expect(draft.statusCode).toBe(201);const momentId=draft.json().id;
+  const draft=await app.inject({method:'POST',url:'/v1/moments',headers:headers(),payload:{source:'capture'}});expect(draft.statusCode).toBe(201);const momentId=draft.json().id;expect(draft.json().authorUsername).toBe(names[0]);
   for(const suffix of ['front','back','front/retake'])expect((await app.inject({method:'PUT',url:`/v1/moments/${momentId}/media/${suffix}`,headers:{...headers(),'content-type':'image/png'},payload:image})).statusCode).toBe(200);
   expect(objects.size).toBe(4);
   expect((await app.inject({method:'POST',url:`/v1/moments/${momentId}/publish`,headers:headers(),payload:{}})).statusCode).toBe(200);
   const detail=()=>app.inject({url:`/v1/moments/${momentId}`,headers:headers(1)});
   expect((await detail()).statusCode).toBe(404);
-  const request=await app.inject({method:'POST',url:'/v1/friends/requests',headers:headers(),payload:{accountId:ids[1]}});expect(request.statusCode).toBe(201);expect(request.json().status).toBe('pending');expect((await detail()).statusCode).toBe(404);
-  expect((await app.inject({method:'POST',url:`/v1/friends/${ids[0]}/accept`,headers:headers(1),payload:{}})).statusCode).toBe(200);expect((await detail()).statusCode).toBe(200);
+  const request=await app.inject({method:'POST',url:'/v1/friends/requests',headers:headers(),payload:{username:names[1]!.toUpperCase()}});expect(request.statusCode).toBe(201);expect(request.json().accountId).toBe(ids[1]);expect(request.json().username).toBe(names[1]);expect(request.json().status).toBe('pending');expect((await detail()).statusCode).toBe(404);
+  expect((await app.inject({method:'POST',url:`/v1/friends/${ids[0]}/accept`,headers:headers(1),payload:{}})).statusCode).toBe(200);expect((await detail()).statusCode).toBe(200);expect((await detail()).json().authorUsername).toBe(names[0]);
   expect((await app.inject({method:'POST',url:`/v1/moments/${momentId}/comments`,headers:headers(1),payload:{body:'Synthetic integration comment'}})).statusCode).toBe(201);
   const selfie=await app.inject({method:'POST',url:'/v1/me/selfies',headers:{...headers(1),'content-type':'image/png'},payload:image});expect(selfie.statusCode).toBe(201);
   expect((await app.inject({method:'PUT',url:`/v1/moments/${momentId}/reaction`,headers:headers(1),payload:{selfieId:selfie.json().id}})).statusCode).toBe(200);
   for(const suffix of ['comments','reactions']){const result=await app.inject({url:`/v1/moments/${momentId}/${suffix}`,headers:headers(1)});expect(result.statusCode).toBe(200);expect(result.json().items).toHaveLength(1);}
+  const comments=await app.inject({url:`/v1/moments/${momentId}/comments`,headers:headers(1)});expect(comments.json().items[0].authorUsername).toBe(names[1]);
+  expect((await app.inject({url:`/v1/moments/${momentId}/reactions`,headers:headers(1)})).json().items[0].username).toBe(names[1]);
+  expect((await app.inject({url:'/v1/feed',headers:headers(1)})).json().items.find((item:{id:string})=>item.id===momentId).authorUsername).toBe(names[0]);
+  expect((await app.inject({url:'/v1/friends',headers:headers(1)})).json().items[0]).toMatchObject({accountId:ids[0],username:names[0]});
   expect((await app.inject({method:'DELETE',url:`/v1/friends/${ids[0]}`,headers:headers(1)})).statusCode).toBe(204);
   for(const suffix of ['','/comments','/reactions','/media/front','/media/back'])expect((await app.inject({url:`/v1/moments/${momentId}${suffix}`,headers:headers(1)})).statusCode).toBe(404);
   const ownerStreak=await app.inject({url:'/v1/me/streak',headers:headers()});expect(ownerStreak.statusCode).toBe(200);expect(ownerStreak.json()).toMatchObject({currentStreak:1,postedToday:true});expect((await app.inject({url:'/v1/me/streak',headers:headers(1)})).json()).toMatchObject({currentStreak:0,postedToday:false});

@@ -157,7 +157,7 @@ export interface paths {
                 };
             };
             responses: {
-                /** @description Scoped backend media POST paths and per-side SHA256, private salt proof, domain/types and acceptance template. Return image bytes only through the authenticated expiring media routes; never expose provider signed URLs. */
+                /** @description moment.authorUsername (string|null poster @handle) is included. Scoped backend media POST paths and per-side SHA256, private salt proof, domain/types and acceptance template. Return image bytes only through the authenticated expiring media routes; never expose provider signed URLs. */
                 200: {
                     headers: {
                         [name: string]: unknown;

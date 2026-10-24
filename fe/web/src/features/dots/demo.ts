@@ -5,7 +5,7 @@ import type { Dot, HiddenMark } from "./model";
  * the demo moments so the linked moment card resolves for the first two.
  */
 export const DEMO_VIEWER_ID = "demo-me";
-const base = { meetId: "00000000-0000-4000-8000-0000000000f1", participants: [DEMO_VIEWER_ID, "demo-friend"] as [string, string] };
+const base = { meetId: "00000000-0000-4000-8000-0000000000f1", participants: [DEMO_VIEWER_ID, "demo-friend"] as [string, string], participantUsernames: ["faaid", "demo_a"] };
 const loc = { latitude: -7.7713, longitude: 110.3775 };
 
 export const demoDots: Dot[] = [

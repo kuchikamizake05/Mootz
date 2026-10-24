@@ -9,24 +9,25 @@ const event = "00000000-0000-4000-8000-0000000000e1";
 
 const routes: Array<[name: string, path: string, ready: string | RegExp]> = [
   ["map", "/map", "Demo fixtures · fictional people"],
-  ["feed", "/feed", "Demo friend A"],
+  ["feed", "/feed", "@demo_a"],
   ["moment", `/moments/${momentA}`, "Coffee before the next session."],
   ["comments", `/moments/${momentA}/comments`, "Comments"],
   ["react", `/moments/${momentA}/react`, /reaction/i],
-  ["capture", "/capture", /back photo/i],
-  ["meet-offer", `/meet/offer?moment=${ownMoment}`, "Show this to your friend"],
+  // The test browser has no camera, so either the viewfinder or the camera-off state is fine.
+  ["capture", "/capture", /back photo|Camera access is off/i],
+  ["meet-offer", `/meet/offer?moment=${ownMoment}`, /Show this to your friend|Your friend scans this/],
   ["meet-accept", "/meet/accept", "Meet preview"],
   ["meet-onboarding", "/meet/onboarding", /onchain/i],
   ["meet-recorded", "/meet/whats-recorded", /recorded/i],
   ["dots", "/dots", "Your Dots"],
-  ["dot", `/dots/${dot}`, "You and your friend were here"],
+  ["dot", `/dots/${dot}`, "You and @demo_a were here"],
   ["profile", "/profile", /streak/i],
   ["profile-settings", "/profile/settings", /onchain/i],
   ["frames", "/frames", "Your frames"],
   ["friends", "/friends", "Friends"],
   ["event", `/events/${event}`, "Demo Workshop A"],
   ["event-collection", `/events/${event}/collection`, "Demo Workshop A frame"],
-  ["organizer", "/organizer", "Demo Gathering B"],
+  ["organizer", "/organizer", /Demo Gathering B/i],
 ];
 
 for (const [name, path, ready] of routes) {
@@ -36,7 +37,8 @@ for (const [name, path, ready] of routes) {
     page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
 
     await page.goto(path);
-    await expect(page.getByText(ready).first()).toBeVisible();
+    // Some labels exist twice with one copy hidden per breakpoint; wait for a visible one.
+    await expect(page.getByText(ready).filter({ visible: true }).first()).toBeVisible();
     // Let images/fonts settle so overflow and contrast checks see the final layout.
     await page.waitForLoadState("load");
     await page.waitForTimeout(500);

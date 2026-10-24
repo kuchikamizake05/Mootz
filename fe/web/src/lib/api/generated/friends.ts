@@ -9,7 +9,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description Creates pending request. Same outgoing retry or accepted pair returns 200. Incoming pending request conflicts and never auto-accepts. Blocked pairs stay hidden. Pair transitions serialized transactionally. */
+        /** @description Creates pending request. Same outgoing retry or accepted pair returns 200. Incoming pending request conflicts and never auto-accepts. Blocked pairs stay hidden. Pair transitions serialized transactionally. Body is exactly one of accountId or username (case-insensitive lookup; unknown username returns the same 404 as an unknown accountId). */
         post: operations["requestFriend"];
         delete?: never;
         options?: never;
@@ -74,6 +74,8 @@ export interface components {
         Relationship: {
             /** Format: uuid */
             accountId: string;
+            /** @description Counterpart @handle; null until chosen */
+            username: string | null;
             /** @enum {string} */
             status: "pending" | "accepted";
             /** @enum {string} */
@@ -103,8 +105,9 @@ export interface operations {
             content: {
                 "application/json": {
                     /** Format: uuid */
-                    accountId: string;
-                };
+                    accountId?: string;
+                    username?: string;
+                } & (unknown | unknown);
             };
         };
         responses: {

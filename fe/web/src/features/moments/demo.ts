@@ -14,7 +14,7 @@ export const demoMoments: MomentCard[] = [
     source: "capture",
     own: true,
     eventId: null,
-    author: { name: "Faaid (you)", avatarSrc: img("-4"), frame: "lilac" },
+    author: { name: "You", avatarSrc: img("-4"), frame: "lilac" },
     postedLabel: "Just now · Demo moment N",
     // Today, so the Meet entry shows for the viewer's own demo moment.
     publishedAt: new Date().toISOString(),
@@ -32,7 +32,7 @@ export const demoMoments: MomentCard[] = [
     source: "capture",
     own: false,
     eventId: "00000000-0000-4000-8000-0000000000e1",
-    author: { name: "Demo friend A", avatarSrc: img("-2"), frame: "lilac" },
+    author: { name: "@demo_a", avatarSrc: img("-2"), frame: "lilac" },
     postedLabel: "12m ago · Demo moment",
     publishedAt: null,
     backSrc: img("-6"),
@@ -41,7 +41,7 @@ export const demoMoments: MomentCard[] = [
     place: "UGM campus",
     location: { latitude: -7.7713, longitude: 110.3775 },
     commentCount: 3,
-    dot: { label: "Demo A & Demo B were here", savedOnchain: true },
+    dot: { label: "@demo_a & @demo_b were here", savedOnchain: true },
   },
   {
     id: "00000000-0000-4000-8000-00000000000b",
@@ -49,7 +49,7 @@ export const demoMoments: MomentCard[] = [
     source: "capture",
     own: false,
     eventId: null,
-    author: { name: "Demo friend B", avatarSrc: img("-3"), frame: "lilac" },
+    author: { name: "@demo_b", avatarSrc: img("-3"), frame: "lilac" },
     postedLabel: "35m ago · Demo moment",
     publishedAt: null,
     backSrc: img("-7"),
@@ -66,7 +66,7 @@ export const demoMoments: MomentCard[] = [
     source: "capture",
     own: false,
     eventId: null,
-    author: { name: "Demo friend C", avatarSrc: img("-5"), frame: "lilac" },
+    author: { name: "@demo_c", avatarSrc: img("-5"), frame: "lilac" },
     postedLabel: "1h ago · Demo moment",
     publishedAt: null,
     backSrc: img("-8"),
@@ -83,7 +83,7 @@ export const demoMoments: MomentCard[] = [
     source: "upload",
     own: false,
     eventId: null,
-    author: { name: "Demo friend D", avatarSrc: img("-1"), frame: "lilac" },
+    author: { name: "@demo_d", avatarSrc: img("-1"), frame: "lilac" },
     postedLabel: "3h ago · Demo moment",
     publishedAt: null,
     backSrc: img(""),
@@ -96,4 +96,4 @@ export const demoMoments: MomentCard[] = [
   },
 ];
 
-export const demoViewer = { name: "Faaid", avatarSrc: img("-4") };
+export const demoViewer = { username: "faaid", avatarSrc: img("-4") };

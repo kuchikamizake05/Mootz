@@ -261,7 +261,7 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description {items:[{id,accountId,createdAt,thumbnailUrl}],nextCursor}; newest first, replacement retains position */
+                /** @description {items:[{id,accountId,username (string|null @handle of the reacting account),createdAt,thumbnailUrl}],nextCursor}; newest first, replacement retains position */
                 200: {
                     headers: {
                         [name: string]: unknown;

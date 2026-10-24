@@ -125,7 +125,8 @@ function ThreadView({
       <CommentRow
         comment={c}
         viewerId={viewerId}
-        onReply={() => onReply({ commentId: c.id, label: personLabel(c.authorId, viewerId) })}
+        replyToUsername={c.replyToId ? [root, ...replies].find((x) => x.id === c.replyToId)?.authorUsername : undefined}
+        onReply={() => onReply({ commentId: c.id, label: personLabel(c.authorId, viewerId, c.authorUsername) })}
         onDelete={() => setConfirming(c.id)}
       />
       {confirming === c.id && (

@@ -1,17 +1,18 @@
 import type { components } from "@/lib/api/generated/comments";
+import { personName } from "@/features/profile/username";
 import { ApiError } from "@/lib/api/client";
 
 export type ApiComment = components["schemas"]["Comment"];
 export type Page<T> = { items: T[]; nextCursor: string | null };
 export type SelfieItem = { id: string; createdAt: string; thumbnailUrl: string };
-export type ReactionItem = { id: string; accountId: string; createdAt: string; thumbnailUrl: string };
+export type ReactionItem = { id: string; accountId: string; username: string | null; createdAt: string; thumbnailUrl: string };
 
 /** API limit: 1 to 500 Unicode code points after trimming. */
 export const MAX_COMMENT = 500;
 export const codePoints = (text: string) => Array.from(text).length;
 
-/** Names of other accounts are not available from the API; never invent one. */
-export const personLabel = (accountId: string, viewerId: string | undefined) => (accountId === viewerId ? "You" : "Friend");
+/** "You", the @username, or "Friend" when that account has none; never an invented name. */
+export const personLabel = (accountId: string, viewerId: string | undefined, username?: string | null) => personName({ id: accountId, username, viewerId });
 
 export type ReplyTarget = { commentId: string; label: string };
 

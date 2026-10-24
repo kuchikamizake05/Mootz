@@ -22,8 +22,9 @@ All `/v1/me` routes require a verified Privy bearer token; account IDs and walle
 
 | Route | Body | Result |
 | --- | --- | --- |
-| GET /v1/me | none | `{id,recordMeet,onboardingCompletedAt,wallet}`; wallet is verified lowercase address or null |
+| GET /v1/me | none | `{id,recordMeet,onboardingCompletedAt,wallet,username}`; wallet is verified lowercase address or null; username is the unique lowercase @handle or null |
 | PATCH /v1/me/preferences | `{recordMeet:boolean}` | Updated own profile; actual value changes recorded atomically |
+| PUT /v1/me/username | `{username:string}` | Own profile. Trimmed/lowercased, `^[a-z0-9_]{3,20}$`, reserved names rejected (400 `INVALID_USERNAME`); taken is 409 `USERNAME_TAKEN`; repeating own username is 200 |
 | POST /v1/me/onboarding | `{}` | Own profile; completion timestamp is idempotent |
 | POST /v1/me/wallet-challenges | `{wallet:string}` | `{challengeId,wallet,message,expiresAt}` |
 | POST /v1/me/wallet-bindings | `{challengeId,wallet,signature}` | `{wallet,chainId}` after EOA proof and atomic binding |
@@ -69,7 +70,7 @@ The additional offchain route groups are ready for consumer review:
 
 | Group | Routes and client behavior | Schema |
 | --- | --- | --- |
-| Friends | `GET /v1/friends`, `POST /v1/friends/requests {accountId}`, `POST /v1/friends/:accountId/accept {}`, `DELETE /v1/friends/:accountId`. Pending requests grant no access; only the recipient accepts. Lists have status/direction filters and bounded opaque cursors. No public account discovery. | [friends](../be/specs/friends.openapi.json) |
+| Friends | `GET /v1/friends`, `POST /v1/friends/requests {accountId}` or `{username}` (exactly one; username lookup is case-insensitive, unknown is 404), `POST /v1/friends/:accountId/accept {}`, `DELETE /v1/friends/:accountId`. Pending requests grant no access; only the recipient accepts. Lists have status/direction filters and bounded opaque cursors. No account search or listing; usernames are exact-match lookups only. | [friends](../be/specs/friends.openapi.json) |
 | Streak | `GET /v1/me/streak` returns current/longest streak, postedToday, lastPublicationDay and timeZone. Only complete published capture-source moments count, grouped by server WIB day. | [streak](../be/specs/streak.openapi.json) |
 | Comments | `POST/GET /v1/moments/:id/comments`, `DELETE /v1/moments/:id/comments/:commentId`. Trimmed text1..500 Unicode characters,20/minute/account; `parentId` lists replies or targets a root/reply when posting. Reuse optional UUID `clientRequestId` for retries: same payload returns200 without duplication, changed payload409. Without a key, each POST is a distinct intentional comment. Deleted roots with replies remain tombstones. | [comments](../be/specs/comments.openapi.json) |
 | Selfie reactions | `POST/GET /v1/me/selfies`, `DELETE /v1/me/selfies/:selfieId`; `PUT/DELETE /v1/moments/:id/reaction`, `GET /v1/moments/:id/reactions`. Selfie upload is raw JPEG/PNG with the same8MiB normalization limits and5/minute/account. Replacement does not add a reaction. Library deletion prevents reuse but retains sent assets. | [reactions](../be/specs/reactions.openapi.json) |
