@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { Avatar } from "@/components/ui/avatar";
+import { Users, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MapMarker } from "@/features/map/map-marker";
 import { useApi, useProfile } from "@/lib/api/use-api";
@@ -43,15 +44,15 @@ export function FriendLocationLayer({ map }: { map: MapLibreMap | null }) {
           </button>
         </MapMarker>
       ))}
-      <aside className="absolute left-4 top-[132px] z-20 w-[min(280px,calc(100%-80px))] rounded-2xl border border-mootz-hairline bg-white p-3 text-mootz-ink shadow-float" aria-label="Friend locations">
-        <button type="button" aria-expanded={open} onClick={() => setOpen(!open)} className="min-h-11 w-full text-left text-sm font-extrabold">
+      {items.length > 0 && <aside className="absolute left-4 top-[132px] z-20 max-w-[calc(100%-80px)] text-mootz-ink" aria-label="Friend locations">
+        <button type="button" aria-expanded={open} onClick={() => setOpen(!open)} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-mootz-hairline bg-white px-3 text-sm font-extrabold text-mootz-deep shadow-soft">
+          <Users aria-hidden size={18} className="shrink-0" />
           Friends on map · {items.length}{query.isFetching ? " · Updating…" : ""}
         </button>
-        <p className="text-xs text-mootz-muted">{env.demoFixtures ? "Preview only" : presenceCopy[status]}</p>
-        {open && <div className="max-h-[45dvh] overflow-y-auto text-sm">
+        {open && <div className="mt-2 max-h-[45dvh] w-[min(280px,calc(100vw-80px))] overflow-y-auto rounded-2xl border border-mootz-hairline bg-white p-4 text-sm shadow-float">
           <p className="mb-2 text-xs text-mootz-muted">{env.demoFixtures ? "Preview only · no live locations." : presenceCopy[status]}</p>
           <Link href="/profile" className="inline-block min-h-11 font-bold text-mootz-deep underline">Manage my sharing</Link>
-          {query.isError ? <div><p role="alert">Could not load friend locations.</p><Button onClick={() => void query.refetch()}>Retry</Button></div> :
+          {query.isError ? <div><p role="alert">Could not load friend locations.</p><Button icon={RefreshCw} onClick={() => void query.refetch()}>Retry</Button></div> :
             query.isPending && !env.demoFixtures ? <p>Loading friend locations…</p> :
             items.length === 0 ? <p>No friends are sharing a recent location. They need to open Mootz and allow location access.</p> :
             <ul>{items.map(item => <li key={item.accountId}>
@@ -61,7 +62,7 @@ export function FriendLocationLayer({ map }: { map: MapLibreMap | null }) {
               </button>
             </li>)}</ul>}
         </div>}
-      </aside>
+      </aside>}
     </>
   );
 }

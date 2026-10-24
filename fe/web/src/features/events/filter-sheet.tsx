@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, type KeyboardEvent } from "react";
 import Link from "next/link";
-import { X } from "lucide-react";
+import { CalendarDays, X } from "lucide-react";
 import { IconButton } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 import { env } from "@/lib/env";
@@ -77,7 +77,7 @@ export function FilterSheet({ value, onChange, onClose }: { value: MomentFilter;
           <IconButton icon={X} label="Close filter" onClick={onClose} />
         </div>
         <p className="text-sm text-mootz-muted">Choose which authorized moments you see. The same filter stays active in Map and Feed.</p>
-        {env.demoFixtures && <p className="w-fit rounded-full bg-mootz-lilac px-3 py-1 text-xs font-bold text-mootz-deep">Demo fixtures · fictional data</p>}
+        {env.demoFixtures && <p className="w-fit rounded-full bg-mootz-lilac px-3 py-1 text-[13px] font-bold text-mootz-deep">Demo fixtures · fictional data</p>}
         <div role="radiogroup" aria-label="Moment filter" className="flex flex-col gap-1">
           {order.map((f, i) => {
             const selected = f === value;
@@ -94,7 +94,7 @@ export function FilterSheet({ value, onChange, onClose }: { value: MomentFilter;
                 className={cn("flex min-h-14 flex-col items-start justify-center rounded-3xl px-3.5 py-2 text-left", selected ? "bg-mootz-lilac" : "bg-mootz-surface")}
               >
                 <span className="font-display text-2xl leading-tight text-mootz-ink">{titles[f]}</span>
-                <span className="text-xs font-semibold text-mootz-muted">{description[f]}</span>
+                <span className="text-[13px] font-semibold text-mootz-muted">{description[f]}</span>
               </button>
             );
           })}
@@ -106,9 +106,9 @@ export function FilterSheet({ value, onChange, onClose }: { value: MomentFilter;
                 <Link
                   href={`/events/${e.id}`}
                   aria-label={`${e.title} event details`}
-                  className="flex min-h-11 items-center justify-center rounded-2xl border border-mootz-hairline px-3 text-sm font-extrabold text-mootz-deep"
+                  className="flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-mootz-hairline px-3 text-sm font-extrabold text-mootz-deep"
                 >
-                  {events.data.length > 1 ? `${e.title} · Event details` : "Event details"}
+                  <CalendarDays aria-hidden size={18} />{events.data.length > 1 ? `${e.title} · Event details` : "Event details"}
                 </Link>
               </li>
             ))}

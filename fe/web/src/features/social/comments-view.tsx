@@ -1,7 +1,8 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { LoaderCircle, MessageCircle, TriangleAlert, X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { LoaderCircle, MessageCircle, TriangleAlert, Send, Trash2, X } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
 import { Button, IconButton } from "@/components/ui/button";
 import { StateMessage } from "@/components/ui/status";
@@ -10,7 +11,7 @@ import { useMoment } from "@/features/moments/queries";
 import { CommentRow } from "./comment-row";
 import { useDraft } from "./draft";
 import { MAX_COMMENT, codePoints, errorCopy, personLabel, type ReplyTarget, type Thread } from "./model";
-import { BackLink, SocialPage } from "./page-frame";
+import { Page } from "@/components/ui/page";
 import { useDeleteComment, useSendComment, useThread, useViewerId } from "./queries";
 
 function ConfirmDelete({ hasReplies, pending, onConfirm, onCancel }: { hasReplies: boolean; pending: boolean; onConfirm: () => void; onCancel: () => void }) {
@@ -21,8 +22,8 @@ function ConfirmDelete({ hasReplies, pending, onConfirm, onCancel }: { hasReplie
         {hasReplies ? "Replies stay in the thread under a “Comment deleted” placeholder." : "This can't be undone."}
       </p>
       <div className="flex gap-2">
-        <Button disabled={pending} onClick={onConfirm}>{pending ? "Deleting…" : "Delete"}</Button>
-        <Button variant="secondary" disabled={pending} onClick={onCancel}>Cancel</Button>
+        <Button icon={Trash2} disabled={pending} onClick={onConfirm}>{pending ? "Deleting…" : "Delete"}</Button>
+        <Button icon={X} variant="secondary" disabled={pending} onClick={onCancel}>Cancel</Button>
       </div>
     </div>
   );
@@ -66,7 +67,7 @@ function Composer({
         e.preventDefault();
         submit();
       }}
-      className="sticky bottom-0 z-10 -mx-4 flex flex-col gap-2 bg-mootz-canvas px-4 pt-2 pb-[max(env(safe-area-inset-bottom),12px)]"
+      className="sticky bottom-0 z-10 -mx-4 flex flex-col gap-2 border-t border-mootz-hairline bg-mootz-canvas/95 px-4 pt-3 backdrop-blur sm:-mx-6 sm:px-6 pb-[max(env(safe-area-inset-bottom),12px)]"
     >
       {target && (
         <p className="flex items-center justify-between gap-2 rounded-2xl bg-mootz-lilac pl-4 text-sm text-mootz-deep">
@@ -86,11 +87,11 @@ function Composer({
           className="w-full resize-none bg-transparent text-[15px] text-mootz-ink outline-none placeholder:text-mootz-muted"
         />
         <div className="flex items-center justify-between gap-2">
-          <p className="text-xs font-bold text-mootz-muted" aria-live="polite">
+          <p className="text-[13px] font-bold text-mootz-muted" aria-live="polite">
             {length} / {MAX_COMMENT}
             {length >= MAX_COMMENT && " · 500 character limit"}
           </p>
-          <Button type="submit" variant="secondary" disabled={!canSend}>{send.isPending ? "Sending…" : send.isError ? "Retry send" : "Send"}</Button>
+          <Button icon={Send} type="submit" variant="secondary" disabled={!canSend}>{send.isPending ? "Sending…" : send.isError ? "Retry send" : "Send"}</Button>
         </div>
       </div>
       {send.isError && (
@@ -139,7 +140,7 @@ function ThreadView({
       {root.deleted ? (
         <div className="flex flex-col gap-0.5 px-2 py-1">
           <p className="text-[15px] font-bold text-mootz-ink">Comment deleted</p>
-          <p className="text-xs text-mootz-muted">Replies remain in this thread. {relativeTime(root.createdAt)}</p>
+          <p className="text-[13px] text-mootz-muted">Replies remain in this thread. {relativeTime(root.createdAt)}</p>
         </div>
       ) : (
         row(root)
@@ -156,6 +157,7 @@ function ThreadView({
 }
 
 export function CommentsView({ momentId, onClose }: { momentId: string; onClose?: () => void }) {
+  const router = useRouter();
   const moment = useMoment(momentId).data;
   const viewerId = useViewerId();
   const thread = useThread(momentId);
@@ -183,16 +185,7 @@ export function CommentsView({ momentId, onClose }: { momentId: string; onClose?
     });
 
   return (
-    <SocialPage>
-      <div className="flex items-center gap-1 font-display text-[26px] font-extrabold"><BackLink href={`/moments/${momentId}`} label="Comments" onBack={onClose} /><span aria-label="Comment count">{thread.isPending ? "" : `${thread.count}${thread.hasMore ? "+" : ""}`}</span></div>
-      <div className="flex flex-col gap-1">
-        <h1 className="sr-only">Comments</h1>
-        <p className="text-xs text-mootz-muted">
-          {thread.isPending
-            ? "Loading…"
-            : `${roots} ${roots === 1 ? "comment" : "comments"} + ${replyCount} ${replyCount === 1 ? "reply" : "replies"}${thread.hasMore ? " loaded so far" : ""}. Deleted comments aren't counted.`}
-        </p>
-      </div>
+    <Page title="Comments" actions={!thread.isPending && <span aria-label="Comment count" className="rounded-full bg-mootz-lilac px-3 py-2 text-sm font-extrabold text-mootz-deep">{`${thread.count}${thread.hasMore ? "+" : ""}`}</span>} backHref={`/moments/${momentId}`} backLabel="Comments" onBack={onClose ?? (() => router.push(`/moments/${momentId}`))} subtitle={thread.isPending ? "Loading…" : `${roots} ${roots === 1 ? "comment" : "comments"} + ${replyCount} ${replyCount === 1 ? "reply" : "replies"}${thread.hasMore ? " loaded so far" : ""}. Deleted comments aren't counted.`}>
       {moment && (
         <p className="flex items-center gap-3 rounded-2xl bg-mootz-lilac p-3 text-sm text-mootz-deep">
           <Avatar src={moment.author.avatarSrc} name={moment.author.name} size={40} frame={moment.author.frame} />
@@ -219,7 +212,7 @@ export function CommentsView({ momentId, onClose }: { momentId: string; onClose?
           <StateMessage icon={MessageCircle} title="No comments yet">Be the first to say something.</StateMessage>
         ) : (
           <>
-            <ul className="flex flex-col gap-4">
+            <ul className="flex flex-col gap-5 rounded-3xl border border-mootz-hairline bg-white p-4 sm:p-5">
               {thread.threads.map((t) => (
                 <ThreadView
                   key={t.root.id}
@@ -233,7 +226,7 @@ export function CommentsView({ momentId, onClose }: { momentId: string; onClose?
                 />
               ))}
             </ul>
-            {thread.repliesLoading && <p role="status" className="mt-3 text-xs text-mootz-muted">Loading replies…</p>}
+            {thread.repliesLoading && <p role="status" className="mt-3 text-[13px] text-mootz-muted">Loading replies…</p>}
             {thread.repliesError && (
               <p role="alert" className="mt-3 text-sm text-mootz-muted">
                 Some replies couldn&apos;t load. <button className="font-extrabold underline" onClick={thread.refetch}>Retry</button>
@@ -249,6 +242,6 @@ export function CommentsView({ momentId, onClose }: { momentId: string; onClose?
       </div>
 
       <Composer momentId={momentId} target={target} onClearTarget={() => setTarget(null)} onNotice={setNotice} inputRef={inputRef} />
-    </SocialPage>
+    </Page>
   );
 }

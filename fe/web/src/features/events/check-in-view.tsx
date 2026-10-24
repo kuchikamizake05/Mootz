@@ -1,13 +1,14 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
-import { CircleCheck } from "lucide-react";
+import { ArrowRight, Check, CircleCheck, Copy, Images, RefreshCw } from "lucide-react";
+import { Page, StatusChip } from "@/components/ui/page";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { useProfile } from "@/lib/api/use-api";
 import { env } from "@/lib/env";
-import { PageShell } from "@/features/profile/page-shell";
 import { eventPhase, formatDateTime, errorCode } from "./model";
-import { BackLink, Card, Loading, LoadFailed } from "./parts";
+import { Card, Loading, LoadFailed } from "./parts";
 import { useCheckIn, useDemoCheckIn, useEvent, useNow } from "./queries";
 
 function DemoCodeForm({ id }: { id: string }) {
@@ -21,7 +22,7 @@ function DemoCodeForm({ id }: { id: string }) {
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-3">
       <label className="flex flex-col gap-1 rounded-[22px] border-2 border-mootz-purple bg-mootz-surface px-4 py-2.5">
-        <span className="text-xs font-bold text-mootz-deep">Event code</span>
+        <span className="text-[13px] font-bold text-mootz-deep">Event code</span>
         <input
           value={code}
           onChange={(e) => setCode(e.target.value)}
@@ -37,7 +38,7 @@ function DemoCodeForm({ id }: { id: string }) {
       <p id="code-help" role={invalid ? "alert" : undefined} className="text-sm font-semibold text-mootz-muted">
         {invalid ? "That code isn't valid for this event. Check it with the organizer." : "Demo code: DEMO-A."}
       </p>
-      <Button type="submit" size="lg" block disabled={!code.trim() || submit.isPending}>
+      <Button icon={Check} type="submit" size="lg" block disabled={!code.trim() || submit.isPending}>
         {submit.isPending ? "Checking…" : "Check code"}
       </Button>
     </form>
@@ -46,6 +47,7 @@ function DemoCodeForm({ id }: { id: string }) {
 
 /** Check-in (08.05). The live API records attendance through the organizer; there is no self-service code endpoint. */
 export function CheckInView({ id }: { id: string }) {
+  const router = useRouter();
   const event = useEvent(id);
   const checkIn = useCheckIn(id);
   const profile = useProfile();
@@ -69,10 +71,9 @@ export function CheckInView({ id }: { id: string }) {
   };
 
   return (
-    <PageShell header={<BackLink href={`/events/${id}/collection`}>Back to collectible</BackLink>}>
-      <h1 className="font-display text-[40px] leading-none text-mootz-ink">{done ? "You're checked in" : "Check-in required"}</h1>
-      <p className="-mt-2 text-sm font-bold text-mootz-muted">{e.title}</p>
+    <Page title={done ? "You're checked in" : "Check-in required"} subtitle={e.title} backLabel="Back to collectible" onBack={() => router.push(`/events/${id}/collection`)}>
 
+      <StatusChip tone={done ? "success" : "pending"}>{done ? "Checked in" : "Check-in required"}</StatusChip>
       {done ? (
         <Card className="bg-mootz-lilac">
           <p className="flex items-center gap-2 font-bold text-mootz-deep">
@@ -80,7 +81,7 @@ export function CheckInView({ id }: { id: string }) {
             Check-in recorded{checkIn.data?.checkedInAt ? ` · ${formatDateTime(checkIn.data.checkedInAt)}` : ""}
           </p>
           <p className="text-sm text-mootz-muted">This makes you eligible to ask for the collectible. It is not a claim and not ownership.</p>
-          <ButtonLink href={`/events/${id}/collection`} block className="mt-3">
+          <ButtonLink icon={ArrowRight} href={`/events/${id}/collection`} block className="mt-3">
             Go to collectible
           </ButtonLink>
         </Card>
@@ -98,10 +99,10 @@ export function CheckInView({ id }: { id: string }) {
           )}
           {accountId && (
             <div className="mt-2">
-              <p className="text-xs font-bold text-mootz-muted">Your account code (share it with the organizer)</p>
+              <p className="text-[13px] font-bold text-mootz-muted">Your account code (share it with the organizer)</p>
               <div className="mt-1 flex items-center gap-2">
-                <code className="min-w-0 flex-1 break-all rounded-2xl bg-mootz-canvas px-3 py-2 text-xs font-bold text-mootz-deep">{accountId}</code>
-                <Button variant="secondary" onClick={() => void copy()}>
+                <code className="min-w-0 flex-1 break-all rounded-2xl bg-mootz-canvas px-3 py-2 text-[13px] font-bold text-mootz-deep">{accountId}</code>
+                <Button icon={copied ? Check : Copy} variant="secondary" onClick={() => void copy()}>
                   {copied ? "Copied" : "Copy"}
                 </Button>
               </div>
@@ -112,7 +113,7 @@ export function CheckInView({ id }: { id: string }) {
               Couldn&apos;t check your status right now. This doesn&apos;t mean you aren&apos;t checked in.
             </p>
           )}
-          <Button variant="secondary" block className="mt-3" disabled={checkIn.isFetching} onClick={() => void checkIn.refetch()}>
+          <Button icon={RefreshCw} variant="secondary" block className="mt-3" disabled={checkIn.isFetching} onClick={() => void checkIn.refetch()}>
             {checkIn.isFetching ? "Checking…" : "Refresh check-in status"}
           </Button>
         </Card>
@@ -121,12 +122,12 @@ export function CheckInView({ id }: { id: string }) {
       <p className="text-sm font-semibold text-mootz-muted">
         A valid check-in makes you eligible to ask for the collectible; claiming still needs organizer authorization. A code or your location alone does not prove physical attendance or human uniqueness.
       </p>
-      <ButtonLink href="/feed?filter=events" variant="secondary" block>
+      <ButtonLink icon={Images} href="/feed?filter=events" variant="secondary" block>
         Back to event moments
       </ButtonLink>
-      <p className="text-xs font-semibold text-mootz-muted">
+      <p className="text-[13px] font-semibold text-mootz-muted">
         Checking in submits no claim; nothing is minted and your balance is unchanged.{env.demoFixtures ? " Demo fixture." : ""}
       </p>
-    </PageShell>
+    </Page>
   );
 }

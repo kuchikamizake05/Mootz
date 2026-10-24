@@ -33,7 +33,7 @@ export function UsernamePrompt({ next }: { next: string }) {
         Pick a username so friends can find you.{" "}
         <Link href={`/profile/username?next=${encodeURIComponent(next)}`} className="font-extrabold text-mootz-deep underline">Choose username</Link>
       </p>
-      <button type="button" aria-label="Dismiss" onClick={dismiss} className="grid size-9 shrink-0 place-items-center text-mootz-muted"><X size={18} /></button>
+      <button type="button" aria-label="Dismiss" onClick={dismiss} className="grid size-11 shrink-0 place-items-center text-mootz-muted"><X size={18} /></button>
     </div>
   );
 }

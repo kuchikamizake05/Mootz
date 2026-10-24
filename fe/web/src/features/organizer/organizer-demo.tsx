@@ -2,9 +2,10 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import type { Address, EIP1193Provider } from "viem";
-import { CircleSlash, LoaderCircle, PlugZap, RefreshCw, ServerCrash, ShieldCheck, Wallet, WalletMinimal, XCircle } from "lucide-react";
+import { ArrowUpRight, Award, CircleSlash, LoaderCircle, LogOut, PlugZap, RefreshCw, ServerCrash, ShieldCheck, Users, Wallet, WalletMinimal, XCircle } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
 import { Button, ButtonLink } from "@/components/ui/button";
+import { Card, InfoRow, Page, SectionLabel, StatusChip } from "@/components/ui/page";
 import { StateMessage } from "@/components/ui/status";
 import { env } from "@/lib/env";
 import { contractsDeployed, getInjectedProvider, proveControl, readRecognition, requestAccount } from "./chain";
@@ -100,8 +101,8 @@ export function OrganizerDemo({ collectionId }: { collectionId: string | null })
   const connected = state.step === "authenticating" || state.step === "reading" || state.step === "result" || state.step === "error";
 
   return (
-    <main className="min-h-dvh bg-mootz-canvas text-mootz-ink lg:bg-white">
-      <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-6 px-6 py-8 lg:grid lg:grid-cols-[440px_minmax(0,568px)] lg:items-start lg:gap-14 lg:px-10 lg:py-16">
+    <Page title="Demo Gathering B" subtitle="Organizer demo · Monad Testnet" backHref="/map" contentClassName="lg:max-w-[1200px]">
+      <div className="flex w-full flex-col gap-6 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)] lg:items-start lg:gap-8">
         <aside className="hidden min-h-[620px] flex-col gap-[22px] rounded-[32px] bg-mootz-deep p-8 text-white lg:flex">
           <p className="text-xs font-bold">DEMO GATHERING B / INDEPENDENT RECOGNITION</p>
           <h2 className="font-display text-[40px] font-extrabold leading-none">Workshop A memories,<br />recognized at Gathering B.</h2>
@@ -109,19 +110,17 @@ export function OrganizerDemo({ collectionId }: { collectionId: string | null })
           <p className="text-lg">This separate demo page reads collection ownership and event Meet count directly from Monad, not a Mootz inventory decision.</p>
           <p className="text-sm">Private photos remain in access-controlled Mootz storage. No universal cross-app support is implied.</p>
         </aside>
-        <section className="flex min-h-[780px] flex-col gap-3 lg:bg-mootz-canvas lg:p-7" aria-live="polite">
-          <p className="text-xs font-extrabold text-mootz-deep">Organizer demo / Monad Testnet</p>
-          <h1 className="font-display text-[38px] font-extrabold leading-none">Demo Gathering B</h1>
-          <p className="font-bold text-mootz-muted">Recognizing Workshop A memories</p>
-          <div className="flex items-center gap-4 rounded-[24px] bg-mootz-surface p-4">
+        <section className="flex min-w-0 flex-col gap-4" aria-live="polite">
+          <SectionLabel icon={Award}>Recognizing Workshop A memories</SectionLabel>
+          <Card className="flex items-center gap-4">
             <Avatar name="Demo Workshop A" size={80} frame="event" />
             <div className="flex flex-col text-sm font-extrabold text-mootz-deep">
               <span>Demo Workshop A frame</span>
               <span>Demo Community</span>
               <span>From Demo Workshop A{collectionId ? ` · Collection #${collectionId}` : ""}</span>
             </div>
-          </div>
-          <p className="text-[17px] text-mootz-ink">Read Workshop A collection ownership and onchain event Meet count directly from Monad.</p>
+          </Card>
+          <p className="text-[16px] text-mootz-ink">Read Workshop A collection ownership and onchain event Meet count directly from Monad.</p>
           {collectionId === null ? (
             <StateMessage icon={CircleSlash} title="Collection not valid">
               The collection in the link must be a positive whole number, for example ?collection=1.
@@ -142,9 +141,9 @@ export function OrganizerDemo({ collectionId }: { collectionId: string | null })
             </p>
           )}
           <p className="text-sm text-mootz-muted">{LIMITATION}</p>
-          <ButtonLink href="/map" variant="secondary" block>Open event in Mootz</ButtonLink>
+          <ButtonLink href="/map" variant="secondary" icon={ArrowUpRight} block>Open event in Mootz</ButtonLink>
           {connected && (
-            <Button variant="secondary" size="lg" block onClick={reset}>
+            <Button variant="secondary" size="lg" icon={LogOut} block onClick={reset}>
               Disconnect
             </Button>
           )}
@@ -153,9 +152,9 @@ export function OrganizerDemo({ collectionId }: { collectionId: string | null })
             <div className="mt-2 flex flex-col gap-2 rounded-2xl border border-dashed border-mootz-hairline p-3">
               <p className="text-xs font-extrabold text-mootz-deep">Demo mode (fixtures, no chain reads)</p>
               <div className="flex flex-wrap gap-2">
-                <Button variant="soft" onClick={() => void demo("alumni")}>Demo: alumni</Button>
-                <Button variant="soft" onClick={() => void demo("nonholder")}>Demo: nonholder</Button>
-                <Button variant="soft" onClick={() => void demo("error")}>Demo: RPC error</Button>
+                <Button variant="soft" icon={Users} onClick={() => void demo("alumni")}>Demo: alumni</Button>
+                <Button variant="soft" icon={CircleSlash} onClick={() => void demo("nonholder")}>Demo: nonholder</Button>
+                <Button variant="soft" icon={ServerCrash} onClick={() => void demo("error")}>Demo: RPC error</Button>
               </div>
             </div>
           )}
@@ -165,7 +164,7 @@ export function OrganizerDemo({ collectionId }: { collectionId: string | null })
           </p>
         </section>
       </div>
-    </main>
+    </Page>
   );
 }
 
@@ -252,7 +251,8 @@ function Result({ result, collectionId }: { result: Recognition; collectionId: s
       <h2 className="font-display text-[34px] leading-tight">
         {result.kind === "alumni" ? "Welcome back, Workshop A alumni" : "No Workshop A collectible found"}
       </h2>
-      <p className="text-lg font-extrabold text-mootz-deep">{meets}</p>
+      <InfoRow icon={Users} label="Recorded at Workshop A">{meets}</InfoRow>
+      <StatusChip tone={result.kind === "alumni" ? "success" : "muted"}>{result.kind === "alumni" ? "Ownership confirmed" : "Confirmed nonholder"}</StatusChip>
       {result.kind === "nonholder" && (
         <p className="text-sm text-mootz-muted">
           This wallet doesn&apos;t hold the collectible. It was read successfully, so this is a confirmed nonholder.

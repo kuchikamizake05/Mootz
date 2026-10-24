@@ -1,11 +1,12 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { CircleCheck, LoaderCircle, TriangleAlert } from "lucide-react";
+import { Award, CalendarDays, CircleCheck, ExternalLink, Layers, LoaderCircle, RefreshCw, ScanLine, ShieldCheck, TriangleAlert, Wallet } from "lucide-react";
+import { InfoRow, Page, StatusChip } from "@/components/ui/page";
 import { Avatar } from "@/components/ui/avatar";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { env } from "@/lib/env";
-import { PageShell } from "@/features/profile/page-shell";
 import { useMeetWallet } from "@/features/wallet/use-meet-wallet";
 import {
   ISSUER_NOTE,
@@ -21,7 +22,7 @@ import {
   type CollectionState,
   type Eligibility,
 } from "./model";
-import { BackLink, Card, Loading, LoadFailed } from "./parts";
+import { Card, Loading, LoadFailed } from "./parts";
 import { useClaim, useCollection, useEvent } from "./queries";
 
 type Tone = { title: string; body: string };
@@ -60,7 +61,7 @@ function WalletGate() {
           Couldn&apos;t set up the wallet. Try again.
         </p>
       )}
-      <Button className="mt-2" block disabled={busy || wallet.status === "loading"} onClick={() => void setup()}>
+      <Button icon={Wallet} className="mt-2" block disabled={busy || wallet.status === "loading"} onClick={() => void setup()}>
         {busy ? "Setting up…" : "Set up wallet"}
       </Button>
     </Card>
@@ -113,6 +114,7 @@ function ClaimPanel({ id, col }: { id: string; col: CollectionState }) {
           {ownedNow && <CircleCheck aria-hidden size={22} />}
           {title}
         </h2>
+        <StatusChip tone={ownedNow ? "success" : pending ? "pending" : failedJob ? "warning" : col.eligibility === "eligible" ? "brand" : "muted"}>{ownedNow ? "Owned" : pending ? "Pending" : failedJob ? "Not completed" : col.eligibility === "eligible" ? "Eligible" : title}</StatusChip>
         {body && <p className="text-sm font-semibold text-mootz-muted">{body}</p>}
         {pending && claim.status.isError && (
           <p className="text-sm font-semibold text-mootz-muted">Couldn&apos;t refresh the status. Still checking; this is not a failure.</p>
@@ -126,16 +128,16 @@ function ClaimPanel({ id, col }: { id: string; col: CollectionState }) {
         </p>
       )}
 
-      <p className="text-xs font-semibold text-mootz-muted">
+      <p className="text-[13px] font-semibold text-mootz-muted">
         Your wallet&apos;s ownership of this collectible is public. Your photos keep their existing audience.
       </p>
-      <p className="text-xs font-semibold text-mootz-muted">{ISSUER_NOTE}</p>
+      <p className="text-[13px] font-semibold text-mootz-muted">{ISSUER_NOTE}</p>
 
       <div className="flex flex-col gap-2">
         {walletMissing && !ownedNow ? (
           <WalletGate />
         ) : canClaim ? (
-          <Button size="lg" block onClick={() => {
+          <Button icon={Award} size="lg" block onClick={() => {
               if (failedJob) claim.reset();
               claim.start.mutate();
             }}>
@@ -143,23 +145,23 @@ function ClaimPanel({ id, col }: { id: string; col: CollectionState }) {
           </Button>
         ) : null}
         {pending && claim.claimId && (
-          <Button size="lg" block disabled={claim.status.isFetching} onClick={() => void claim.status.refetch()}>
+          <Button icon={RefreshCw} size="lg" block disabled={claim.status.isFetching} onClick={() => void claim.status.refetch()}>
             Check claim status
           </Button>
         )}
         {!ownedNow && col.eligibility === "not_checked_in" && (
-          <ButtonLink href={`/events/${id}/check-in`} size="lg" block>
+          <ButtonLink icon={ScanLine} href={`/events/${id}/check-in`} size="lg" block>
             Check in
           </ButtonLink>
         )}
         {ownedNow && (
-          <ButtonLink href={`/events/${id}/collection/wear`} size="lg" block>
+          <ButtonLink icon={Award} href={`/events/${id}/collection/wear`} size="lg" block>
             Wear frame
           </ButtonLink>
         )}
         {tx && (
           <a href={tx} target="_blank" rel="noopener noreferrer" className="raised inline-flex min-h-12 items-center justify-center rounded-2xl bg-mootz-surface px-5 text-[15px] font-extrabold text-mootz-deep">
-            View transaction
+            <ExternalLink aria-hidden size={19} className="mr-2" />View transaction
           </a>
         )}
       </div>
@@ -169,6 +171,7 @@ function ClaimPanel({ id, col }: { id: string; col: CollectionState }) {
 
 /** Eligibility and claim (08.06 to 08.08). */
 export function CollectionView({ id }: { id: string }) {
+  const router = useRouter();
   const event = useEvent(id);
   const collection = useCollection(id);
   const wallet = useMeetWallet();
@@ -177,24 +180,22 @@ export function CollectionView({ id }: { id: string }) {
   if (event.isPending) return <Loading label="Loading collectible" />;
   if (event.isError) return <LoadFailed error={event.error} onRetry={() => void event.refetch()} />;
   const title = event.data.title;
-  const back = <BackLink href={`/events/${id}`}>Back to event</BackLink>;
+  const onBack = () => router.push(`/events/${id}`);
 
   if (collection.isPending && !walletMissing) return <Loading label="Checking your eligibility" />;
 
   if (walletMissing || errorCode(collection.error) === "WALLET_REQUIRED") {
     return (
-      <PageShell header={back}>
-        <h1 className="font-display text-[36px] leading-none text-mootz-ink">{title} frame</h1>
+      <Page title={collection.data?.collection.displayName ?? `${title} frame`} backLabel="Back to event" onBack={onBack}>
         <WalletGate />
-      </PageShell>
+      </Page>
     );
   }
 
   if (collection.isError) {
     const missing = isMissing(collection.error);
     return (
-      <PageShell header={back}>
-        <h1 className="font-display text-[36px] leading-none text-mootz-ink">{title} frame</h1>
+      <Page title={collection.data?.collection.displayName ?? `${title} frame`} backLabel="Back to event" onBack={onBack}>
         <Card>
           <h2 className="font-display text-2xl text-mootz-ink">{missing ? "No collectible for this event" : "Couldn't check your collectible"}</h2>
           <p className="text-sm text-mootz-muted">
@@ -205,20 +206,20 @@ export function CollectionView({ id }: { id: string }) {
                 : "Check your connection and try again."}
           </p>
           {!missing && (
-            <Button className="mt-2" variant="secondary" block disabled={collection.isFetching} onClick={() => void collection.refetch()}>
+            <Button icon={RefreshCw} className="mt-2" variant="secondary" block disabled={collection.isFetching} onClick={() => void collection.refetch()}>
               {collection.isFetching ? "Checking…" : "Try again"}
             </Button>
           )}
         </Card>
-      </PageShell>
+      </Page>
     );
   }
 
   if (!collection.data) return <Loading label="Checking your eligibility" />;
   return (
-    <PageShell header={back}>
+    <Page title={collection.data?.collection.displayName ?? `${title} frame`} backLabel="Back to event" onBack={onBack}>
       <CollectionBody id={id} eventTitle={title} col={collection.data} />
-    </PageShell>
+    </Page>
   );
 }
 
@@ -226,22 +227,15 @@ function CollectionBody({ id, eventTitle, col }: { id: string; eventTitle: strin
   const c = col.collection;
   return (
     <>
-      <h1 className="font-display text-[36px] leading-none text-mootz-ink">{c.displayName}</h1>
       <div className="grid place-items-center rounded-[28px] bg-mootz-lilac py-6">
         <Avatar name={c.displayName} src={c.artworkUrl} frame="event" size={112} />
       </div>
-      <div className="flex flex-col gap-0.5 text-sm font-semibold text-mootz-muted">
-        <p>From {eventTitle}</p>
-        <p>Issued by the event organizer{env.demoFixtures ? " · Demo fixture" : ""}</p>
+      <div className="flex flex-col gap-3 font-semibold text-mootz-muted">
+        <InfoRow icon={CalendarDays} label="Event">{eventTitle}</InfoRow>
+        <InfoRow icon={ShieldCheck} label="Issuer">Event organizer{env.demoFixtures ? " · Demo fixture" : ""}</InfoRow>
+        <InfoRow icon={Layers} label="Supply">Issued {col.totalSupply} of {col.cap}{env.demoFixtures ? " · Demo" : ""} · {networkLabel(c.chainId)}</InfoRow>
       </div>
-      <p className="flex items-baseline justify-between gap-3 text-sm">
-        <span className="font-extrabold text-mootz-deep">
-          Issued {col.totalSupply} of {col.cap}
-          {env.demoFixtures ? " · Demo" : ""}
-        </span>
-        <span className="font-semibold text-mootz-muted">{networkLabel(c.chainId)}</span>
-      </p>
-      <p className="text-xs font-semibold text-mootz-muted">One per wallet · Free to claim · Can&apos;t be transferred</p>
+      <p className="text-[13px] font-semibold text-mootz-muted">One per wallet · Free to claim · Can&apos;t be transferred</p>
       <ClaimPanel id={id} col={col} />
     </>
   );

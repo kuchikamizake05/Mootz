@@ -95,7 +95,7 @@ export function MeetFrame({
 /** Honest label for UI-only fixture flows. */
 export function DemoBadge({ className }: { className?: string }) {
   return (
-    <p className={cn("w-fit rounded-full bg-mootz-lilac px-3 py-1 text-xs font-extrabold text-mootz-deep", className)}>
+    <p className={cn("w-fit rounded-full bg-mootz-lilac px-3 py-1 text-[13px] font-extrabold text-mootz-deep", className)}>
       Demo · not connected
     </p>
   );

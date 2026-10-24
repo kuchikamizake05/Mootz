@@ -40,7 +40,7 @@ type Shared = { variant?: Variant; size?: Size; block?: boolean; icon?: LucideIc
 export function Button({ variant, size, block, icon: Icon, className, children, ...props }: Shared & ComponentProps<"button">) {
   return (
     <button type="button" className={cn(buttonClass({ variant, size, block }), className)} {...props}>
-      {Icon && <Icon aria-hidden size={size === "lg" ? 21 : 19} strokeWidth={2.25} />}
+      {Icon && <Icon aria-hidden size={size === "lg" ? 21 : 19} className="shrink-0" strokeWidth={2.25} />}
       {children}
     </button>
   );
@@ -49,7 +49,7 @@ export function Button({ variant, size, block, icon: Icon, className, children, 
 export function ButtonLink({ variant, size, block, icon: Icon, className, children, ...props }: Shared & ComponentProps<typeof Link>) {
   return (
     <Link className={cn(buttonClass({ variant, size, block }), className)} {...props}>
-      {Icon && <Icon aria-hidden size={size === "lg" ? 21 : 19} strokeWidth={2.25} />}
+      {Icon && <Icon aria-hidden size={size === "lg" ? 21 : 19} className="shrink-0" strokeWidth={2.25} />}
       {children}
     </Link>
   );

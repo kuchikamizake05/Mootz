@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { Check } from "lucide-react";
 import { getBrowseOrigin } from "@/features/shell/browse-origin";
 import { Button } from "@/components/ui/button";
 import { RecordingStatusRow, type RecordingStatus } from "@/components/ui/status";
@@ -99,11 +100,11 @@ export function MeetResultView({ meetId, initial, demo }: { meetId: string; init
       {noLocation && <p className="text-sm text-mootz-muted">The Dot stays on the moment, not on the map.</p>}
 
       <div className="mt-auto flex flex-col gap-3">
-        <Button size="lg" block onClick={() => { leave(); router.push(getBrowseOrigin()); }}>
+        <Button icon={Check} size="lg" block onClick={() => { leave(); router.push(getBrowseOrigin()); }}>
           Done
         </Button>
       </div>
-      <p className="text-xs font-bold text-mootz-muted">The Dot already exists. Onchain records can&apos;t be removed.</p>
+      <p className="text-[13px] font-bold text-mootz-muted">The Dot already exists. Onchain records can&apos;t be removed.</p>
     </MeetFrame>
   );
 }
