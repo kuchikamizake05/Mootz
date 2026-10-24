@@ -1,6 +1,6 @@
 # Deploy Mootz ke VPS Linux
 
-Status: paket persiapan, belum deployment publik. Target satu API dan PostgreSQL/PostGIS; foto tetap Supabase. Tidak menjalankan worker transaksi atau seed demo. Jangan menyalin password development ke server.
+Target satu API dan PostgreSQL/PostGIS; foto tetap Supabase. Auto-deploy backend tersedia melalui GitHub Actions dan timer VPS; status runtime harus dicek melalui endpoint publik. Tidak menjalankan worker transaksi atau seed demo. Jangan menyalin password development ke server.
 
 ## Sebelum besok
 
@@ -21,7 +21,7 @@ openssl rand -hex 32
 # Edit .env dengan editor server; jangan tempel secret ke chat/Git.
 ```
 
-Gunakan hasil random sebagai POSTGRES_PASSWORD baru (hex menghindari escaping URL). Isi API_DOMAIN hostname saja, ACME_EMAIL, ALLOWED_ORIGINS persis origin FE HTTPS, Privy app ID/public verification key, Supabase origin/server secret/bucket. Public JWKS JSON dapat ditulis single-quoted; PEM memakai literal backslash-n. Untuk nilai yang mengandung dollar, gunakan single quote agar Compose tidak menginterpolasinya. Jangan mencetak `docker compose config` biasa karena hasilnya memuat secret; pakai `config --quiet`.
+Gunakan hasil random sebagai POSTGRES_PASSWORD baru (hex menghindari escaping URL). Isi API_DOMAIN hostname saja, ALLOWED_ORIGINS persis origin FE HTTPS, Privy app ID/public verification key, Supabase origin/server secret/bucket. Caddy mengurus HTTPS otomatis tanpa email kontak sertifikat. Public JWKS JSON dapat ditulis single-quoted; PEM memakai literal backslash-n. Untuk nilai yang mengandung dollar, gunakan single quote agar Compose tidak menginterpolasinya. Jangan mencetak `docker compose config` biasa karena hasilnya memuat secret; pakai `config --quiet`.
 
 Pengaturan ALLOWED_ORIGINS dan Privy allowed origins harus mencakup origin FE sesungguhnya. WALLET_PROOF_DOMAIN otomatis memakai API_DOMAIN; proof lama dari localhost perlu diterbitkan ulang. Supabase bucket harus private dan readiness storage perlu diverifikasi. Pilih environment/provider project terpisah jika perlu isolasi data demo dan produksi. Mengubah password env tidak mengganti password role pada volume PostgreSQL yang sudah diinisialisasi: lakukan rotasi terencana, jangan hapus volume.
 
@@ -57,6 +57,28 @@ Backup memakai pg_dump custom dan dicek pg_restore --list. Uji restore membuat D
 Jadwalkan backup harian setelah latihan restore lulus. Misalnya cron privat berizin ketat memanggil `sh /srv/Mootz/be/deploy/vps/backup.sh`. Salin backup terenkripsi ke lokasi lain; backup di disk VPS yang sama tidak melindungi kehilangan VPS. Tetapkan retensi dan kapasitas; skrip tidak menghapus arsip otomatis. Restore produksi membutuhkan maintenance, backup terbaru, pemeriksaan target dan persetujuan operator; jangan memakai skrip latihan untuk menimpa DB produksi.
 
 ## Update / rollback
+
+### Auto-deploy backend
+
+Workflow [Backend CI](../../../.github/workflows/backend.yml) berjalan pada push `main`, pull request dan trigger manual. Gate mencakup protocol exports, audit dependency, lint, typecheck, coverage, integrasi PostgreSQL/PostGIS, konfigurasi VPS dan build image backend. Database CI memakai password acak yang hanya berlaku pada runner; workflow tidak menerima secret produksi.
+
+Pada VPS ini checkout berada di `/home/ubuntu/mootz`. Setelah konfigurasi `.env` privat dan DNS A `api.mootz.fun` mengarah ke IPv4 VPS, pasang timer:
+
+```sh
+sudo install -m 644 be/deploy/vps/mootz-deploy.service /etc/systemd/system/
+sudo install -m 644 be/deploy/vps/mootz-deploy.timer /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now mootz-deploy.timer
+sudo systemctl start mootz-deploy.service
+sudo systemctl status mootz-deploy.timer --no-pager
+sudo journalctl -u mootz-deploy.service -n 40 --no-pager
+```
+
+Timer mengecek `origin/main` setiap tiga menit. Hanya SHA dengan job GitHub Actions `Backend checks` terakhir berstatus success yang boleh dipasang. Checkout kotor/divergen ditolak. Image diberi tag SHA, database tetap privat, update membuat backup lalu mengganti API dan mengecek health/readiness/storage. Bila API baru gagal dan schema tidak berubah, image API sebelumnya dipasang kembali. Tidak ada frontend, deployment kontrak, seed atau worker transaksi otomatis.
+
+Migrasi database, Compose atau Caddyfile yang berubah sesudah deploy pertama menghentikan auto-deploy untuk review manual. Ikuti prosedur backup/migrate di dokumen ini, deploy versi yang sudah diuji, verifikasi endpoint, lalu tulis SHA yang berhasil ke `~/.local/state/mootz-deploy/deployed-sha`. Jangan menulis checkpoint sebelum verifikasi berhasil. Backup lokal tidak dipangkas otomatis; operator perlu memantau disk dan mengatur backup offsite/retensi. GitHub API publik dapat rate-limit; kegagalan API menahan deployment. Tidak ada token GitHub atau SSH private key yang diperlukan untuk polling repo publik ini.
+
+Matikan auto-deploy dengan `sudo systemctl disable --now mootz-deploy.timer`. Service yang sudah berjalan perlu dihentikan terpisah jika memang ingin membatalkan deployment aktif. Perubahan unit timer/service perlu dipasang ulang; perubahan backend biasa dipasang otomatis sesudah CI hijau.
 
 Sebelum update: backup+verifikasi, catat SHA/imageID lama, hentikan perubahan bila migrasi belum kompatibel. Ambil commit yang sudah direview, build image baru dengan tag unik MOOTZ_IMAGE_TAG, jalankan migrate sebelum mengganti API. Jangan rollback binary secara buta sesudah migrasi yang mengubah schema; periksa kompatibilitas versi aplikasi dan database dari source/commit yang sedang dituju. Utamakan forward fix atau pulihkan backup ke DB baru melalui rencana maintenance yang ditinjau. Jangan edit checksum/migration history, `down -v`, atau reset tabel untuk mengatasi error.
 

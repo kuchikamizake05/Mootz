@@ -1,0 +1,54 @@
+name: Backend CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: backend-ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  backend:
+    name: Backend checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: be
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24.13.0
+          cache: npm
+          cache-dependency-path: be/package-lock.json
+      - run: npm install --global npm@11.6.2
+      - run: npm ci
+      - run: npm audit --audit-level=high
+      - run: npm run check:protocol
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run test:coverage
+      - name: Disposable integration database
+        run: |
+          password=$(openssl rand -hex 24)
+          echo "::add-mask::$password"
+          printf 'TEST_DATABASE_URL=postgresql://postgres:%s@127.0.0.1:5432/mootz_ci_tests\n' "$password" >> "$GITHUB_ENV"
+          docker run -d --name mootz-ci-db -e POSTGRES_PASSWORD="$password" -e POSTGRES_DB=mootz_ci_tests -p 127.0.0.1:5432:5432 postgis/postgis:17-3.5
+          for attempt in $(seq 1 60); do
+            if docker exec mootz-ci-db pg_isready -U postgres -d mootz_ci_tests; then exit 0; fi
+            sleep 2
+          done
+          exit 1
+      - run: npm run test:db
+      - run: npm run test:deploy
+      - run: npm run build
+      - name: Deployment script checks
+        run: |
+          bash -n deploy/vps/auto-deploy.sh
+          python3 -m unittest discover -s deploy/vps -p 'test_*.py'
+      - name: Build backend image
+        run: docker build -t mootz-backend:ci .

@@ -1,0 +1,13 @@
+[Unit]
+Description=Deploy Mootz backend after successful GitHub CI
+Wants=network-online.target docker.service
+After=network-online.target docker.service
+ConditionPathExists=/home/ubuntu/mootz/be/deploy/vps/.env
+
+[Service]
+Type=oneshot
+User=ubuntu
+WorkingDirectory=/home/ubuntu/mootz
+ExecStart=/bin/bash /home/ubuntu/mootz/be/deploy/vps/auto-deploy.sh
+TimeoutStartSec=1200
+UMask=0077

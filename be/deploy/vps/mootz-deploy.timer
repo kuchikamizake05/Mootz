@@ -1,0 +1,10 @@
+[Unit]
+Description=Check Mootz backend updates every three minutes
+
+[Timer]
+OnBootSec=2min
+OnUnitInactiveSec=3min
+Unit=mootz-deploy.service
+
+[Install]
+WantedBy=timers.target

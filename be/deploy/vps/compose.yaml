@@ -61,7 +61,6 @@ services:
     restart: unless-stopped
     environment:
       API_DOMAIN: ${API_DOMAIN:?Set API hostname}
-      ACME_EMAIL: ${ACME_EMAIL:?Set certificate contact email}
     ports: ["80:80", "443:443", "443:443/udp"]
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
