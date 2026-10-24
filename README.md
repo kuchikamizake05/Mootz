@@ -44,7 +44,33 @@ Chain ID: **10143**. Deployment date: **24 October 2026**.
 
 Both sources passed Monadscan verification; MonadVision returned partial matches. The [deployment record](sc/abi/deployment.monad-testnet.json) contains receipts, constructor arguments, roles and runtime bytecode hashes checked through an independent RPC. Testnet admin, relayer and issuer currently share one wallet. Deployment evidence does not establish a completed public Meet or collectible claim.
 
-## Architecture and stack
+## Tech stack
+
+![Monad](https://img.shields.io/badge/Monad-Testnet-836EF9?style=for-the-badge)
+![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)
+![React](https://img.shields.io/badge/React-19-149ECA?style=for-the-badge&logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Solidity](https://img.shields.io/badge/Solidity-0.8.30-363636?style=for-the-badge&logo=solidity&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-PostGIS-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+
+| Layer | Technologies | Role in Mootz |
+| --- | --- | --- |
+| Web interface | Next.js 16.4, React 19.3, TypeScript 5.9, Tailwind CSS 4.3, Lucide | Responsive Map/Feed, paired-photo capture, Meet, profiles and Event screens |
+| Client data | TanStack Query 5, generated OpenAPI types | API state, caching and typed client interfaces |
+| Identity and wallets | Privy, viem 2 | Login, wallet connection, signing and contract reads |
+| Maps and location | MapLibre GL 6, OpenFreeMap, MapTiler Satellite | Default street map, optional satellite view and authorized location overlays |
+| QR exchange | qrcode, jsQR | Display and scan the short-lived signed Meet Offer |
+| Backend | Node.js 24, Fastify 5, TypeScript, jose | Authenticated API, audience checks, Meet validation and Event eligibility |
+| Database | PostgreSQL + PostGIS, node-postgres | Private application state, distance checks and migrations |
+| Media | Supabase private storage, Sharp | Audience-controlled paired photos and server-side image processing |
+| Onchain | Monad testnet, Solidity 0.8.30, OpenZeppelin, Foundry | MeetRegistry, nontransferable EventCollection, signature and replay checks |
+| Relay and finality | viem, backend relay/indexer/reconciliation workers | Submit authorized transactions and track inclusion, finality and failure |
+| Delivery | Vercel web hosting; Linux VPS, Docker Compose and Caddy backend setup | Web delivery, HTTPS API and private database deployment |
+| Verification | Vitest, Playwright, axe-core, ESLint, TypeScript, Foundry | Unit, database integration, browser, accessibility and contract checks |
+
+Versions above follow the module manifests and contract configuration. Exact dependency pins remain in the module-local lockfiles. The separate mobile client is planned; no mobile framework has been selected.
+
+## Architecture
 
 `Next.js web client → Fastify API → PostgreSQL/PostGIS + private media storage`
 
