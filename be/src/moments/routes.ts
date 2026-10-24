@@ -15,7 +15,7 @@ interface Storage {
  remove(keys:string[]):Promise<void>; signRead(key:string,ttl:number):Promise<string>;
 }
 interface Image { image:Buffer;thumbnail:Buffer;width:number;height:number;sha256:string;thumbnailSha256:string;contentType:'image/jpeg' }
-interface Row {id:string;author_id:string;source:string;caption:string;event_id:string|null;display_lat:number|null;display_lng:number|null;published_at:Date|null;created_at:Date;pair_commitment:string|null}
+interface Row {author_username?:string|null;id:string;author_id:string;source:string;caption:string;event_id:string|null;display_lat:number|null;display_lng:number|null;published_at:Date|null;created_at:Date;pair_commitment:string|null}
 const uuid={type:'string',format:'uuid'};
 const fail=(statusCode:number,message:string):never=>{throw Object.assign(new Error(message),{statusCode});};
 // Proposed display grid only. Never use this grid for Meet distance verification.
@@ -44,7 +44,7 @@ export function registerMomentRoutes(app:FastifyInstance, options:{verifyToken:(
  }
  const authorized=`(m.author_id=$2 OR (m.published_at IS NOT NULL AND EXISTS(SELECT 1 FROM friendships f WHERE f.account_low=LEAST(m.author_id,$2::uuid) AND f.account_high=GREATEST(m.author_id,$2::uuid) AND f.status='accepted')))`;
  async function visible(id:string,viewer:string) {
-  const result=await pool.query<Row>(`SELECT m.* FROM moments m WHERE m.id=$1 AND ${authorized}`,[id,viewer]);
+  const result=await pool.query<Row>(`SELECT m.*,a.username AS author_username FROM moments m JOIN accounts a ON a.id=m.author_id WHERE m.id=$1 AND ${authorized}`,[id,viewer]);
   if(!result.rows[0])return fail(404,'Moment not found');return result.rows[0];
  }
  async function present(row:Row, frameCache = new Map<string,Promise<FrameState>>()){
@@ -52,7 +52,7 @@ export function registerMomentRoutes(app:FastifyInstance, options:{verifyToken:(
   const thumbnails:Record<string,string>={};
   for(const asset of assets.rows)thumbnails[asset.side]=await storage.signRead(asset.thumbnail_key,60);
   if(options.readFrame&&!frameCache.has(row.author_id))frameCache.set(row.author_id,options.readFrame(row.author_id));
-  return {id:row.id,authorId:row.author_id,source:row.source,caption:row.caption,eventId:row.event_id,publishedAt:row.published_at?.toISOString()??null,createdAt:row.created_at.toISOString(),location:row.display_lat===null?null:{latitude:row.display_lat,longitude:row.display_lng},thumbnails,...(options.readFrame?{activeFrame:await frameCache.get(row.author_id)}:{})};
+  return {id:row.id,authorId:row.author_id,authorUsername:row.author_username??null,source:row.source,caption:row.caption,eventId:row.event_id,publishedAt:row.published_at?.toISOString()??null,createdAt:row.created_at.toISOString(),location:row.display_lat===null?null:{latitude:row.display_lat,longitude:row.display_lng},thumbnails,...(options.readFrame?{activeFrame:await frameCache.get(row.author_id)}:{})};
  }
  const idParams={type:'object',required:['id'],properties:{id:uuid}};
  const mediaParams={type:'object',required:['id','side'],properties:{id:uuid,side:{type:'string',enum:['front','back']}}};
@@ -61,7 +61,8 @@ export function registerMomentRoutes(app:FastifyInstance, options:{verifyToken:(
   if(body.caption&&/[\u0000\ud800-\udfff]/u.test(body.caption))return fail(400,'Invalid caption text');
   if(body.eventId&&!(await pool.query('SELECT 1 FROM events WHERE id=$1',[body.eventId])).rowCount)return fail(400,'Invalid event');
   const result=await pool.query<Row>('INSERT INTO moments(author_id,source,caption,event_id,display_lat,display_lng) VALUES($1,$2,$3,$4,$5,$6) RETURNING *',[author,body.source,body.caption??'',body.eventId??null,location?.latitude??null,location?.longitude??null]);
-  return reply.code(201).send(await present(result.rows[0]!));
+  const username=(await pool.query<{username:string|null}>('SELECT username FROM accounts WHERE id=$1',[author])).rows[0]?.username??null;
+  return reply.code(201).send(await present({...result.rows[0]!,author_username:username}));
  });
  for(const retake of [false,true])app.put<{Params:{id:string;side:string}}>(`/v1/moments/:id/media/:side${retake?'/retake':''}`,{bodyLimit:8*1024*1024,schema:{params:mediaParams}},async request=>{
   const author=await account(request);const keys:string[]=[];const previousKeys:string[]=[];
@@ -108,7 +109,7 @@ export function registerMomentRoutes(app:FastifyInstance, options:{verifyToken:(
   const viewer=await account(request);const {cursor,filter,eventId}=request.query;const limit=Number(request.query.limit);
   let after:{time:string;id:string}|null=null;
   if(cursor){try{const parsed:unknown=JSON.parse(Buffer.from(cursor,'base64url').toString());if(!parsed||typeof parsed!=='object'||!('time'in parsed)||!('id'in parsed)||typeof parsed.time!=='string'||typeof parsed.id!=='string'||!/^\d{4}-\d\d-\d\dT/.test(parsed.time)||!Number.isFinite(Date.parse(parsed.time))||new Date(parsed.time).toISOString()!==parsed.time||! /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(parsed.id))throw Error();after={time:parsed.time,id:parsed.id};}catch{return fail(400,'Invalid cursor');}}
-  const result=await pool.query<Row>(`SELECT m.* FROM moments m WHERE $1::text IS NULL AND m.published_at IS NOT NULL AND ${authorized} AND ($3::timestamptz IS NULL OR (m.published_at,m.id)<($3::timestamptz,$4::uuid)) AND ($5::uuid IS NULL OR m.event_id=$5) ${path==='/v1/map'?'AND m.display_lat IS NOT NULL':''} ${filter==='events'?'AND m.event_id IS NOT NULL':''} ${filter==='friends'?'AND m.author_id<>$2':''} ORDER BY m.published_at DESC,m.id DESC LIMIT $6`,[null,viewer,after?.time??null,after?.id??null,eventId??null,limit+1]);
+  const result=await pool.query<Row>(`SELECT m.*,a.username AS author_username FROM moments m JOIN accounts a ON a.id=m.author_id WHERE $1::text IS NULL AND m.published_at IS NOT NULL AND ${authorized} AND ($3::timestamptz IS NULL OR (m.published_at,m.id)<($3::timestamptz,$4::uuid)) AND ($5::uuid IS NULL OR m.event_id=$5) ${path==='/v1/map'?'AND m.display_lat IS NOT NULL':''} ${filter==='events'?'AND m.event_id IS NOT NULL':''} ${filter==='friends'?'AND m.author_id<>$2':''} ORDER BY m.published_at DESC,m.id DESC LIMIT $6`,[null,viewer,after?.time??null,after?.id??null,eventId??null,limit+1]);
   const rows=result.rows.slice(0,limit);const last=rows.at(-1);
   const frameCache=new Map<string,Promise<FrameState>>();
   return {items:await Promise.all(rows.map(row=>present(row,frameCache))),nextCursor:result.rows.length>limit&&last?Buffer.from(JSON.stringify({time:last.published_at!.toISOString(),id:last.id})).toString('base64url'):null};

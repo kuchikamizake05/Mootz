@@ -1,4 +1,5 @@
 import type { components } from "@/lib/api/generated/media";
+import { handleLabel } from "@/features/profile/username";
 import type { MomentView } from "@/components/ui/moment";
 
 export type ApiMoment = components["schemas"]["Moment"];
@@ -42,11 +43,7 @@ export function relativeTime(iso: string | null, now = Date.now()): string {
   return `${Math.round(hours / 24)}d ago`;
 }
 
-/**
- * The API exposes only `authorId`; display names and avatars of other accounts are not
- * available yet (backend gap, tracked for INT-01). Until then non-own authors show a
- * neutral label instead of an invented name.
- */
+/** Other authors show their @username, or a neutral "Friend" when they haven't picked one. */
 export function toMomentCard(moment: ApiMoment, viewerId: string | undefined): MomentCard {
   const own = moment.authorId === viewerId;
   return {
@@ -58,7 +55,7 @@ export function toMomentCard(moment: ApiMoment, viewerId: string | undefined): M
     publishedAt: moment.publishedAt,
     own,
     eventId: moment.eventId,
-    author: { name: own ? "You" : "Friend", avatarSrc: null, frame: "lilac" },
+    author: { name: own ? "You" : handleLabel(moment.authorUsername), avatarSrc: null, frame: "lilac" },
     postedLabel: relativeTime(moment.publishedAt),
     backSrc: moment.thumbnails.back ?? null,
     frontSrc: moment.thumbnails.front ?? null,

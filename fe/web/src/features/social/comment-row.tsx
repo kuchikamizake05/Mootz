@@ -11,13 +11,16 @@ export function CommentRow({
   viewerId,
   onReply,
   onDelete,
+  replyToUsername,
 }: {
   comment: ApiComment;
   viewerId: string | undefined;
   onReply?: () => void;
   onDelete?: () => void;
+  /** Username of the comment being replied to, resolved from the loaded thread. */
+  replyToUsername?: string | null;
 }) {
-  const name = personLabel(comment.authorId, viewerId);
+  const name = personLabel(comment.authorId, viewerId, comment.authorUsername);
   const own = comment.authorId === viewerId;
   return (
     <article className="flex flex-col gap-1.5" aria-label={`Comment by ${name}`}>
@@ -27,7 +30,7 @@ export function CommentRow({
         <p className="text-xs text-mootz-muted">{relativeTime(comment.createdAt)}</p>
       </div>
       {comment.replyToId && comment.replyToAuthorId && comment.parentId !== comment.replyToId && (
-        <p className="text-xs text-mootz-muted">Replying to {personLabel(comment.replyToAuthorId, viewerId)}</p>
+        <p className="text-xs text-mootz-muted">Replying to {personLabel(comment.replyToAuthorId, viewerId, replyToUsername)}</p>
       )}
       <p className="whitespace-pre-wrap break-words text-[15px] font-semibold text-mootz-ink">{comment.body}</p>
       {(onReply || (own && onDelete)) && (

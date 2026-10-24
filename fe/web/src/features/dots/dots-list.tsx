@@ -4,7 +4,8 @@ import Link from "next/link";
 import { LoaderCircle, LockKeyhole, MapPin, TriangleAlert } from "lucide-react";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { StateMessage } from "@/components/ui/status";
-import { DotsPage, ParticipantPair } from "./dot-parts";
+import { handleLabel } from "@/features/profile/username";
+import { DotsPage, ParticipantPair, otherParticipant } from "./dot-parts";
 import { areaLabel, countLabel, formatDotDay, recordingStatus, type Dot } from "./model";
 import { useDots, useDotSummary, useViewerId } from "./queries";
 
@@ -16,8 +17,8 @@ function DotRow({ dot, viewerId }: { dot: Dot; viewerId: string | undefined }) {
     <li>
       <Link href={`/dots/${dot.id}`} className="flex flex-col gap-2 rounded-[22px] border border-mootz-hairline bg-mootz-canvas p-3.5">
         <span className="flex items-center gap-3">
-          <ParticipantPair participants={dot.participants} viewerId={viewerId} size={40} />
-          <span className="font-display text-xl leading-tight text-mootz-ink">Meet with a friend</span>
+          <ParticipantPair dot={dot} viewerId={viewerId} size={40} />
+          <span className="font-display text-xl leading-tight text-mootz-ink">Meet with {handleLabel(otherParticipant(dot, viewerId).username)}</span>
         </span>
         <span className="flex items-start gap-2 text-sm font-semibold text-mootz-muted">
           {saved ? <LockKeyhole aria-label="Saved onchain" size={16} className="mt-0.5 shrink-0 text-mootz-deep" /> : <MapPin aria-hidden size={16} className="mt-0.5 shrink-0" />}

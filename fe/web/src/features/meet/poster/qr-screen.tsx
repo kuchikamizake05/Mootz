@@ -80,7 +80,7 @@ export function QrScreen({
         ) : (
           <QrImage text={text} label={demo ? "Demo QR, not scannable" : "Meet QR for your friend to scan"} className="rounded-2xl" />
         )}
-        {demo && <p className="mt-2 text-center text-xs font-bold text-mootz-muted">Demo QR · Not scannable</p>}
+        {demo && <p className="mx-auto mt-2 w-fit rounded-full bg-white px-2.5 py-0.5 text-center text-xs font-bold text-mootz-muted">Demo QR · Not scannable</p>}
       </div>
       <div className="hidden lg:flex lg:flex-col lg:gap-4">
         <Countdown left={left} total={total} />

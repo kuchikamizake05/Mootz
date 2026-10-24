@@ -8,3 +8,6 @@ export const demoQrText = "Mootz demo QR - not scannable";
 
 export const demoPhotos = { back: "/demo/generated-6.jpg", front: "/demo/generated-2.jpg" } as const;
 export const demoCaption = "Coffee before the next session.";
+
+/** Demo poster for the Meet preview and result. */
+export const demoPartnerUsername = "demo_a";

@@ -8,10 +8,14 @@ export const DEMO_VIEWER = "demo-viewer";
 export const DEMO_MOMENT_A = "00000000-0000-4000-8000-00000000000a";
 const ago = (minutes: number) => new Date(Date.now() - minutes * 60000).toISOString();
 
+/** Fictional handles; the viewer is @faaid. */
+const demoUsernames: Record<string, string> = { "demo-viewer": "faaid", "demo-b": "demo_b", "demo-c": "demo_c" };
+
 const c = (id: string, authorId: string, body: string | null, minutes: number, parentId: string | null = null, replyToId: string | null = null, replyToAuthorId: string | null = null): ApiComment => ({
   id,
   momentId: DEMO_MOMENT_A,
   authorId,
+  authorUsername: demoUsernames[authorId] ?? null,
   parentId,
   replyToId,
   replyToAuthorId,
@@ -32,7 +36,7 @@ let selfies: SelfieItem[] = [
   { id: "e0000000-0000-4000-8000-000000000002", createdAt: ago(800), thumbnailUrl: "/demo/generated-2.jpg" },
 ];
 const reactions: Record<string, ReactionItem[]> = {
-  [DEMO_MOMENT_A]: [{ id: "f0000000-0000-4000-8000-000000000001", accountId: DEMO_VIEWER, createdAt: ago(8), thumbnailUrl: "/demo/generated-4.jpg" }],
+  [DEMO_MOMENT_A]: [{ id: "f0000000-0000-4000-8000-000000000001", accountId: DEMO_VIEWER, username: "faaid", createdAt: ago(8), thumbnailUrl: "/demo/generated-4.jpg" }],
 };
 
 let seq = 100;
@@ -62,7 +66,7 @@ export const demoApi = {
   putReaction(momentId: string, selfieId: string) {
     const selfie = selfies.find((s) => s.id === selfieId);
     if (!selfie) throw new Error("missing");
-    reactions[momentId] = [{ id: `f0000000-0000-4000-8000-${String(++seq).padStart(12, "0")}`, accountId: DEMO_VIEWER, createdAt: new Date().toISOString(), thumbnailUrl: selfie.thumbnailUrl }, ...(reactions[momentId] ?? []).filter((r) => r.accountId !== DEMO_VIEWER)];
+    reactions[momentId] = [{ id: `f0000000-0000-4000-8000-${String(++seq).padStart(12, "0")}`, accountId: DEMO_VIEWER, username: "faaid", createdAt: new Date().toISOString(), thumbnailUrl: selfie.thumbnailUrl }, ...(reactions[momentId] ?? []).filter((r) => r.accountId !== DEMO_VIEWER)];
   },
   deleteReaction(momentId: string) {
     reactions[momentId] = (reactions[momentId] ?? []).filter((r) => r.accountId !== DEMO_VIEWER);

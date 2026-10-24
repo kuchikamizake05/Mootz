@@ -25,9 +25,9 @@ test("settings: Back discards the draft and Save persists it", async ({ page }) 
 
 test("map: select a moment, open the sheet, close it", async ({ page }) => {
   await page.goto("/map");
-  await page.getByRole("button", { name: "Moment by Demo friend A" }).click();
+  await page.getByRole("button", { name: "Moment by @demo_a" }).click();
   await expect(page).toHaveURL(/moment=00000000-0000-4000-8000-00000000000a/);
-  await expect(page.getByRole("region", { name: "Moment by Demo friend A" })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Moment by @demo_a" })).toBeVisible();
   await page.getByRole("button", { name: "Close preview" }).click();
   await expect(page).not.toHaveURL(/moment=/);
   await expect(page.getByRole("button", { name: "Post moment" })).toBeVisible();
@@ -39,7 +39,7 @@ test("map/feed switch keeps the filter", async ({ page }) => {
   await page.getByRole("radio", { name: /Events/ }).click();
   await expect(page).toHaveURL(/filter=events/);
   await page.keyboard.press("Escape");
-  await expect(page.getByText("Faaid (you)")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Moment by You" })).toHaveCount(0);
   await page.getByRole("navigation", { name: "Primary" }).getByRole("link", { name: "Map", exact: true }).click();
   await expect(page).toHaveURL(/\/map\?filter=events/);
 });
@@ -47,7 +47,7 @@ test("map/feed switch keeps the filter", async ({ page }) => {
 test("meet: scanner approves a demo preview and gets a Dot", async ({ page }) => {
   await page.goto("/meet/accept");
   await page.getByRole("button", { name: "Approve" }).click();
-  await expect(page.getByText("You and your friend were here")).toBeVisible({ timeout: 10_000 });
+  await expect(page.getByText("You and @demo_a were here")).toBeVisible({ timeout: 10_000 });
   await expect(page.getByText("Saved onchain")).toBeVisible({ timeout: 10_000 });
 });
 
@@ -82,4 +82,18 @@ test("events: check in with the demo code and claim the collectible", async ({ p
   await page.getByRole("button", { name: "Claim event collectible" }).click();
   await expect(page.getByText(/Ownership is not confirmed|pending/i).first()).toBeVisible();
   await expect(page.getByText(/13 of 50/)).toBeVisible({ timeout: 10_000 });
+});
+
+test("username: change it, taken handles are refused", async ({ page }) => {
+  await page.goto("/profile");
+  await expect(page.getByText("@faaid")).toBeVisible();
+  await page.getByRole("link", { name: "Edit" }).click();
+  const input = page.getByLabel("Username");
+  await input.fill("Demo_A");
+  await page.getByRole("button", { name: "Save", exact: true }).click();
+  await expect(page.getByText("That username is taken.")).toBeVisible();
+  await input.fill("new_name");
+  await page.getByRole("button", { name: "Save", exact: true }).click();
+  await expect(page).toHaveURL(/\/profile$/);
+  await expect(page.getByText("@new_name")).toBeVisible();
 });
